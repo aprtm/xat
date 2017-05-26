@@ -1,0 +1,19 @@
+{
+  "name": "xat",
+  "version": "1.0.0",
+  "description": "Chat application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aprtm/xat.git"
+  },
+  "author": "AngelPacRam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aprtm/xat/issues"
+  },
+  "homepage": "https://github.com/aprtm/xat#readme"
+}
