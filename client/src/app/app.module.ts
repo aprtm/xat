@@ -2,12 +2,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { ChatUiComponent } from './components/chat-ui/chat-ui.component';
+import { MsgWindowComponent } from './components/msg-window/msg-window.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ChatUiComponent
+    MsgWindowComponent
   ],
   imports: [
     BrowserModule
