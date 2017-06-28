@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChatUiComponent } from './chat-ui.component';
+import { MsgWindowComponent } from './msg-window.component';
 
 describe('ChatUiComponent', () => {
-  let component: ChatUiComponent;
-  let fixture: ComponentFixture<ChatUiComponent>;
+  let component: MsgWindowComponent;
+  let fixture: ComponentFixture<MsgWindowComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChatUiComponent ]
+      declarations: [ MsgWindowComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ChatUiComponent);
+    fixture = TestBed.createComponent(MsgWindowComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
