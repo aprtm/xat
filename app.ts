@@ -5,17 +5,10 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
-import * as socketio from 'socket.io';
 
 let app = express();
 
-// let io = socketio(app);
-
-// app configuration
-//logs server requests
 app.use(logger('dev'));
-
-//parse request body accordingly...
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -38,18 +31,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
-});
-
-// Bind app server to Socket.io
-let server = http.createServer(app),
-    io = socketio(server);
-
-io.on('connection', function(socket){
-  socket.emit('news', { hello: 'world'} );
-  socket.on('my other event', function(data){
-    console.log(data);
-  });
+  res.send('error ' + req.url );
 });
 
 module.exports = app;
