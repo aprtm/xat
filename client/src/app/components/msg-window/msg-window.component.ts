@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms'
 import io from 'socket.io-client';
 
 @Component({
@@ -11,6 +12,11 @@ export class MsgWindowComponent implements OnInit {
   socket = io()
 
   constructor() { }
+
+  onSubmit(form:NgForm){
+    this.socket.emit('chat message', form.value.currentMessage);
+    form.controls.currentMessage.reset();
+  }
 
   ngOnInit() {
   }
