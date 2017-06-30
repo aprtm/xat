@@ -11,7 +11,7 @@ import io from 'socket.io-client';
 })
 export class MsgWindowComponent implements OnInit {
   //get socket connection to the host
-  socket:SocketIO.Socket = io() //should move to a service?
+  private socket:SocketIO.Socket = io() //should move to a service?
   
   msgArr:string[]
   
