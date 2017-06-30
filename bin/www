@@ -33,7 +33,7 @@ server.on('listening', onListening);
  * Create webSockets server with socket.io
  */
 var io = require('socket.io')(server);
-io.on('connection', onConnection)
+io.on('connection', onConnection);
 
 
 /**
@@ -108,6 +108,7 @@ function onConnection(socket){
   socket.on('disconnect', () => console.log('a user disconnected ', current) )
 
   socket.on('chat message', (msg) => {
+    console.log(msg);
     io.emit('chat message', msg);
   } );
 }
