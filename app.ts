@@ -16,6 +16,11 @@ app.use(cookieParser());
 //serve static files from ./client/dist
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
+// routing testing
+app.get('**', function(req,res){
+    res.sendFile(path.join(__dirname, 'client', 'dist','index.html'));
+})
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err:(Error&{status?:number}) = new Error('Not Found');
