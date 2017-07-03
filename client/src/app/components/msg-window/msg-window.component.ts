@@ -10,8 +10,9 @@ import io from 'socket.io-client';
   styleUrls: ['./msg-window.component.css']
 })
 export class MsgWindowComponent implements OnInit {
-  //get socket connection to the host
-  private socket:SocketIO.Socket = io() //should move to a service?
+  //get socket connection to the server.
+  //passing nothing to io() function defaults to host
+  private socket:SocketIO.Socket = io('http://localhost:3000') //should move to a service?
   
   msgArr:string[]
   
