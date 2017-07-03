@@ -10,11 +10,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 const appRoutes:Routes = [
   {
-    path:'home', component:HomeComponent
-  },
-  { path:'login', component:LoginComponent, 
-    data:{title:'Login to x@'} 
-  },
+    path:'home', component:HomeComponent },
+  { path:'login', component:LoginComponent },
   { path:'chat', 
     component:MsgWindowComponent, 
     data:{title:'x@'} 
