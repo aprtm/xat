@@ -7,10 +7,11 @@ import { MsgWindowComponent } from './components/msg-window/msg-window.component
 import { LoginComponent } from './components/login/login.component';
 
 import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './components/home/home.component';
 const appRoutes:Routes = [
-  // {
-  //   path:'home', component:HomeComponent
-  // },
+  {
+    path:'home', component:HomeComponent
+  },
   { path:'login', component:LoginComponent, 
     data:{title:'Login to x@'} 
   },
@@ -18,15 +19,16 @@ const appRoutes:Routes = [
     component:MsgWindowComponent, 
     data:{title:'x@'} 
   },
-  // { path:'', redirectTo:'/home', pathMatch:'full'},
-  // { path:'**', redirectTo:'/home', pathMatch:'full'}
+  { path:'', redirectTo:'/home', pathMatch:'full'},
+  { path:'**', redirectTo:'/home', pathMatch:'full'}
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     MsgWindowComponent,
-    LoginComponent
+    LoginComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
