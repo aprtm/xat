@@ -1,0 +1,6 @@
+#home-wrapper{
+    display:flex;
+}
+#general-chat{
+    border: solid blue 3px;
+}
