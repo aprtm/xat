@@ -20,12 +20,12 @@ export class MsgWindowComponent implements OnInit {
     
     this.socket.on('chat message',(msg)=>this.onMessageArrived(msg));
     this.msgArr = ['>>>>> Welcome to the chat. Start typing.'];
-    console.log(this.msgArr);
+    // console.log(this.msgArr);
   }
 
   onMessageArrived(msg:string){
-    console.log("socket sent this ",msg,'. Save it here: ', this.msgArr);
-    console.log(this);
+    // console.log("socket sent this ",msg,'. Save it here: ', this.msgArr);
+    // console.log(this);
     this.msgArr.push(msg);
   }
 
