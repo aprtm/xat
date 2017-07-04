@@ -1,4 +1,7 @@
 #home-wrapper{
+    border: dotted black 3px;
+}
+#home-children{
     display:flex;
 }
 #general-chat{

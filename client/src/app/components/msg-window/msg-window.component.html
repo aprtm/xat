@@ -1,10 +1,12 @@
-<h4>Chat window</h4>
+<div id="chat-wrapper">
+  <h4>Chat window</h4>
 
-<ul id="messages">
-  <li *ngFor="let msg of msgArr">{{msg}}</li>
-</ul>
+  <ul id="messages">
+    <li *ngFor="let msg of msgArr">{{msg}}</li>
+  </ul>
 
-<form #f="ngForm" (ngSubmit)="onSubmit(f)">
-  <input type="text" name="currentMessage" autocomplete="off" ngModel/>
-  <button type="submit">Send</button>
-</form>
+  <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+    <input type="text" name="currentMessage" autocomplete="off" ngModel/>
+    <button type="submit">Send</button>
+  </form>
+</div>

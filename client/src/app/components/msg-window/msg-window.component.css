@@ -9,7 +9,8 @@ body {
 form {
     background: #000;
     padding: 3px;
-    position: fixed;
+    display:flex;
+    position:absolute;
     bottom: 0;
     width: 100%;
 }
@@ -17,10 +18,9 @@ form input {
     border: 0;
     padding: 10px;
     width: 90%;
-    margin-right: .5%;
 }
 form button {
-    width: 9%;
+    width: 10%;
     background: rgb(130, 224, 255);
     border: none;
     padding: 10px;
@@ -35,4 +35,9 @@ form button {
 }
 #messages li:nth-child(odd) {
     background: #eee;
+}
+#chat-wrapper{
+    border: dotted black 3px;
+    height: 300px;
+    position: relative;
 }
