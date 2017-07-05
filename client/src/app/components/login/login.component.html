@@ -1,9 +1,8 @@
 <div id="login-box">
-    <h1>Login box</h1>
-    <form #f="ngForm" (ngSubmit)="onSubmit(f)" >
-    <input type="text" name="username">
-    <input type="password" name="password">
-    <button name="signIn">Sign in</button>
-    <button name="signUp">Sign up</button>
+    <h1>Login component</h1>
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" >
+        <input type="text" name="username" ngModel>
+        <input type="password" name="password" ngModel>
+        <button name="signIn">Sign in</button>
     </form>
 </div>
