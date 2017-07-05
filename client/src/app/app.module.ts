@@ -9,6 +9,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { SignupComponent } from './components/signup/signup.component';
+import { AsIterablePipe } from './pipes/asIterable.pipe';
 
 const appRoutes:Routes = [
   {
@@ -29,7 +30,8 @@ const appRoutes:Routes = [
     MsgWindowComponent,
     LoginComponent,
     HomeComponent,
-    SignupComponent
+    SignupComponent,
+    AsIterablePipe
   ],
   imports: [
     BrowserModule,
