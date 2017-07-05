@@ -1,0 +1,7 @@
+#signup-box{
+    border: dotted black 3px;
+}
+.error-message{
+    color: darkred;
+    font: 10px monospace;
+}

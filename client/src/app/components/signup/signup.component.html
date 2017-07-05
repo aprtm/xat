@@ -1,0 +1,40 @@
+<div id="signup-box">
+<h1>Sign Up component</h1>
+    <form [formGroup]="signUpForm" novalidate >
+
+        <label>Username
+          <input type="text" formControlName="username" required>
+        </label>
+        <span class="error-message" *ngIf="signUpForm.controls['username'].dirty">
+          <div *ngFor="let error of signUpForm.controls['username'].errors | asIterable">{{ formErrorMessages['username'][error.key] }}</div>
+        </span>
+
+        <div formGroupName="passGroup">
+          
+          <label>Password
+            <input type="password" formControlName="password" required>
+          </label>
+          <span class="error-message" *ngIf="signUpForm.controls['passGroup'].controls.password.dirty">
+            <div *ngFor="let error of signUpForm.controls['passGroup'].controls.password.errors | asIterable">{{ formErrorMessages['password'][error.key] }}</div>
+          </span>
+
+          <label>Repeat password
+            <input type="password" formControlName="password2" required>
+          </label>
+
+        </div>
+
+        <span class="error-message" *ngIf="signUpForm.controls['passGroup'].dirty">
+          <div *ngFor="let error of signUpForm.controls['passGroup'].errors | asIterable">{{ formErrorMessages['passGroup'][error.key] }}</div>
+        </span>
+
+        <label>E-mail
+          <input type="email" formControlName="email" required>
+        </label>
+        <span class="error-message" *ngIf="signUpForm.controls['email'].dirty">
+            <div *ngFor="let error of signUpForm.controls['email'].errors | asIterable">{{ formErrorMessages['email'][error.key] }}</div>
+        </span>
+
+        <button name="sign-up" [disabled]="!signUpForm.valid" >Sign Up</button>
+    </form>
+</div>
