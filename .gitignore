@@ -33,6 +33,7 @@ node_modules
 npm-debug.log
 testem.log
 /client/typings
+mongoful.txt
 
 # e2e
 /client/e2e/*.js
