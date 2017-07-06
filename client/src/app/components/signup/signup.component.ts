@@ -13,7 +13,7 @@ export class SignupComponent implements OnInit {
     'username':{
       'required': 'Must pick a username',
       'exists': 'That username already exists',
-      'pattern': 'Only underscore(_), letters and/or numbers are allowed'
+      'pattern': 'Use only letters, numbers and/or underscore(_)'
     },
     'password':{
       'required': 'Must choose a password',
@@ -29,12 +29,6 @@ export class SignupComponent implements OnInit {
   }
 
   signUpForm: FormGroup;
-  // signUpForm = new FormGroup({
-  //   username: new FormControl(),
-  //   password: new FormControl(),
-  //   password2: new FormControl(),
-  //   email: new FormControl()
-  // });
 
   constructor(private builder:FormBuilder) {
   }
