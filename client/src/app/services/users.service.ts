@@ -15,7 +15,7 @@ export class UsersService {
 
   addUser(user:User){
     
-    this.http.post( '/api/users', user, {headers:this.header} )
+    this.http.post( '/api/signup', user, {headers:this.header} )
       .subscribe( ( resp )=>console.log('resp: ',resp), ( err )=>console.log('err: ',err) ) ;
     
     console.log('Posted to server: ', user);

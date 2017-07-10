@@ -18,7 +18,7 @@ app.use(cookieParser());
 //serve static files from ./client/dist
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
-app.use('/api/users', users);
+app.use('/api/signup', users);
 
 // app.get('/api', function(req, res){
 //   res.send({"sorry":"nothing here"});
