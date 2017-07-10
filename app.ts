@@ -6,6 +6,8 @@ import * as logger from 'morgan';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 
+import users from './routes/users';
+
 let app = express();
 
 app.use(logger('dev'));
@@ -16,10 +18,23 @@ app.use(cookieParser());
 //serve static files from ./client/dist
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
+app.use('/api/users', users);
+
+// app.get('/api', function(req, res){
+//   res.send({"sorry":"nothing here"});
+// });
+
+//user post
+// app.post('/api/users', function(req, res){
+//   console.log('Post request: ', req);
+//   res.sendStatus(200);
+//   res.end();
+// });
+
 // routing testing
 app.get('**', function(req,res){
     res.sendFile(path.join(__dirname, 'client', 'dist','index.html'));
-})
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
