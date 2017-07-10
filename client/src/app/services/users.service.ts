@@ -21,4 +21,7 @@ export class UsersService {
     console.log('Posted to server: ', user);
   }
 
+  getUser(){
+    
+  }
 }

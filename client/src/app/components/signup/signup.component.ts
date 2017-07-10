@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidationErrors} from '@angular/forms';
-import { CustomValidators } from '../../validators/custom.validator'
+import { sameTextValidate } from '../../validators/custom.validator'
 import { AsIterablePipe } from '../../pipes/asIterable.pipe'
+
+import { UsersService } from '../../services/users.service'
 
 @Component({
   selector: 'chat-signup',
@@ -30,7 +32,7 @@ export class SignupComponent implements OnInit {
 
   signUpForm: FormGroup;
 
-  constructor(private builder:FormBuilder) {
+  constructor(private builder:FormBuilder, private usersService:UsersService) {
   }
 
   ngOnInit() {
@@ -48,7 +50,7 @@ export class SignupComponent implements OnInit {
       passGroup: this.builder.group({
         password: ['',Validators.minLength(4)],
         password2: ['']
-      }, { validator: CustomValidators.sameText } ),
+      }, { validator: sameTextValidate } ),
 
       email:['',[
         Validators.required,
@@ -57,11 +59,20 @@ export class SignupComponent implements OnInit {
 
     });
 
-    this.signUpForm.valueChanges.subscribe( ()=>{
-      //gets executed after every form change
-      // updateCtrlErrors()
-    })
+  }
 
+  onSubmit(){
+      if( this.signUpForm.valid ){
+        
+        let newUser = {
+          username: this.signUpForm.get('username').value,
+          password: this.signUpForm.get('passGroup.password').value,
+          email: this.signUpForm.get('email').value
+        };
+
+        this.usersService.addUser( newUser );
+
+      }
   }
   
 }

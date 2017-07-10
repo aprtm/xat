@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { HttpModule } from '@angular/http'
 
 import { AppComponent } from './app.component';
 import { MsgWindowComponent } from './components/msg-window/msg-window.component';
@@ -10,6 +11,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { AsIterablePipe } from './pipes/asIterable.pipe';
+
+import { UsersService } from './services/users.service'
 
 const appRoutes:Routes = [
   {
@@ -35,11 +38,12 @@ const appRoutes:Routes = [
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     FormsModule,
     ReactiveFormsModule, 
     RouterModule.forRoot(appRoutes, {enableTracing:true})
   ],
-  providers: [],
+  providers: [ UsersService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

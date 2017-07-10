@@ -1,6 +1,6 @@
 <div id="signup-box">
 <h1>Sign Up component</h1>
-    <form [formGroup]="signUpForm" novalidate >
+    <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" novalidate >
 
         <label>Username
           <input type="text" formControlName="username" required>
@@ -36,6 +36,6 @@
             <div *ngFor="let error of signUpForm.get('email').errors | asIterable">{{ formErrorMessages['email'][error.key] }}</div>
         </span>
 
-        <button name="sign-up" [disabled]="!signUpForm.valid" >Sign Up</button>
+        <button name="sign-up" [disabled]="!signUpForm.valid">Sign Up</button>
     </form>
 </div>
