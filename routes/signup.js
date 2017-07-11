@@ -34,9 +34,28 @@ router.post('/', function (req, res, next) {
     });
 });
 /* GET a user. */
-router.get('**', function (req, res, next) {
-    console.log('Got a request! Handle it.');
-    res.sendFile(JSON.stringify({ 'Sorry': 'Not implemented yet.' }));
+router.get('/username/:username', function (req, res, next) {
+    // login anonymously (no arguments) to the client.
+    stitchClient.login().then(function fulfill() {
+        // get a collection and test its api
+        var Users = db.collection('Users');
+        // console.log( 'gets here! params:', req.params.username);
+        var u = Users.find({ username: req.params.username });
+        return u;
+    }, function reject(reason) {
+        console.log(reason);
+        return reason;
+    })
+        .then(function fulfill(user) {
+        var exists = user.length;
+        res.send(!!exists);
+        res.end();
+    }, function reject(reason) {
+        console.log(reason);
+        res.sendStatus(500);
+        res.end();
+    })["catch"](function (err) { return console.log('Cought: ', err); });
+    console.log('Got a request!');
 });
 exports["default"] = router;
 // export default router;

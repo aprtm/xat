@@ -6,7 +6,7 @@ import * as logger from 'morgan';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 
-import users from './routes/users';
+import signup from './routes/signup';
 
 let app = express();
 
@@ -18,18 +18,7 @@ app.use(cookieParser());
 //serve static files from ./client/dist
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
-app.use('/api/signup', users);
-
-// app.get('/api', function(req, res){
-//   res.send({"sorry":"nothing here"});
-// });
-
-//user post
-// app.post('/api/users', function(req, res){
-//   console.log('Post request: ', req);
-//   res.sendStatus(200);
-//   res.end();
-// });
+app.use('/api/signup', signup);
 
 // routing testing
 app.get('**', function(req,res){

@@ -10,7 +10,7 @@ const stitchClient:any = new mdbStitch.StitchClient( 'xat-mxymz' );
 const db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
 
     /* POST new user. */
-    router.post('/', function(req, res, next) {
+    router.post('/signup', function(req, res, next) {
 
         // login anonymously (no arguments) to the client.
         stitchClient.login().then( function fulfill(){
@@ -36,12 +36,37 @@ const db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
             res.sendStatus(500);
             res.end();
         });
+
     });
 
     /* GET a user. */
-    router.get('**', function( req, res, next){
-        console.log('Got a request! Handle it.');
-        res.sendFile(JSON.stringify({'Sorry':'Not implemented yet.'}));
+
+    router.get('/signup/:username', function( req, res, next){
+         // login anonymously (no arguments) to the client.
+        stitchClient.login().then( function fulfill(){
+
+                // get a collection and test its api
+                let Users = db.collection('Users');
+                console.log( 'gets here! params:', req.params.username);
+                let u = Users.find( {username:req.params.username} );
+                return u;
+
+        }, function reject(reason){
+            console.log(reason)
+            return reason;
+        })
+        .then(function fulfill(user){
+            let exists = user.length;
+            res.send( !!exists );
+            res.end();
+        }, function reject(reason){
+            console.log(reason);
+            res.sendStatus(500);
+            res.end();
+        })
+        .catch((err)=>console.log('Cought: ', err));
+
+        console.log('Got a request!');
     });
 
 export default router;
