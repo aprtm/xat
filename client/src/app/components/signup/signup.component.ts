@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidationErrors} from '@angular/forms';
-import { sameTextValidate } from '../../validators/custom.validator'
+import { sameTextValidate, isValueInDatabase } from '../../validators/custom.validator'
 import { AsIterablePipe } from '../../pipes/asIterable.pipe'
 
 import { UsersService } from '../../services/users.service'
@@ -11,6 +11,38 @@ import { UsersService } from '../../services/users.service'
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent implements OnInit {
+
+  signUpForm: FormGroup;
+
+  constructor(private builder:FormBuilder, private usersService:UsersService) {
+  }
+
+  ngOnInit() {
+    this.createForm();
+    // console.log(this.signUpForm.controls.passGroup);
+  }
+  
+  createForm(){
+    this.signUpForm = this.builder.group( {
+      username:['',[
+        Validators.required,
+        Validators.pattern( /^\w+$/ )
+      ], isValueInDatabase( 'username', this.usersService.valueExists )],
+
+      passGroup: this.builder.group({
+        password: ['',Validators.minLength(1)],
+        password2: ['']
+      }, { validator: sameTextValidate } ),
+
+      email:['',[
+        Validators.required,
+        Validators.email
+      ]]
+
+    });
+
+  }
+
   formErrorMessages = {
     'username':{
       'required': 'Must pick a username',
@@ -30,37 +62,6 @@ export class SignupComponent implements OnInit {
     }
   }
 
-  signUpForm: FormGroup;
-
-  constructor(private builder:FormBuilder, private usersService:UsersService) {
-  }
-
-  ngOnInit() {
-    this.createForm();
-    // console.log(this.signUpForm.controls.passGroup);
-  }
-  
-  createForm(){
-    this.signUpForm = this.builder.group( {
-      username:['',[
-        Validators.required,
-        Validators.pattern( /^\w+$/ )
-      ]],
-
-      passGroup: this.builder.group({
-        password: ['',Validators.minLength(4)],
-        password2: ['']
-      }, { validator: sameTextValidate } ),
-
-      email:['',[
-        Validators.required,
-        Validators.email
-      ]]
-
-    });
-
-  }
-
   onSubmit(){
       if( this.signUpForm.valid ){
         
@@ -70,7 +71,14 @@ export class SignupComponent implements OnInit {
           email: this.signUpForm.get('email').value
         };
 
-        this.usersService.addUser( newUser );
+        this.usersService.addUser( newUser ).subscribe(
+          function onNext(item){
+            console.log('Successfully added: ', item.status);
+          },
+          function onError(error){
+            console.log('Error: ', error);
+          }
+        );
 
       }
   }

@@ -11,17 +11,24 @@ interface User{
 @Injectable()
 export class UsersService {
   private header:Headers = new Headers( {'Content-Type':'application/json'} )
-  constructor(private http:Http) { }
+  
+  constructor(public http:Http) { 
+    this.valueExists = this.valueExists.bind(this);
+  }
 
   addUser(user:User){
-    
-    this.http.post( '/api/signup', user, {headers:this.header} )
-      .subscribe( ( resp )=>console.log('resp: ',resp), ( err )=>console.log('err: ',err) ) ;
-    
-    console.log('Posted to server: ', user);
+    return this.http.post( '/api/signup', user, {headers:this.header} )
+      /*.subscribe( ( resp )=>console.log('resp: ',resp), ( err )=>console.log('err: ',err) )*/ ;
   }
 
-  getUser(){
-    
+  valueExists( field:string, value:string){
+    const endpoint = {
+      username: '/api/signup/username/',
+      email: '/api/signup/email/'
+    };
+
+    //checks if value exists in field
+    return this.http.get( endpoint[field] + value);
   }
+
 }
