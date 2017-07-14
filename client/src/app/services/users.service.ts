@@ -17,8 +17,9 @@ export class UsersService {
   }
 
   addUser(user:User){
+    //return an observable with the post add user response
+    console.log('Posting new user data...');
     return this.http.post( '/api/signup', user, {headers:this.header} )
-      /*.subscribe( ( resp )=>console.log('resp: ',resp), ( err )=>console.log('err: ',err) )*/ ;
   }
 
   valueExists( field:string, value:string){
@@ -27,8 +28,15 @@ export class UsersService {
       email: '/api/signup/email/'
     };
 
-    //checks if value exists in field
+    //return an observable with the get value response
+    // console.log('Checking if ' + field + ' is available...');
     return this.http.get( endpoint[field] + value);
+  }
+
+  getUser(credentials:{username:string, password:string}){
+    //return an observable with the post login response
+    console.log('Posting user credentials...');
+    return this.http.post( '/api/login/', credentials, {headers:this.header})
   }
 
 }

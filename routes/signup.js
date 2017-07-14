@@ -14,6 +14,7 @@ router.post('/', function (req, res, next) {
     stitchClient.login().then(function fulfill() {
         // get a collection and test its api
         var Users = db.collection('Users');
+        //TODO: Check that the username and email are not already in use
         return Users.insertOne({
             owner_id: stitchClient.authedId(),
             username: req.body.username,
@@ -33,7 +34,7 @@ router.post('/', function (req, res, next) {
         res.end();
     });
 });
-/* GET a user. */
+/* GET a username */
 router.get('/username/:username', function (req, res, next) {
     // login anonymously (no arguments) to the client.
     stitchClient.login().then(function fulfill() {
@@ -54,24 +55,31 @@ router.get('/username/:username', function (req, res, next) {
         console.log(reason);
         res.sendStatus(500);
         res.end();
-    })["catch"](function (err) { return console.log('Cought: ', err); });
+    })["catch"](function (err) { return console.log(err); });
+    console.log('Got a request!');
+});
+/* GET an email */
+router.get('/email/:email', function (req, res, next) {
+    // login anonymously (no arguments) to the client.
+    stitchClient.login().then(function fulfill() {
+        // get a collection and test its api
+        var Users = db.collection('Users');
+        // console.log( 'gets here! params:', req.params.username);
+        var u = Users.find({ email: req.params.email });
+        return u;
+    }, function reject(reason) {
+        console.log(reason);
+        return reason;
+    })
+        .then(function fulfill(user) {
+        var exists = user.length;
+        res.send(!!exists);
+        res.end();
+    }, function reject(reason) {
+        console.log(reason);
+        res.sendStatus(500);
+        res.end();
+    })["catch"](function (err) { return console.log(err); });
     console.log('Got a request!');
 });
 exports["default"] = router;
-// export default router;
-// const db = client.service('mongodb', 'mongodb-atlas').db('XAT');
-// //the write operations require a field owner_id to match with the id of the connected authenticated user
-// client.login().then(() =>
-//   db.collection('Users').updateOne(
-//       { owner_id: client.authedId() },
-//       { $set:{username:'TEST'} },
-//       {upsert:true} 
-//     )
-// ).then(() =>
-//   db.collection('Users').find({owner_id: client.authedId()})
-// ).then(docs => {
-//   console.log("Found docs", docs)
-//   console.log("[MongoDB Stitch] Connected to Stitch")
-// }).catch(err => {
-//   console.error(err)
-// });

@@ -2,23 +2,40 @@ import * as http from 'http';
 import * as path from 'path';
 
 import * as express from 'express';
+import * as expressSession from 'express-session';
 import * as logger from 'morgan';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 
+import * as passport from 'passport';
+import passportInit from './config/passportConfig';
+
 import signup from './routes/signup';
+import login from './routes/login';
 
 let app = express();
 
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use( logger('dev') );
+app.use( bodyParser.json() );
+app.use( bodyParser.urlencoded( { extended: false } ) );
+app.use( cookieParser() );
+app.use( expressSession( { 
+    secret:'test secret',
+    resave:false,
+    saveUninitialized:true,
+    cookie:{ secure:false } 
+  }) 
+);
+app.use( passport.initialize() )
+app.use( passport.session() );
 
 //serve static files from ./client/dist
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
+passportInit();
+
 app.use('/api/signup', signup);
+app.use('/api/login', login);
 
 // routing testing
 app.get('**', function(req,res){
