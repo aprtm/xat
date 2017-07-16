@@ -8,6 +8,7 @@
   "dependencies": {
     "@types/passport": "^0.3.3",
     "@types/passport-local": "^1.0.30",
+    "bcryptjs": "^2.4.3",
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
