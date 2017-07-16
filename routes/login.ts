@@ -13,7 +13,7 @@ let router = express.Router();
 router.post('/', function(req, res, next){
     console.log('Authenticating ', req.body);
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    passport.authenticate('loginStrat', function(err, user, info){
+    passport.authenticate('local-login', function(err, user, info){
         if(err) return next(err);
         if(!user) {
             console.log('Failed to authenticate.');

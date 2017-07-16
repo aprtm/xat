@@ -45,7 +45,6 @@ const db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
          // login anonymously (no arguments) to the client.
         stitchClient.login().then( function fulfill(){
 
-                // get a collection and test its api
                 let Users = db.collection('Users');
                 // console.log( 'gets here! params:', req.params.username);
                 let u = Users.find( {username:req.params.username} );

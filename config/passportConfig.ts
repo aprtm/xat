@@ -13,8 +13,26 @@ const db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
 
 export default function passportInit(){
 
+    passport.serializeUser( function(user:any, done){
+        console.log('User serialized');
+        done(null, user._id );
+    } );
+
+    passport.deserializeUser( function(id, done){
+        stitchClient.login().then(function onFulfilled(){
+            console.log('Successful deserialization');
+            done(null, db.collection('Users').find( {_id:id} ) );
+        }, 
+        function onRejected( reason ){
+            console.log('Rejected deserialization')
+            done( reason );
+        } )
+        .catch( (err)=>{console.log('Deserializing error'); return err} );
+
+    } );
+
     //++++++++++++++CONFIGURE LOGIN AUTHENTICATION++++++++++++++++++++++
-    passport.use('loginStrat', new LocalStrategy(function(username, password, done){
+    passport.use('local-login', new LocalStrategy(function(username, password, done){
         stitchClient.login()
 
             .then( function onFulfilled(response){
@@ -26,7 +44,7 @@ export default function passportInit(){
             }, function onRejected(reason){
                 console.log('Database client connection rejected')
                 return done( reason );
-            } )
+            } ) 
 
 
             .then(function onFulfilled( users ){
@@ -56,24 +74,27 @@ export default function passportInit(){
     }
 
     //++++++++++++++CONFIGURE SIGNUP AUTHENTICATION++++++++++++++++++++++
-    passport.use(new LocalStrategy(function(username, password, done){} ) );
+    passport.use('signupStrat',new LocalStrategy(function(username, password, done){
+        stitchClient.login()
+            .then(function onFulfilled( response ){
+                console.log('Database client connection successful');
 
-    passport.serializeUser( function(user:any, done){
-        console.log('User serialized');
-        done(null, user._id );
-    } );
+                let Users = db.collection('Users');
+                return Users.find( {username:username} );
 
-    passport.deserializeUser( function(id, done){
-        stitchClient.login().then(function onFulfilled(){
-            console.log('Successful deserialization');
-            done(null, db.collection('Users').find( {_id:id} ) );
-        }, 
-        function onRejected( reason ){
-            console.log('Rejected deserialization')
-            done( reason );
-        } )
-        .catch( (err)=>{console.log('Deserializing error'); return err} );
+            }, function onRejected( reason ){
 
-    } );
+            })
+            .then(function onFulfilled(users){
+                if( users.length ){
+                    //user exists. Respond with error.
+                }else{
+                    //create salt, hash password and add user
+                }
+            }, function onRejected(){
+                //collecion.find() error
+            });
+    } ) );
+
 
 }
