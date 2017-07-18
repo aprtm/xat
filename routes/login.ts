@@ -3,48 +3,38 @@ import * as mdbStitch from 'mongodb-stitch';
 
 import * as passport from 'passport';
 
-// Get the client for the xat-mxymz app
-const stitchClient:any = new mdbStitch.StitchClient( 'xat-mxymz' );
-// get database instance from of a mongodb object with the XAT name
-const db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
+// // Get the client for the xat-mxymz app
+// const stitchClient:any = new mdbStitch.StitchClient( 'xat-mxymz' );
+// // get database instance from of a mongodb object with the XAT name
+// const db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
 
 let router = express.Router();
 
-router.post('/', function(req, res, next){
-    console.log('Authenticating ', req.body);
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    passport.authenticate('local-login', function(err, user, info){
-        if(err) return next(err);
-        if(!user) {
-            console.log('Failed to authenticate.');
-            res.status( 401 ).send( info.message );
-            res.end();
+//+++++++++++++++++HANDLE POST TO API/LOGIN+++++++++++++++++++++++++++++++
+router.post('/', function routeHandler(req, res, next){
+    
+    passport.authenticate( 'login-local', function(err, user, info){
+        if( err ) {
+            console.log('Error with login-local strategy');
+            return next( err );
         }
-        else{
-            req.logIn(user, function(err){
-                console.log( 'User authenticated' );
-                if(err) {
-                    console.log( 'Request' );
-                    return next( err );
-                }
-                console.log( 'Respond with user data' );
-                res.send(user);
-                res.end();
-            });
+        
+        if( !user ) {
+            console.log( 'Failed to authenticate. Could not find user.' );
+            return res.status( 401 ).send( info.message );
         }
 
-    })(req,res,next);
+        req.logIn( user, function(err){
+            if( err ) {
+                console.log('Error while logging in.')
+                return next( err );
+            }
+            console.log('User authenticated and correctly logged in.')
+            return res.send( user );
+        } );
 
-});
+    } )(req, res, next);
 
-// router.get('/',function(req,res){
-//     res.sendStatus(200);
-//     res.end();
-// });
-// router.get('/', passport.authenticate('test'), function(req,res){
-//     console.log('Got a GET request to /api/login')
-//     res.sendFile( JSON.stringify( {'hey':'it GETs!'} ) );
-//     res.end();
-// } )
+} );
 
 export default router;

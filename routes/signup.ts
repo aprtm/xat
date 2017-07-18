@@ -1,6 +1,8 @@
 import * as express from 'express';
 import * as mdbStitch from 'mongodb-stitch';
 
+import * as passport from 'passport';
+
 let router = express.Router();
 
 // type definitions not yet available in definitely typed. Using Any as type.
@@ -9,38 +11,55 @@ const stitchClient:any = new mdbStitch.StitchClient( 'xat-mxymz' );
 // get database instance from of a mongodb object with the XAT name
 const db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
 
-    /* POST new user. */
+
+//+++++++++++++++++ HANDLE POST TO API/SIGNUP +++++++++++++++++++++++++++++++
     router.post('/', function(req, res, next) {
 
-        // login anonymously (no arguments) to the client.
-        stitchClient.login().then( function fulfill(){
+        passport.authenticate( 'signup-local', function(err, user, info){
+            if( err ){
+                console.log('Error with signup-local strategy');
+                return next( err );
+            }
+            if( !user ){
+                console.log( 'Credentials conflict with existing data.' );
+                return res.status( 409 ).send( info.message );
+            }
+
+            // login anonymously (no arguments) to the client.
+            stitchClient.login().then( function fulfill(){
 
                 // get a collection and test its api
                 let Users = db.collection('Users');
 
-                //TODO: Check that the username and email are not already in use
-                return Users.insertOne({
-                    owner_id: stitchClient.authedId(),
-                    username:req.body.username,
-                    password:req.body.password,
-                    email:req.body.email} );
+                return Users.insertOne( {
+                        owner_id: stitchClient.authedId(),
+                        username:user.username,
+                        password:user.hash,
+                        email:req.body.email 
+                    } );
 
-        }, function reject(reason){
-            console.log(reason)
-            return reason;
-        })
-        .then(function fulfill(){
-            res.sendStatus(200);
-            res.end();
-        }, function reject(reason){
-            console.log(reason);
-            res.sendStatus(500);
-            res.end();
-        });
+            }, function reject(reason){
+                console.log(reason);
+                return next( reason );
+            })
+
+            .then(function fulfill( newUser ){
+                console.log( 'Successfully registered', newUser );
+                return res.send( 'Successfully registered.' );
+
+            }, function reject( reason ){
+
+                console.log( reason );
+                return res.send( reason );
+            });
+
+        })(req, res, next);
 
     });
 
-    /* GET a username */
+
+//+++++++++++++++++ CLIENT VALIDATION ENDPOINTS +++++++++++++++++++++++++++++++
+//+++++++++++++++++ HANDLE GET FROM API/SIGNUP/USERNAME +++++++++++++++++++++++++++++++
     router.get('/username/:username', function( req, res, next){
          // login anonymously (no arguments) to the client.
         stitchClient.login().then( function fulfill(){
@@ -68,7 +87,7 @@ const db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
         console.log('Got a request!');
     });
 
-    /* GET an email */
+//+++++++++++++++++ HANDLE GET FROM API/SIGNUP/USERNAME +++++++++++++++++++++++++++++++
     router.get('/email/:email', function( req, res, next){
          // login anonymously (no arguments) to the client.
         stitchClient.login().then( function fulfill(){

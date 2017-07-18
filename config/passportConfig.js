@@ -3,55 +3,104 @@ exports.__esModule = true;
 var mdbStitch = require("mongodb-stitch");
 var passport = require("passport");
 var passportLocal = require("passport-local");
+var bcrypt = require("bcrypt");
 var LocalStrategy = passportLocal.Strategy;
 // Get the client for the xat-mxymz app
 var stitchClient = new mdbStitch.StitchClient('xat-mxymz');
 // get database instance from of a mongodb object with the XAT name
 var db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
 function passportInit() {
+    //++++++++++++++SET UP SERIALIZATION++++++++++++++++++++++
+    passport.serializeUser(function (user, connectCb) {
+        console.log('User serialized');
+        connectCb(null, user._id);
+    });
+    passport.deserializeUser(function (id, connectCb) {
+        stitchClient.login().then(function onFulfilled() {
+            console.log('Successful deserialization');
+            connectCb(null, db.collection('Users').find({ _id: id }));
+        }, function onRejected(err) {
+            console.log('Rejected deserialization');
+            connectCb(err);
+        })["catch"](function (err) { console.log('Deserializing error'); return err; });
+    });
     //++++++++++++++CONFIGURE LOGIN AUTHENTICATION++++++++++++++++++++++
-    passport.use('loginStrat', new LocalStrategy(function (username, password, done) {
+    passport.use('login-local', new LocalStrategy(function verify(username, password, done) {
         stitchClient.login()
             .then(function onFulfilled(response) {
             console.log('Database client connection successful');
             //after logging in to the database get the Users collection and find the username
             var Users = db.collection('Users');
-            return Users.find({ username: username });
+            var findUser = Users.find({ $or: [{ username: username }, { email: username }] });
+            return findUser;
         }, function onRejected(reason) {
             console.log('Database client connection rejected');
             return done(reason);
         })
             .then(function onFulfilled(users) {
+            console.log('Users that match credentials: ', users.length);
             if (users.length !== 1) {
-                console.log(done);
-                return done(null, false, { message: '=( Check your username/password and try again' });
+                console.log('Username not in database.');
+                return done(null, false, { message: 'Could not find user.' });
             }
             if (!isPasswordValid(users[0], password)) {
-                return done(null, false, { message: '=( Check your username/password and try again' });
+                console.log('Credentials invalid.');
+                return done(null, false, { message: 'Wrong password.' });
             }
             return done(null, users[0]);
         }, function onRejected(reason) {
             console.log('Rejection while fetching user data.');
             return done(reason);
-        })["catch"](function (err) { console.log('Error while handling login request. '); return err; });
+        })["catch"](function (err) { console.log('Error while handling login request. '); return done(err); });
     }));
     function isPasswordValid(user, password) {
+        console.log('Verifying credentials...');
         return password === user.password;
     }
     //++++++++++++++CONFIGURE SIGNUP AUTHENTICATION++++++++++++++++++++++
-    passport.use(new LocalStrategy(function (username, password, done) { }));
-    passport.serializeUser(function (user, done) {
-        console.log('User serialized');
-        done(null, user._id);
-    });
-    passport.deserializeUser(function (id, done) {
-        stitchClient.login().then(function onFulfilled() {
-            console.log('Successful deserialization');
-            done(null, db.collection('Users').find({ _id: id }));
+    passport.use('signup-local', new LocalStrategy({ passReqToCallback: true }, function verify(req, username, password, done) {
+        var applicant = {
+            username: '',
+            hash: '',
+            email: ''
+        };
+        stitchClient.login()
+            .then(function onFulfilled(response) {
+            console.log('Database client connection successful');
+            //after logging in to the database get the Users collection and find the username
+            var UsersCollection = db.collection('Users');
+            var usersFound = UsersCollection.find({ $or: [{ username: username }, { email: req.body.email }] });
+            return usersFound;
         }, function onRejected(reason) {
-            console.log('Rejected deserialization');
-            done(reason);
-        })["catch"](function (err) { console.log('Deserializing error'); return err; });
-    });
+            console.log('Database client connection rejected');
+            return done(reason);
+        })
+            .then(function onFulfilled(users) {
+            console.log('Retrieved user data. Users found:', users.length);
+            if (users.length !== 0) {
+                if (users[0].username === username) {
+                    console.log('Username already in use.');
+                    return done(null, false, { message: 'Username in use.' });
+                }
+                if (users[0].email === req.body.email) {
+                    console.log('Email already registered.');
+                    return done(null, false, { message: 'Email in use.' });
+                }
+            }
+            applicant.username = username;
+            applicant.email = req.body.email;
+            return bcrypt.hash(password, 10);
+        }, function onRejected(reason) {
+            console.log('Rejection while fetching user data.');
+            return done(reason);
+        })
+            .then(function onFulfilled(hash) {
+            applicant.hash = hash;
+            done(null, applicant);
+        }, function onRejected(reason) {
+            console.log('Rejection while fetching user data.');
+            return done(reason);
+        })["catch"](function (err) { console.log('Error while handling login request. '); return done(err); });
+    }));
 }
 exports["default"] = passportInit;
