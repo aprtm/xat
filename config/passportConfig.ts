@@ -61,12 +61,20 @@ export default function passportInit(){
                     console.log('Username not in database.');
                     return done( null, false, {message: 'Could not find user.'} );
                 }
-                if( !isPasswordValid( users[0], password ) ){
-                    console.log('Credentials invalid.');
-                    return done( null, false, {message: 'Wrong password.'} );
-                }
                 
-                return done( null, users[0] );
+                bcrypt.compare(password, users[0].password, function( err, authenticated ){
+                    if( err ){
+                        console.log( 'Failed password verification.:', err );
+                        return done( err );
+                    }
+                    if( authenticated ){
+                        console.log( 'All good. Logged in.' );
+                        return done( null, users[0] );
+                    }else{
+                        console.log( 'Password check went bad.' );
+                        return done( null, false, {message:'Wrong password.'} );
+                    }
+                });
 
             }, function onRejected( reason ){
                 console.log('Rejection while fetching user data.')
@@ -76,11 +84,6 @@ export default function passportInit(){
             .catch( (err)=>{ console.log('Error while handling login request. '); return done(err) } );
 
     } ) );
-
-    function isPasswordValid(user, password){
-        console.log('Verifying credentials...');
-        return password === user.password;
-    }
 
 
 //++++++++++++++CONFIGURE SIGNUP AUTHENTICATION++++++++++++++++++++++
