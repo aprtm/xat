@@ -64,15 +64,15 @@ export class SignupComponent implements OnInit {
 
   onSubmit(){
       if( this.signUpForm.valid ){
-        
         let newUser = {
           username: this.signUpForm.get('username').value,
           password: this.signUpForm.get('passGroup.password').value,
           email: this.signUpForm.get('email').value
         };
-
+        let form = this.signUpForm;
         this.usersService.addUser( newUser ).subscribe(
           function onNext(item){
+            form.reset();
             console.log('Successfully added: ', item.status);
           },
           function onError(error){
