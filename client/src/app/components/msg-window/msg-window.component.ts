@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms'
 
 import { SessionService } from '../../services/session.service';
+import { SocketService } from '../../services/socket.service';
 
 import * as io from 'socket.io-client';
 
@@ -13,16 +14,26 @@ import * as io from 'socket.io-client';
 export class MsgWindowComponent implements OnInit {
   //get socket connection to the server.
   //passing nothing to io() function defaults to host
-  private socket = io('http://localhost:3000') //should move to a service?
+  private socket:SocketIOClient.Socket //should move to a service?
   
   msgArr:string[]
   
-  constructor( private sessionService:SessionService ) {
+  constructor( private sessionService:SessionService, socketService:SocketService ) {
+
+    if( this.sessionService.isActive() ){
+      console.log('Connecting', this.sessionService.getSession().user.username,'...' );
+      this.socket = socketService.connect( sessionService.getSession().user.username );
+    }else{
+      this.socket = socketService.connect( 'GENERAL' );
+    }
+
+      this.socket.on('chat message',(msg)=>this.onMessageArrived(msg));
+      this.msgArr = ['>>>>> Welcome to the chat. Start typing.'];
+      // console.log(this.msgArr);
     
-    this.socket.on('chat message',(msg)=>this.onMessageArrived(msg));
-    this.msgArr = ['>>>>> Welcome to the chat. Start typing.'];
-    // console.log(this.msgArr);
   }
+
+  
 
   onMessageArrived(msg:string){
     // console.log("socket sent this ",msg,'. Save it here: ', this.msgArr);

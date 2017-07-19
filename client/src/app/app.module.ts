@@ -12,19 +12,22 @@ import { HomeComponent } from './components/home/home.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { AsIterablePipe } from './pipes/asIterable.pipe';
 
-import { UsersService } from './services/users.service'
-import { SessionService } from './services/session.service'
+import { UsersService } from './services/users.service';
+import { SessionService } from './services/session.service';
+import { SocketService } from './services/socket.service';
+
+import { SessionGuard } from './guards/session.guard';
+import { UserPanelComponent } from './components/user-panel/user-panel.component'
 
 const appRoutes:Routes = [
-  {
-    path:'home', component:HomeComponent },
+  { path:'', component:HomeComponent, canActivate:[SessionGuard] },
+  { path:'home', component:HomeComponent },
   { path:'login', component:LoginComponent },
   { path:'signup', component:SignupComponent},
   { path:'chat', 
     component:MsgWindowComponent, 
     data:{title:'x@'} 
   },
-  { path:'', redirectTo:'/login', pathMatch:'full'},
   { path:'**', redirectTo:'/login', pathMatch:'full'}
 ];
 
@@ -35,7 +38,8 @@ const appRoutes:Routes = [
     LoginComponent,
     HomeComponent,
     SignupComponent,
-    AsIterablePipe
+    AsIterablePipe,
+    UserPanelComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +48,7 @@ const appRoutes:Routes = [
     ReactiveFormsModule, 
     RouterModule.forRoot(appRoutes, {enableTracing:true})
   ],
-  providers: [ UsersService, SessionService ],
+  providers: [ UsersService, SessionService, SocketService, SessionGuard ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

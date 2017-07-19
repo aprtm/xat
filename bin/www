@@ -101,12 +101,17 @@ function onListening() {
  * Event listener for socket connections
  */
 function onConnection(socket){
-  console.log('a user connected. ');
+
+  console.log('Connecting...')
+  socket.on('userConnected', (username) => console.log(username, 'user connected.'));
+
+  socket.on('userDisconnected', (username)=> console.log(username, 'user disconnected.') );
   
-  socket.on('disconnect', (...args) => console.log('a user disconnected. ') )
+  socket.on('disconnect', (reason)=>console.log(reason) );
 
   socket.on('chat message', (msg) => {
     console.log(msg);
     io.emit('chat message', msg);
   } );
+  
 }

@@ -40,4 +40,8 @@ export class SessionService {
     return this.session;
   }
 
+  isActive(){
+    return this.session.active;
+  }
+
 }
