@@ -4,6 +4,7 @@
         <input type="text" name="username" ngModel>
         <input type="password" name="password" ngModel>
         <button name="signIn">Sign in</button>
+        <div><a routerLink="/signup" routerLinkActive="active">I want to sign up</a></div>
         <div *ngIf="authError" >{{authError}}</div>
     </form>
 </div>

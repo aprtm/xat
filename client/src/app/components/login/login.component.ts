@@ -22,8 +22,10 @@ export class LoginComponent implements OnInit {
 
     this.usersService.getUser( {username: form.value.username, password:form.value.password} )
       .subscribe( ( user ) => {
+
         this.sessionService.connectUser( user.json() );
         console.log( 'User session active: ', this.sessionService.getSession().user.username );
+
         this.router.navigateByUrl('/chat');
 
       }, (err)=>{

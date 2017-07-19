@@ -1,6 +1,6 @@
 <div id="nav-bar">
     <h2><a href="#">Xx-Chat-xX</a><b>Nav Bar</b></h2>
-    <button (click)="logout()">Logout</button>
+    <button *ngIf="sessionService.isActive()" (click)="logout()">Logout</button>
 </div>
 <router-outlet></router-outlet>
 <hr />
