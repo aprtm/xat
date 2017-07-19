@@ -1,8 +1,9 @@
-/// <reference types="socket.io" />
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms'
 
-import io from 'socket.io-client';
+import { SessionService } from '../../services/session.service';
+
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'msg-window',
@@ -12,11 +13,11 @@ import io from 'socket.io-client';
 export class MsgWindowComponent implements OnInit {
   //get socket connection to the server.
   //passing nothing to io() function defaults to host
-  private socket:SocketIO.Socket = io('http://localhost:3000') //should move to a service?
+  private socket = io('http://localhost:3000') //should move to a service?
   
   msgArr:string[]
   
-  constructor() {
+  constructor( private sessionService:SessionService ) {
     
     this.socket.on('chat message',(msg)=>this.onMessageArrived(msg));
     this.msgArr = ['>>>>> Welcome to the chat. Start typing.'];

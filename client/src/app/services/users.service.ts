@@ -39,4 +39,8 @@ export class UsersService {
     return this.http.post( '/api/login/', credentials, {headers:this.header})
   }
 
+  logoutUser(){
+    //check if user is actually logged in
+    return this.http.get('/api/logout');
+  }
 }

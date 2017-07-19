@@ -73,7 +73,7 @@ export class SignupComponent implements OnInit {
         this.usersService.addUser( newUser ).subscribe(
           function onNext(item){
             form.reset();
-            console.log('Successfully added: ', item.status);
+            console.log('Successfully added: ', item.json() );
           },
           function onError(error){
             console.log('Error: ', error);

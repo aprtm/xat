@@ -1,0 +1,30 @@
+CURRENT
+    - create an interface for user objects
+
+Both
+- Remove all unnecessary console logs
+- OAuth
+- Change password/username/email
+- Handle sessions 
+
+Client
+- Add debounce
+- Add storage for authenticated sessions
+- Create guards for routes
+- Client-side only messages for errors?
+- Move socket.io configuration/connection to a service
+- Transform the session object into an observable
+
+Server
+- Create environment variables to run application settings with a bash script
+- Use a store other than express-session for session management. ExpressSession should not be used for production ( https://github.com/expressjs/session ) 
+
+Links:
+Sessions in express
+    https://codeforgeek.com/2014/09/manage-session-using-node-js-express-4/
+Guards in angular
+    https://auth0.com/blog/creating-your-first-real-world-angular-2-app-from-authentication-to-calling-an-api-and-everything-in-between/
+Bash Scripts
+    http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_02_01.html
+Store options for expressJs
+    https://github.com/expressjs/session#compatible-session-stores

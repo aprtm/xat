@@ -69,7 +69,7 @@ export default function passportInit(){
                     }
                     if( authenticated ){
                         console.log( 'All good. Logged in.' );
-                        return done( null, users[0] );
+                        return done( null, users[0], {message:'User logged in.'} );
                     }else{
                         console.log( 'Password check went bad.' );
                         return done( null, false, {message:'Wrong password.'} );

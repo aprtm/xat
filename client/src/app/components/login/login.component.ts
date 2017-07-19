@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router'
 
 import { UsersService } from '../../services/users.service';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'chat-login',
@@ -11,7 +12,7 @@ import { UsersService } from '../../services/users.service';
 export class LoginComponent implements OnInit {
   private authError:string|null = null;
 
-  constructor( private router:Router, private usersService:UsersService) { }
+  constructor( private router:Router, private usersService:UsersService, private sessionService:SessionService) { }
   ngOnInit() {
 
   }
@@ -20,12 +21,11 @@ export class LoginComponent implements OnInit {
     console.log('Logging in... ');
 
     this.usersService.getUser( {username: form.value.username, password:form.value.password} )
-      .subscribe((resp)=>{
-        if( resp.status == 200){
-          // console.log( resp.json().username );
-          this.authError = null;
-          this.router.navigateByUrl('/');
-        }
+      .subscribe( ( user ) => {
+        this.sessionService.connectUser( user.json() );
+        console.log( 'User session active: ', this.sessionService.getSession().user.username );
+        this.router.navigateByUrl('/chat');
+
       }, (err)=>{
         if( err.status === 401){
           this.authError = err._body;

@@ -12,13 +12,14 @@ import passportInit from './config/passportConfig';
 
 import signup from './routes/signup';
 import login from './routes/login';
+import logout from './routes/logout';
 
 let app = express();
 
 app.use( logger('dev') );
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded( { extended: false } ) );
-app.use( cookieParser() );
+// app.use( cookieParser() );
 app.use( expressSession( { 
     secret:'test secret',
     resave:false,
@@ -36,6 +37,7 @@ passportInit();
 
 app.use('/api/signup', signup);
 app.use('/api/login', login);
+app.use('/api/logout', logout);
 
 // routing testing
 app.get('**', function(req,res){

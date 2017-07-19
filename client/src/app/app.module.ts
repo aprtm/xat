@@ -13,6 +13,7 @@ import { SignupComponent } from './components/signup/signup.component';
 import { AsIterablePipe } from './pipes/asIterable.pipe';
 
 import { UsersService } from './services/users.service'
+import { SessionService } from './services/session.service'
 
 const appRoutes:Routes = [
   {
@@ -23,8 +24,8 @@ const appRoutes:Routes = [
     component:MsgWindowComponent, 
     data:{title:'x@'} 
   },
-  { path:'', redirectTo:'/home', pathMatch:'full'},
-  { path:'**', redirectTo:'/home', pathMatch:'full'}
+  { path:'', redirectTo:'/login', pathMatch:'full'},
+  { path:'**', redirectTo:'/login', pathMatch:'full'}
 ];
 
 @NgModule({
@@ -43,7 +44,7 @@ const appRoutes:Routes = [
     ReactiveFormsModule, 
     RouterModule.forRoot(appRoutes, {enableTracing:true})
   ],
-  providers: [ UsersService ],
+  providers: [ UsersService, SessionService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

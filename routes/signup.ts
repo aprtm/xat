@@ -44,7 +44,7 @@ const db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
             })
 
             .then(function fulfill( newUser ){
-                console.log( 'Successfully registered', newUser );
+                console.log( 'Successfully registered new user.' );
                 return res.send( 'Successfully registered.' );
 
             }, function reject( reason ){
