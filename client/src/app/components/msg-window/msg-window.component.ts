@@ -7,7 +7,7 @@ import { SocketService } from '../../services/socket.service';
 import * as io from 'socket.io-client';
 
 @Component({
-  selector: 'msg-window',
+  selector: 'chat-msg-window',
   templateUrl: './msg-window.component.html',
   styleUrls: ['./msg-window.component.css']
 })

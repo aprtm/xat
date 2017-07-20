@@ -1,0 +1,8 @@
+:host{
+    width:34%;
+    border: solid 2px green;
+}
+#manager-wrapper{
+    display:flex;
+    flex-direction: column;
+}

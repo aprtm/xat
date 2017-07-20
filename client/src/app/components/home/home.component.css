@@ -1,7 +1,7 @@
 #home-wrapper{
     border: dotted black 3px;
 }
-#home-children{
+#home-elements{
     display:flex;
 }
 #general-chat{

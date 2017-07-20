@@ -17,7 +17,9 @@ import { SessionService } from './services/session.service';
 import { SocketService } from './services/socket.service';
 
 import { SessionGuard } from './guards/session.guard';
-import { UserPanelComponent } from './components/user-panel/user-panel.component'
+import { ManagerComponent } from './components/manager/manager.component';
+import { FriendListComponent } from './components/friend-list/friend-list.component';
+import { DetailsPanelComponent } from './components/details-panel/details-panel.component'
 
 const appRoutes:Routes = [
   { path:'', component:HomeComponent, canActivate:[SessionGuard] },
@@ -39,7 +41,9 @@ const appRoutes:Routes = [
     HomeComponent,
     SignupComponent,
     AsIterablePipe,
-    UserPanelComponent
+    ManagerComponent,
+    FriendListComponent,
+    DetailsPanelComponent
   ],
   imports: [
     BrowserModule,

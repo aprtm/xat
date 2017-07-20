@@ -1,5 +1,6 @@
-<div id="chat-wrapper">
-  <h4>Chat window</h4>
+<h4>Chat window</h4>
+
+<div id="chat-wrapper">  
 
   <ul id="messages">
     <li *ngFor="let msg of msgArr">{{msg}}</li>
@@ -9,4 +10,5 @@
     <input type="text" name="currentMessage" autocomplete="off" ngModel/>
     <button type="submit">Send</button>
   </form>
+
 </div>
