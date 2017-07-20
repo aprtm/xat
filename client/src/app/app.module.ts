@@ -2,24 +2,23 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { HttpModule } from '@angular/http'
+import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { MsgWindowComponent } from './components/msg-window/msg-window.component';
 import { LoginComponent } from './components/login/login.component';
-
-import { RouterModule, Routes } from '@angular/router';
+import { ManagerComponent } from './components/manager/manager.component';
+import { FriendsListComponent } from './components/friends-list/friends-list.component';
+import { DetailsPanelComponent } from './components/details-panel/details-panel.component'
 import { HomeComponent } from './components/home/home.component';
 import { SignupComponent } from './components/signup/signup.component';
-import { AsIterablePipe } from './pipes/asIterable.pipe';
 
 import { UsersService } from './services/users.service';
 import { SessionService } from './services/session.service';
 import { SocketService } from './services/socket.service';
 
+import { AsIterablePipe } from './pipes/asIterable.pipe';
 import { SessionGuard } from './guards/session.guard';
-import { ManagerComponent } from './components/manager/manager.component';
-import { FriendListComponent } from './components/friend-list/friend-list.component';
-import { DetailsPanelComponent } from './components/details-panel/details-panel.component'
 
 const appRoutes:Routes = [
   { path:'', component:HomeComponent, canActivate:[SessionGuard] },
@@ -42,7 +41,7 @@ const appRoutes:Routes = [
     SignupComponent,
     AsIterablePipe,
     ManagerComponent,
-    FriendListComponent,
+    FriendsListComponent,
     DetailsPanelComponent
   ],
   imports: [
