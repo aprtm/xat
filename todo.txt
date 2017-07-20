@@ -1,5 +1,5 @@
 CURRENT
-    - create an interface for user objects
+
 
 Both
 - Remove all unnecessary console logs
@@ -12,12 +12,14 @@ Client
 - Add storage for authenticated sessions
 - Create guards for routes
 - Client-side only messages for errors?
-- Move socket.io configuration/connection to a service
+x Move socket.io configuration/connection to a service
 - Transform the session object into an observable
+- Add display filters to the friend list
 
 Server
 - Create environment variables to run application settings with a bash script
 - Use a store other than express-session for session management. ExpressSession should not be used for production ( https://github.com/expressjs/session ) 
+
 
 Links:
 Sessions in express
