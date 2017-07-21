@@ -6,3 +6,8 @@
     display:flex;
     flex-direction: column;
 }
+
+#details-panel-wrapper{
+    border: solid yellow 1px;
+    display: flex;
+}
