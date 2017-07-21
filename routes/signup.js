@@ -35,8 +35,8 @@ router.post('/', function (req, res, next) {
             return next(reason);
         })
             .then(function fulfill(newUser) {
-            console.log('Successfully registered new user.');
-            return res.send('Successfully registered.');
+            console.log('Successfully registered new user.', newUser);
+            return res.send(newUser.insertedIds);
         }, function reject(reason) {
             console.log(reason);
             return res.send(reason);
