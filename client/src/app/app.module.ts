@@ -8,8 +8,6 @@ import { AppComponent } from './app.component';
 import { MsgWindowComponent } from './components/msg-window/msg-window.component';
 import { LoginComponent } from './components/login/login.component';
 import { ManagerComponent } from './components/manager/manager.component';
-import { FriendsListComponent } from './components/friends-list/friends-list.component';
-import { DetailsPanelComponent } from './components/details-panel/details-panel.component'
 import { HomeComponent } from './components/home/home.component';
 import { SignupComponent } from './components/signup/signup.component';
 
@@ -40,9 +38,7 @@ const appRoutes:Routes = [
     HomeComponent,
     SignupComponent,
     AsIterablePipe,
-    ManagerComponent,
-    FriendsListComponent,
-    DetailsPanelComponent
+    ManagerComponent
   ],
   imports: [
     BrowserModule,
