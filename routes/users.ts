@@ -11,7 +11,7 @@ const db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
 
 let router = express.Router();
 
-//+++++++++++++++++HANDLE POST TO API/LOGIN+++++++++++++++++++++++++++++++
+//+++++++++++++++++HANDLE POST TO API/USERS+++++++++++++++++++++++++++++++
 router.get('/:id', function routeHandler(req, res, next){
     console.log( 'Fetching user...',req.params.id );
     if( req.isAuthenticated ){
@@ -43,6 +43,7 @@ router.get('/:id', function routeHandler(req, res, next){
                             _id: users[0]._id,
                             username: users[0].username,
                             email: users[0].email,
+                            pictureUrl: users[0].picture,
                             friends: users[0].friends,
                             conversations: users[0].conversations
                         } );
