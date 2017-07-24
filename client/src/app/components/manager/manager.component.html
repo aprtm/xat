@@ -1,41 +1,11 @@
 <div id="manager-wrapper">
-  
-  <div id="details-panel-wrapper">
 
-    <div>
-        <div id="element-picture">
-            <img src="http://via.placeholder.com/60x60">
-        </div>
-        <div id="element-name">ELEMENT_NAME</div>
+    <div id="list-selector">
+        <div *ngFor="let list of lists; let ind=index" (click)="switchList(ind)">{{ind}} {{list.name}}</div>
     </div>
 
-    <div>
-        <div id="related-elements">
-            <label for="element-related-elements">Related Elements</label>
-            <select id="element-related-elements">
-                <option value=""></option>
-            </select>
-        </div>
-        <div id="element-options">
-            <button>Kick</button>
-            <button>Unfriend/Leave</button>
-        </div>
-    </div>
-
-  </div>
-
-  <div id="list-selector">
-    <button (click)="switchList()">View {{hiddenList}}</button>
-    <div>{{visibleList}}</div>
-  </div>
-
-
-  <ul id="listView">
-    <li *ngFor="let item of currentList">
-      <img src="http://via.placeholder.com/40x40" alt="">
-      <span>{{item.name || item.username}}</span>
-    </li>
-  </ul>
-
-  {{currentList | json}}
+    <div>{{currentList}}</div>
+    <!-- <chat-friends></chat-friends>  *ngIf="currentList.name==='Friends'"  -->
+    <!-- <chat-chats *ngIf="currentList.name==='Chats'" [currentList]= ></chat-chats> -->
+    <button (click)="getUserData()">get data</button>
 </div>

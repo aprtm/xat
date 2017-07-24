@@ -1,11 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnInit } from '@angular/core';
 
 import { SessionService } from '../../services/session.service';
-import { UsersService } from '../../services/users.service'
+import { UsersService } from '../../services/users.service';
 
 import { User, Contact } from '../../interfaces/Users';
 import { Conversation } from '../../interfaces/Conversations';
 
+
+interface UserList{
+  id:number
+  name:string
+}
 
 @Component({
   selector: 'chat-manager',
@@ -14,36 +19,32 @@ import { Conversation } from '../../interfaces/Conversations';
 })
 export class ManagerComponent implements OnInit {
 
-  // private currentFriends:User[] = [];
-  // private currentUser:User = null;
+  private currentList
+  private lists = [
+    {name:'Friends', id:0},
+    {name:'Chats', id:0}
+  ]
 
-  private currentList:User[]|Conversation[] = []
-  private otherList:User[]|Conversation[] = [];
-  private visibleList:string;
-  private hiddenList:string;
-
-  constructor( private sessionService:SessionService, private usersService:UsersService ) {
-    
-    if( sessionService.isActive() ){
-      this.visibleList = 'Friends';
-      this.hiddenList = 'Chats';
-      this.currentList = this.sessionService.getSession().user.friends;
-      this.otherList = this.sessionService.getSession().user.conversations;
-    }
-
-  }
-
-  switchList(){
-      let swapName = this.visibleList;
-      this.visibleList = this.hiddenList;
-      this.hiddenList = swapName;
-
-      let swapList = this.currentList;
-      this.currentList = this.otherList;
-      this.otherList = swapList;
-  }
+  constructor(  private sessionService:SessionService,
+                private usersService:UsersService,
+                private componentFactoryResolver:ComponentFactoryResolver ) { }
 
   ngOnInit() {
+  }
+
+  switchList(index:number){
+    this.currentList = this.sessionService.getSession().user.conversations;
+  }
+  getLists(){
+    // this.sessionService.getSession().user.conversations
+  }
+
+  getUserData(){
+    this.usersService.getUser( this.sessionService.getSession().user._id["$oid"] ).subscribe(
+      (user)=> console.log( user ),
+      ( err ) => err,
+      ( ) => console.log('Done!')
+    );
   }
 
 }

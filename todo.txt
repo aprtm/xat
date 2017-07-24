@@ -5,7 +5,8 @@ Both
 - Remove all unnecessary console logs
 - OAuth
 - Change password/username/email
-- Handle sessions 
++ Create and destroy sessions
+- Add a join_date field to user objects to remember when the user registered
 
 Client
 - Add debounce
@@ -19,6 +20,12 @@ x Move socket.io configuration/connection to a service
 Server
 - Create environment variables to run application settings with a bash script
 - Use a store other than express-session for session management. ExpressSession should not be used for production ( https://github.com/expressjs/session ) 
+- Should protect signup validation endpoints (username, email). Currently responds to any request.
+- Validate document before inserting it into the database
+- Handle GET user through /api/users. Should return everything but the password
+
+Database
+- Validate before inserting
 
 
 Links:

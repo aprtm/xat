@@ -2,7 +2,7 @@ import { Http, Headers } from '@angular/http'
 import { Observable } from 'rxjs/Observable'
 import { Injectable } from '@angular/core';
 
-interface User{
+interface Candidate{
   username:string
   password:string
   email:string
@@ -16,7 +16,7 @@ export class UsersService {
     this.valueExists = this.valueExists.bind(this);
   }
 
-  addUser(user:User){
+  addUser(user:Candidate){
     //return an observable with the post add user response
     console.log('Posting new user data...');
     return this.http.post( '/api/signup', user, {headers:this.header} )
@@ -33,7 +33,11 @@ export class UsersService {
     return this.http.get( endpoint[field] + value);
   }
 
-  getUser(credentials:{username:string, password:string}){
+  getUser( id:string ){
+    return this.http.get('/api/users/'+id);
+  }
+
+  loginUser( credentials:{username:string, password:string} ){
     //return an observable with the post login response
     console.log('Posting user credentials...');
     return this.http.post( '/api/login/', credentials, {headers:this.header})
@@ -41,6 +45,6 @@ export class UsersService {
 
   logoutUser(){
     //check if user is actually logged in
-    return this.http.get('/api/logout');
+    return this.http.post('/api/logout', {});
   }
 }

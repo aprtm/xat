@@ -1,0 +1,39 @@
+<div id="manager-wrapper">
+  
+  <div id="details-panel-wrapper">
+
+    <div>
+        <div id="element-picture">
+            <img src="http://via.placeholder.com/60x60">
+        </div>
+        <div id="element-name">NAME</div>
+    </div>
+
+    <div>
+        <div id="related-elements">
+            <label for="element-related-elements">Related Elements</label>
+            <select id="element-related-elements">
+                <option value=""></option>
+            </select>
+        </div>
+        <div id="element-options">
+            <button>Kick</button>
+            <button>Unfriend/Leave</button>
+        </div>
+    </div>
+
+  </div>
+
+  <div id="list-selector">
+    <button (click)="switchList()">View {{hiddenList}}</button>
+    <div>{{visibleList}}</div>
+  </div>
+
+
+  <ul id="listView">
+    <li class="userListElement" *ngFor="let item of currentList; let i = index" (click)="setCurrentElement(i)">
+        <div class="elementPictureWrapper"><img src="http://via.placeholder.com/40x40" alt=""></div>
+        <div class="elementNameWrapper"><span>{{item.name || item.username}}</span></div>
+    </li>
+  </ul>
+</div>

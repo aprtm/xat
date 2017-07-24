@@ -13,7 +13,7 @@ let router = express.Router();
 //+++++++++++++++++HANDLE POST TO API/LOGIN+++++++++++++++++++++++++++++++
 router.post('/', function routeHandler(req, res, next){
     
-    passport.authenticate( 'login-local', function(err, user, info){
+    passport.authenticate( 'login-local', function done(err, user, info){
         if( err ) {
             console.log('Error with login-local strategy');
             return next( err );
@@ -29,8 +29,14 @@ router.post('/', function routeHandler(req, res, next){
                 console.log('Error while logging in.')
                 return next( err );
             }
-            console.log('User authenticated and correctly logged in.')
-            return res.send( user );
+            console.log('User authenticated and correctly logged in? -', req.isAuthenticated().valueOf().toString().toUpperCase() );
+            return res.send( {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                friends: user.friends,
+                conversations: user.conversations
+            } );
         } );
 
     } )(req, res, next);

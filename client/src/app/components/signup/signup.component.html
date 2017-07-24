@@ -1,6 +1,6 @@
 <div id="signup-box">
 <h1>Sign Up component</h1>
-    <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" novalidate >
+    <form [formGroup]="signUpForm" (ngSubmit)="formSubmit()" novalidate >
 
         <label>Username
           <input type="text" formControlName="username" required>

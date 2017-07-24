@@ -62,7 +62,7 @@ export class SignupComponent implements OnInit {
     }
   }
 
-  onSubmit(){
+  formSubmit(){
       if( this.signUpForm.valid ){
         let newUser = {
           username: this.signUpForm.get('username').value,
@@ -73,7 +73,7 @@ export class SignupComponent implements OnInit {
         this.usersService.addUser( newUser ).subscribe(
           function onNext(item){
             form.reset();
-            console.log('Successfully added: ', item.json() );
+            console.log( 'Sign up successful. ', item );
           },
           function onError(error){
             console.log('Error: ', error);

@@ -17,6 +17,8 @@ import { SocketService } from './services/socket.service';
 
 import { AsIterablePipe } from './pipes/asIterable.pipe';
 import { SessionGuard } from './guards/session.guard';
+import { FriendsComponent } from './components/friends/friends.component';
+import { ChatsComponent } from './components/chats/chats.component';
 
 const appRoutes:Routes = [
   { path:'', component:HomeComponent, canActivate:[SessionGuard] },
@@ -38,7 +40,9 @@ const appRoutes:Routes = [
     HomeComponent,
     SignupComponent,
     AsIterablePipe,
-    ManagerComponent
+    ManagerComponent,
+    FriendsComponent,
+    ChatsComponent
   ],
   imports: [
     BrowserModule,

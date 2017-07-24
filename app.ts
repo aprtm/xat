@@ -8,11 +8,14 @@ import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 
 import * as passport from 'passport';
-import passportInit from './config/passportConfig';
+import {setup as setupPassport} from './config/passportConfig';
 
 import signup from './routes/signup';
+import signupDev from './routes/signupDev';
 import login from './routes/login';
 import logout from './routes/logout';
+import users from './routes/users';
+import conversations from './routes/conversations';
 
 let app = express();
 
@@ -33,11 +36,18 @@ app.use( passport.session() );
 //serve static files from ./client/dist
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
-passportInit();
+setupPassport();
 
-app.use('/api/signup', signup);
+if( process.env.OFFLINE ){
+  console.log( 'Offline Mode' );
+  app.use('/api/signup', signupDev);
+}
+else { app.use('/api/signup', signup); }
+
 app.use('/api/login', login);
 app.use('/api/logout', logout);
+app.use('/api/users', users);
+app.use('/api/conversations', conversations);
 
 // routing testing
 app.get('**', function(req,res){

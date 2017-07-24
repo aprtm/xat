@@ -20,13 +20,13 @@ export class LoginComponent implements OnInit {
   onSubmit( form ){
     console.log('Logging in... ');
 
-    this.usersService.getUser( {username: form.value.username, password:form.value.password} )
+    this.usersService.loginUser( {username: form.value.username, password:form.value.password} )
       .subscribe( ( user ) => {
 
         this.sessionService.connectUser( user.json() );
         console.log( 'User session active: ', this.sessionService.getSession().user.username );
 
-        this.router.navigateByUrl('/chat');
+        this.router.navigateByUrl('/');
 
       }, (err)=>{
         if( err.status === 401){

@@ -1,0 +1,24 @@
+<div id="friend-details-panel">
+
+  <div id="friend-profile">
+      <div id="element-picture">
+          <img [src]="selected.picture">
+      </div>
+      <div id="element-name">{{selected.username}}}</div>
+  </div>
+
+  <div id="friend-options">
+      <button>Remove</button>
+  </div>
+
+</div>
+
+
+<div id="friends-list">
+
+  <div class="friend-card" *ngFor="let friend of friends; let i = index">
+      <div><img [src]="friend.picture" alt=""></div>
+      <div><span>{{friend.username}}</span></div>
+  </div>
+
+</div>

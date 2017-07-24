@@ -1,16 +1,12 @@
 import * as express from 'express';
-import * as mdbStitch from 'mongodb-stitch';
-
+import * as mongodb from 'mongodb';
 import * as passport from 'passport';
 
 let router = express.Router();
 
-// type definitions not yet available in definitely typed. Using Any as type.
-// Get the client for the xat-mxymz app
-const stitchClient:any = new mdbStitch.StitchClient( 'xat-mxymz' );
-// get database instance from of a mongodb object with the XAT name
-const db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
-
+const mongoUrl = 'mongodb://localhost:27017/XAT';
+let MongoClient = mongodb.MongoClient;
+let ObjectId = mongodb.ObjectID;
 
 //+++++++++++++++++ HANDLE POST TO API/SIGNUP +++++++++++++++++++++++++++++++
 //+++++++++++++++++ REQUIRES AUTHENTICATION +++++++++++++++++++++++++++++++
@@ -27,33 +23,31 @@ router.post('/', function onPost(req, res, next) {
         }
 
         // login anonymously (no arguments) to the client.
-        stitchClient.login()
-            .then( function fulfill(){
+        MongoClient.connect(mongoUrl).then( function fulfill(db){
 
-                // get a collection and test its api
-                let Users = db.collection('Users');
+            // get a collection and test its api
+            let Users = db.collection('Users');
 
-                return Users.insertOne( {
-                        owner_id: stitchClient.authedId(),
-                        username:user.username,
-                        password:user.hash,
-                        email:req.body.email 
-                    } );
+            return Users.insertOne( {
+                    username:user.username,
+                    password:user.hash,
+                    email:req.body.email 
+                } );
 
-            }, function reject(reason){
-                console.log(reason);
-                return next( reason );
-            })
+        }, function reject(reason){
+            console.log(reason);
+            return next( reason );
+        })
 
-            .then(function fulfill( newUser ){
-                console.log( 'Successfully registered new user.', newUser );
-                return res.send( newUser.insertedIds );
+        .then(function fulfill( newUser ){
+            console.log( 'Successfully registered new user.', newUser.ops );
+            return res.send( newUser.insertedId );
 
-            }, function reject( reason ){
+        }, function reject( reason ){
 
-                console.log( reason );
-                return res.send( reason );
-            });
+            console.log( reason );
+            return res.send( reason );
+        });
 
     })(req, res, next);
 
@@ -64,11 +58,12 @@ router.post('/', function onPost(req, res, next) {
 //+++++++++++++++++ HANDLE GET FROM API/SIGNUP/USERNAME +++++++++++++++++++++++++++++++
 router.get('/username/:username', function onGet( req, res, next){
         // login anonymously (no arguments) to the client.
-    stitchClient.login().then( function fulfill(){
+    MongoClient.connect(mongoUrl).then( function fulfill(db){
 
             let Users = db.collection('Users');
             // console.log( 'gets here! params:', req.params.username);
-            let u = Users.find( {username:req.params.username} );
+            let u = Users.find( {'username':req.params.username} );
+            // console.log( 'Username uniqueness check found', u );
             return u;
 
     }, function reject(reason){
@@ -76,8 +71,8 @@ router.get('/username/:username', function onGet( req, res, next){
         return reason;
     })
     .then(function fulfill(user){
-        let exists = user.length;
-        res.send( !!exists );
+        console.log( user.cursorState );
+        res.send( !!user.cursorState.documents.length );
         res.end();
     }, function reject(reason){
         console.log(reason);
@@ -92,12 +87,13 @@ router.get('/username/:username', function onGet( req, res, next){
 //+++++++++++++++++ HANDLE GET FROM API/SIGNUP/USERNAME +++++++++++++++++++++++++++++++
 router.get('/email/:email', function onGet( req, res, next){
         // login anonymously (no arguments) to the client.
-    stitchClient.login().then( function fulfill(){
+    MongoClient.connect(mongoUrl).then( function fulfill(db){
 
             // get a collection and test its api
             let Users = db.collection('Users');
             // console.log( 'gets here! params:', req.params.username);
-            let u = Users.find( {email:req.params.email} );
+            let u = Users.find( {'email':req.params.email} );
+            // console.log( 'Email uniqueness check found', u);
             return u;
 
     }, function reject(reason){
@@ -105,8 +101,8 @@ router.get('/email/:email', function onGet( req, res, next){
         return reason;
     })
     .then(function fulfill(user){
-        let exists = user.length;
-        res.send( !!exists );
+        console.log( user.cursorState.documents );
+        res.send( !!user.cursorState.documents.length );
         res.end();
     }, function reject(reason){
         console.log(reason);

@@ -1,14 +1,12 @@
 "use strict";
 exports.__esModule = true;
 var express = require("express");
-var mdbStitch = require("mongodb-stitch");
+var mongodb = require("mongodb");
 var passport = require("passport");
 var router = express.Router();
-// type definitions not yet available in definitely typed. Using Any as type.
-// Get the client for the xat-mxymz app
-var stitchClient = new mdbStitch.StitchClient('xat-mxymz');
-// get database instance from of a mongodb object with the XAT name
-var db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
+var mongoUrl = 'mongodb://localhost:27017/XAT';
+var MongoClient = mongodb.MongoClient;
+var ObjectId = mongodb.ObjectID;
 //+++++++++++++++++ HANDLE POST TO API/SIGNUP +++++++++++++++++++++++++++++++
 //+++++++++++++++++ REQUIRES AUTHENTICATION +++++++++++++++++++++++++++++++
 router.post('/', function onPost(req, res, next) {
@@ -22,12 +20,10 @@ router.post('/', function onPost(req, res, next) {
             return res.status(409).send(info.message);
         }
         // login anonymously (no arguments) to the client.
-        stitchClient.login()
-            .then(function fulfill() {
+        MongoClient.connect(mongoUrl).then(function fulfill(db) {
             // get a collection and test its api
             var Users = db.collection('Users');
             return Users.insertOne({
-                owner_id: stitchClient.authedId(),
                 username: user.username,
                 password: user.hash,
                 email: req.body.email
@@ -37,8 +33,8 @@ router.post('/', function onPost(req, res, next) {
             return next(reason);
         })
             .then(function fulfill(newUser) {
-            console.log('Successfully registered new user.', newUser);
-            return res.send(newUser.insertedIds);
+            console.log('Successfully registered new user.', newUser.ops);
+            return res.send(newUser.insertedId);
         }, function reject(reason) {
             console.log(reason);
             return res.send(reason);
@@ -49,18 +45,19 @@ router.post('/', function onPost(req, res, next) {
 //+++++++++++++++++ HANDLE GET FROM API/SIGNUP/USERNAME +++++++++++++++++++++++++++++++
 router.get('/username/:username', function onGet(req, res, next) {
     // login anonymously (no arguments) to the client.
-    stitchClient.login().then(function fulfill() {
+    MongoClient.connect(mongoUrl).then(function fulfill(db) {
         var Users = db.collection('Users');
         // console.log( 'gets here! params:', req.params.username);
-        var u = Users.find({ username: req.params.username });
+        var u = Users.find({ 'username': req.params.username });
+        // console.log( 'Username uniqueness check found', u );
         return u;
     }, function reject(reason) {
         console.log(reason);
         return reason;
     })
         .then(function fulfill(user) {
-        var exists = user.length;
-        res.send(!!exists);
+        console.log(user.cursorState);
+        res.send(!!user.cursorState.documents.length);
         res.end();
     }, function reject(reason) {
         console.log(reason);
@@ -72,19 +69,20 @@ router.get('/username/:username', function onGet(req, res, next) {
 //+++++++++++++++++ HANDLE GET FROM API/SIGNUP/USERNAME +++++++++++++++++++++++++++++++
 router.get('/email/:email', function onGet(req, res, next) {
     // login anonymously (no arguments) to the client.
-    stitchClient.login().then(function fulfill() {
+    MongoClient.connect(mongoUrl).then(function fulfill(db) {
         // get a collection and test its api
         var Users = db.collection('Users');
         // console.log( 'gets here! params:', req.params.username);
-        var u = Users.find({ email: req.params.email });
+        var u = Users.find({ 'email': req.params.email });
+        // console.log( 'Email uniqueness check found', u);
         return u;
     }, function reject(reason) {
         console.log(reason);
         return reason;
     })
         .then(function fulfill(user) {
-        var exists = user.length;
-        res.send(!!exists);
+        console.log(user.cursorState.documents);
+        res.send(!!user.cursorState.documents.length);
         res.end();
     }, function reject(reason) {
         console.log(reason);
