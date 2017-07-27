@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidationErrors} from '@angular/forms';
-import { sameTextValidate, isValueInDatabase } from '../../validators/custom.validator'
-import { AsIterablePipe } from '../../pipes/asIterable.pipe'
+import { sameTextValidate, isValueInDatabase } from '../../validators/custom.validator';
+import { AsIterablePipe } from '../../pipes/asIterable.pipe';
 
-import { UsersService } from '../../services/users.service'
+import { UsersService } from '../../services/users.service';
 
 @Component({
   selector: 'chat-signup',

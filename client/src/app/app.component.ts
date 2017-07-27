@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { UsersService } from './services/users.service';
+import { Component, OnInit } from '@angular/core';
 import { SessionService } from './services/session.service';
 import { SocketService } from './services/socket.service';
 
@@ -10,20 +9,23 @@ import { Router } from '@angular/router'
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   title:string = 'app';
 
-  constructor(  private usersService:UsersService,
-                private sessionService:SessionService,
+  constructor(  private sessionService:SessionService,
                 private socketService:SocketService,
-                private router:Router
-              ) { }
+                private router:Router ) {
+  }
   
   logout(){
     this.sessionService.endSession();
     this.socketService.disconnect( this.sessionService.getSession().user.username )
     this.router.navigateByUrl('/login');
+  }
+
+  ngOnInit(){
+  
   }
 
 }
