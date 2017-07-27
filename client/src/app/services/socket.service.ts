@@ -23,6 +23,7 @@ export class SocketService {
     this._friendObservable = new Observable( (observer)=>{
 
       this.socket.on('friendConnected', ( friend )=>{
+          console.log(friend.name, 'connected!');
           observer.next( friend );
       } );
 
@@ -38,21 +39,22 @@ export class SocketService {
     
     this._friendRequestObservable = new Observable( (observer)=> {
       this.socket.on('friendRequest', ( contact )=>{
+        console.log(contact.name, 'wants to chat!');
         observer.next( contact );
       } );
     } );
 
   }
 
-  get getFriendObservable(){
+  get friendObservable(){
     return this._friendObservable;
   }
 
-  get getMessageObservable(){
+  get messageObservable(){
     return this._messageObservable;
   }
 
-  get getFriendRequestObservable(){
+  get friendRequestObservable(){
     return this._friendRequestObservable;
   }
 
@@ -75,9 +77,9 @@ export class SocketService {
     return this.socket;
   }
 
-    sendMessage( message:string, fromContact:Contact, toContacts:Contact[] ){
+  sendMessage( message:string, toContacts:Contact[] ){
     if( this.socket ){
-      this.socket.emit('chatMessage', {message, fromContact, toContacts} );
+      this.socket.emit('chatMessage', message, toContacts );
     }else{
       return null;
     }

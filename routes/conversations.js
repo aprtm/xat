@@ -58,16 +58,17 @@ router.put('/:id/messages', function putMessage(req, res, next) {
                 date: Date.now(),
                 owner_id: req.user._id.toString(),
                 owner_name: req.user.username,
+                conversation_id: req.params.id,
                 content: req.body.message
             };
-            console.log('Trying to insert', currentMsg);
+            console.log('Trying to insert >', currentMsg.content, '< from', currentMsg.owner_name);
             return Conversations.updateOne({ _id: { $oid: req.params.id } }, { $push: { messages: currentMsg } });
         }, function onRejected(reason) {
             console.log('Error connecting to DB.');
             return res.sendStatus(reason);
         })
             .then(function onFulfilled(obj) {
-            console.log('message insertion success', obj.result[0]);
+            console.log('message insertion successful', obj.result[0].name);
             var msgIndex = obj.result[0].messages.length - 1;
             res.send(obj.result[0].messages[msgIndex]);
         }, function onRejected(reason) {

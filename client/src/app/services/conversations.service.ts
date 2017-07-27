@@ -24,7 +24,6 @@ export class ConversationsService {
   }
 
   sendMessage( cId:string, message:string ){
-    console.log('Sending',message,'to',cId);
     return this.http.put( '/api/conversations/'+cId+'/messages', {message}, {headers:this.header} );
   }
 
