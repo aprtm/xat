@@ -7,6 +7,7 @@ export interface Participant extends Contact{
 export interface Message{
     owner_id:string
     owner_name:string
+    conversation_id:string
     date:number
     content:string
 }

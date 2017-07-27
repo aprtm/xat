@@ -129,7 +129,7 @@ function usersConnection( socket ){
   socket.on('userConnected', function onUserConnection( user ){
 
     socket.join( user._id );
-    console.log( user.username, 'connected.');
+    console.log( user.username, 'connected to room', user._id);
 
     user.friends.forEach(function(friend){
       let contact = {
@@ -141,6 +141,15 @@ function usersConnection( socket ){
       console.log('Notified',friend.name);
     });
 
+  });
+
+  socket.on('chatMessage', function(msg, usersTo){
+    usersTo.forEach( ( friend )=>{
+      if( friend.id !== msg.owner_id ){
+        console.log('Retransmitting message to',friend.name, 'in room', friend.id);
+        socket.to( friend.id ).emit('chatMessage', msg);
+      }
+    } );
   });
 
 }

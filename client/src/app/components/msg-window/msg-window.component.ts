@@ -31,7 +31,7 @@ export class MsgWindowComponent implements OnInit, OnChanges {
   onSubmit(form:NgForm){
     this.conversationsService.sendMessage(this.selectedConversation._id, form.value.currentMessage).subscribe(
       ( resp )=>{
-        this.socketService.sendMessage( form.value.currentMessage, this.sessionService.getUserAsContact(), this.receivers );
+        this.socketService.sendMessage( resp.json(), this.receivers );
         this.msgArr.push( resp.json() );
       },
       err => err
@@ -45,12 +45,18 @@ export class MsgWindowComponent implements OnInit, OnChanges {
     this.selectedConversation.participants.forEach((contact)=>{
       this.receivers.push(contact);
     });
-    
+
+    this.socketService.messageObservable.subscribe(
+      ( msg:Message )=>{
+        if( this.selectedConversation._id === msg.conversation_id ){
+          this.msgArr.push(msg);
+        }
+      }
+    );
+
   }
 
   ngOnChanges(changes){
-    //List messages of current conversation
-    console.log( changes );
     this.msgArr = this.selectedConversation.messages;
   }
 

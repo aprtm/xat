@@ -19,7 +19,7 @@ export class NotificationService {
     let c = 0;
     setInterval( ()=>{ this.notifications.push('hey'+c); c++ },500);
     
-    this.socketService.getFriendObservable.subscribe(
+    this.socketService.friendObservable.subscribe(
       ( friend )=>{
         this.notifications.push( friend.name+'connected' );
       }
