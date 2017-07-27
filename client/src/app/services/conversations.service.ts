@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 
+import { Contact } from '../interfaces/users'
 import { Conversation, Participant, Message } from '../interfaces/conversations'
 
 @Injectable()
@@ -10,16 +11,21 @@ export class ConversationsService {
 
   constructor( private http:Http ) { }
 
-  createConversation( conversation:Conversation ){
-    return this.http.post( '/api/conversations', conversation, {headers:this.header} );
+  createConversation( participants:Contact[] ){
+    let newConversation = {
+      date: Date.now(),
+      participants: participants
+    }
+    return this.http.post( '/api/conversations', newConversation, {headers:this.header} );
   }
 
   getConversation( cId:string ){
     return this.http.get( '/api/conversations/'+cId );
   }
 
-  sendMessage( cId:string, message:Message ){
-    return this.http.put( '/api/conversations/'+cId+'/messages', message, {headers:this.header} );
+  sendMessage( cId:string, message:string ){
+    console.log('Sending',message,'to',cId);
+    return this.http.put( '/api/conversations/'+cId+'/messages', {message}, {headers:this.header} );
   }
 
   addParticipant( cId:string, participant:Participant ){

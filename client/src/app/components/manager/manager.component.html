@@ -1,11 +1,16 @@
 <div id="manager-wrapper">
 
-    <div id="list-selector">
-        <div *ngFor="let list of lists; let ind=index" (click)="switchList(ind)">{{ind}} {{list.name}}</div>
-    </div>
+    <ul id="list-selector">
+        <li *ngFor="let list of lists; let ind=index" (click)="switchList(ind)">{{list.name}}</li>
+    </ul>
 
-    <div>{{currentList}}</div>
-    <!-- <chat-friends></chat-friends>  *ngIf="currentList.name==='Friends'"  -->
+    <div>{{currentList.name}}</div>
+    
+    <!-- <ng-template></ng-template> -->
+     <chat-friends [friends]="listItems" (onSelected)="onFriendSelected($event)"></chat-friends> 
     <!-- <chat-chats *ngIf="currentList.name==='Chats'" [currentList]= ></chat-chats> -->
-    <button (click)="getUserData()">get data</button>
+
+</div>
+<div id="chat-window-wrapper">
+    <chat-msg-window *ngIf="selectedConversation" [selectedConversation]="selectedConversation"></chat-msg-window>
 </div>

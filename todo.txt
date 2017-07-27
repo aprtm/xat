@@ -9,13 +9,16 @@ Both
 - Add a join_date field to user objects to remember when the user registered
 
 Client
-- Add debounce
-- Add storage for authenticated sessions
-- Create guards for routes
+- Add proxy element for onChange event during validation
+- Add storage for authenticated sessions / check cookie for active session on client connection
++ Create guards for routes
 - Client-side only messages for errors?
 x Move socket.io configuration/connection to a service
 - Transform the session object into an observable
 - Add display filters to the friend list
+- Add a map function to the service methods where possible to standardize output.
+- Check cookie first to catch any previously logged in users.
+- Add chat-header component
 
 Server
 - Create environment variables to run application settings with a bash script
@@ -23,6 +26,7 @@ Server
 - Should protect signup validation endpoints (username, email). Currently responds to any request.
 - Validate document before inserting it into the database
 - Handle GET user through /api/users. Should return everything but the password
+- check if socket.io can be moved outside
 
 Database
 - Validate before inserting

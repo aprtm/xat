@@ -11,10 +11,10 @@ const db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
 
 let router = express.Router();
 
-//+++++++++++++++++HANDLE POST TO API/USERS+++++++++++++++++++++++++++++++
+//+++++++++++++++++HANDLE GET TO API/USERS+++++++++++++++++++++++++++++++
 router.get('/:id', function routeHandler(req, res, next){
     console.log( 'Fetching user...',req.params.id );
-    if( req.isAuthenticated ){
+    if( req.isAuthenticated() ){
         
         stitchClient.login()
 
@@ -38,7 +38,7 @@ router.get('/:id', function routeHandler(req, res, next){
                             console.log('Conflict');
                             return res.sendStatus(409).send('ID conflict');
                         }
-                        console.log( 'Found and retrieved user', users[0]);
+                        console.log( 'Found and retrieved user', users[0].username);
                         return res.send( {
                             _id: users[0]._id,
                             username: users[0].username,
@@ -58,8 +58,23 @@ router.get('/:id', function routeHandler(req, res, next){
             
     }
     else{
-        return res.send(403);
+        return res.sendStatus(403);
     }
+} );
+
+//+++++++++++++++++HANDLE POST TO API/USERS/FRIENDREQUEST+++++++++++++++++++++++++++++++
+router.post('/friendRequest', function routeHandler(req, res, next){
+    console.log( 'Sending friend request...', req.body );
+    if( req.isAuthenticated() ){
+        // login to stitchClient
+        // get users collection
+        // get user reference
+        // emit friend request to user
+    }
+    else{
+        return res.sendStatus(403);
+    }
+    
 } );
 
 export default router;

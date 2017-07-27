@@ -1,3 +1,6 @@
 .friend-card div{
     display: inline-block;
 }
+#friends-details-panel{
+    border: solid black 1px;
+}

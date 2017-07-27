@@ -1,10 +1,30 @@
-<div id="friend-details-panel">
+<form #friendForm="ngForm" (ngSubmit)="onFormSubmit(friendForm)" novalidate>
+    <label for="nameOfFriend">Friend request to: </label>
+    <input type="text" name="friend" id="nameOfFriend" ngModel>
+    <button name="request">Request</button>
+</form>
+
+<div *ngIf="friends.length" id="friends-list">
+  <div (click)="openChat(i)" class="friend-card" *ngFor="let friend of friends; let i = index">
+    <div class="friendProfileCard">
+        <div><img [src]="friend.pictureUrl" alt=""></div>
+        <div><span>User {{friend.name}}</span></div>
+    </div>
+    <div class="friendCardOptions">
+        <ul>
+            <li>Remove</li>
+        </ul>
+    </div>
+  </div>
+</div>
+
+<!-- <div *ngIf="selected" id="friend-details-panel">
 
   <div id="friend-profile">
       <div id="element-picture">
           <img [src]="selected.picture">
       </div>
-      <div id="element-name">{{selected.username}}}</div>
+      <div id="element-name">{{selected.name}}}</div>
   </div>
 
   <div id="friend-options">
@@ -14,11 +34,11 @@
 </div>
 
 
-<div id="friends-list">
-
-  <div class="friend-card" *ngFor="let friend of friends; let i = index">
+<div *ngIf="friends.length" id="friends-list">
+    {{ friends | json }}
+  <div class="friend-card" *ngFor="let friend of friends | async; let i = index">
       <div><img [src]="friend.picture" alt=""></div>
-      <div><span>{{friend.username}}</span></div>
+      <div><span>{{friend.name}}</span></div>
   </div>
 
-</div>
+</div> -->

@@ -1,9 +1,11 @@
-<h4>Chat window</h4>
-
+<h3>Current Conversation</h3>
+<div>{{selectedConversation.name}}</div>
 <div id="chat-wrapper">  
 
   <ul id="messages">
-    <li *ngFor="let msg of msgArr">{{msg}}</li>
+    <li *ngFor="let msg of msgArr">
+      <b>{{msg.owner_name}}:</b> {{msg.content}}
+    </li>
   </ul>
 
   <form #f="ngForm" (ngSubmit)="onSubmit(f)">

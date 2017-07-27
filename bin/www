@@ -33,6 +33,10 @@ server.on('listening', onListening);
  * Create webSockets server with socket.io
  */
 var io = require('socket.io')(server);
+
+var usersNsp = io.of('/users');
+usersNsp.on('connection', usersConnection);
+
 io.on('connection', onConnection);
 
 
@@ -103,7 +107,10 @@ function onListening() {
 function onConnection(socket){
 
   console.log('Connecting...')
-  socket.on('userConnected', (username) => console.log(username, 'user connected.'));
+  
+  socket.on('userConnected', (userId) => {
+
+  });
 
   socket.on('userDisconnected', (username)=> console.log(username, 'user disconnected.') );
   
@@ -114,4 +121,26 @@ function onConnection(socket){
     io.emit('chat message', msg);
   } );
   
+}
+
+function usersConnection( socket ){
+  console.log('New connection with the Users namespace.');
+
+  socket.on('userConnected', function onUserConnection( user ){
+
+    socket.join( user._id );
+    console.log( user.username, 'connected.');
+
+    user.friends.forEach(function(friend){
+      let contact = {
+        id: user._id,
+        name: user.username,
+        pictureUrl: user.pictureUrl
+      }
+      socket.to(friend.id).emit('friendConnected', contact )
+      console.log('Notified',friend.name);
+    });
+
+  });
+
 }

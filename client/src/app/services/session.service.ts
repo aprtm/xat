@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UsersService } from './users.service'
 
-import { User } from "../interfaces/Users";
+import { User, Contact } from "../interfaces/Users";
 
 @Injectable()
 export class SessionService {
@@ -13,8 +13,24 @@ export class SessionService {
 
   connectUser( user:User ){
     this.session.user = user;
+    this.session.user._id = user._id['$oid'];
     this.session.active = true;
     console.log( 'User in session: ', this.session.user.username )
+  }
+
+  updateSession( onComplete?:()=>any ){
+    this.usersService.getUser( this.session.user._id ).subscribe(
+      ( resp ) => {
+        this.session.user = resp.json();
+        console.log('Updated user session correctly.');
+        onComplete && onComplete();
+        return this.session;
+      },
+      ( err ) => {
+        console.log('Error while updating session. Terminate.');
+        this.endSession()
+      }
+    );
   }
 
   endSession(){
@@ -38,6 +54,14 @@ export class SessionService {
   getSession(){
     //this should be transformed into an observable
     return this.session;
+  }
+
+  getUserAsContact(){
+    return <Contact>{
+      id: this.session.user._id,
+      name: this.session.user.username,
+      pictureUrl: this.session.user.pictureUrl
+    }
   }
 
   isActive(){

@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms'
 
 import { SessionService } from '../../services/session.service';
 import { SocketService } from '../../services/socket.service';
+import { ConversationsService } from '../../services/conversations.service';
+
+import { Conversation, Message } from '../../interfaces/Conversations';
+import { Contact } from '../../interfaces/Users';
 
 import * as io from 'socket.io-client';
 
@@ -11,42 +15,43 @@ import * as io from 'socket.io-client';
   templateUrl: './msg-window.component.html',
   styleUrls: ['./msg-window.component.css']
 })
-export class MsgWindowComponent implements OnInit {
+export class MsgWindowComponent implements OnInit, OnChanges {
+  @Input() selectedConversation:Conversation;
   //get socket connection to the server.
-  //passing nothing to io() function defaults to host
-  private socket:SocketIOClient.Socket //should move to a service?
+
+  private sender:Contact = this.sessionService.getUserAsContact();
+  private receivers:Contact[] = [];
+
+  msgArr:Message[]
   
-  msgArr:string[]
-  
-  constructor( private sessionService:SessionService, socketService:SocketService ) {
-
-    if( this.sessionService.isActive() ){
-      console.log('Connecting', this.sessionService.getSession().user.username,'...' );
-      this.socket = socketService.connect( sessionService.getSession().user.username );
-    }else{
-      this.socket = socketService.connect( 'GENERAL' );
-    }
-
-      this.socket.on('chat message',(msg)=>this.onMessageArrived(msg));
-      this.msgArr = ['>>>>> Welcome to the chat. Start typing.'];
-      // console.log(this.msgArr);
-    
-  }
-
-  
-
-  onMessageArrived(msg:string){
-    // console.log("socket sent this ",msg,'. Save it here: ', this.msgArr);
-    // console.log(this);
-    this.msgArr.push(msg);
-  }
+  constructor(  private sessionService:SessionService,
+                private socketService:SocketService,
+                private conversationsService:ConversationsService, ) {}
 
   onSubmit(form:NgForm){
-    this.socket.emit('chat message', form.value.currentMessage);
+    this.conversationsService.sendMessage(this.selectedConversation._id, form.value.currentMessage).subscribe(
+      ( resp )=>{
+        this.socketService.sendMessage( form.value.currentMessage, this.sessionService.getUserAsContact(), this.receivers );
+        this.msgArr.push( resp.json() );
+      },
+      err => err
+    );
+
     form.controls.currentMessage.reset();
   }
 
   ngOnInit() {
+    //List receivers of this user's messages
+    this.selectedConversation.participants.forEach((contact)=>{
+      this.receivers.push(contact);
+    });
+    
+  }
+
+  ngOnChanges(changes){
+    //List messages of current conversation
+    console.log( changes );
+    this.msgArr = this.selectedConversation.messages;
   }
 
 }

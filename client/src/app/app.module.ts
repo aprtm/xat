@@ -14,6 +14,8 @@ import { SignupComponent } from './components/signup/signup.component';
 import { UsersService } from './services/users.service';
 import { SessionService } from './services/session.service';
 import { SocketService } from './services/socket.service';
+import { ConversationsService } from './services/conversations.service'
+import { NotificationService } from './services/notification.service'
 
 import { AsIterablePipe } from './pipes/asIterable.pipe';
 import { SessionGuard } from './guards/session.guard';
@@ -51,7 +53,12 @@ const appRoutes:Routes = [
     ReactiveFormsModule, 
     RouterModule.forRoot(appRoutes, {enableTracing:true})
   ],
-  providers: [ UsersService, SessionService, SocketService, SessionGuard ],
+  providers: [  UsersService,
+                SessionService,
+                SocketService,
+                ConversationsService,
+                NotificationService,
+                SessionGuard ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

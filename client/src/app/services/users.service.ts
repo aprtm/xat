@@ -2,6 +2,10 @@ import { Http, Headers } from '@angular/http'
 import { Observable } from 'rxjs/Observable'
 import { Injectable } from '@angular/core';
 
+import { SocketService } from './socket.service'
+
+import { Contact } from '../interfaces/Users'
+
 interface Candidate{
   username:string
   password:string
@@ -12,7 +16,7 @@ interface Candidate{
 export class UsersService {
   private header:Headers = new Headers( {'Content-Type':'application/json'} )
   
-  constructor(public http:Http) { 
+  constructor( public http:Http, private socketService:SocketService ) { 
     this.valueExists = this.valueExists.bind(this);
   }
 
@@ -34,6 +38,7 @@ export class UsersService {
   }
 
   getUser( id:string ){
+    
     return this.http.get('/api/users/'+id);
   }
 
@@ -46,5 +51,12 @@ export class UsersService {
   logoutUser(){
     //check if user is actually logged in
     return this.http.post('/api/logout', {});
+  }
+
+  sendFriendRequest( usernameOrEmail:string ){
+    console.log('Friend request sent');
+    // return this.socketService.friendRequest()
+    
+    // return this.http.post('/api/users/friendRequest', {usernameOrEmail}, {headers:this.header} )
   }
 }

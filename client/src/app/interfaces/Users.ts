@@ -1,15 +1,19 @@
 import { Conversation } from './Conversations';
 
+// Interface for a user profile
 export interface User {
     _id:string
     username:string
-    password:string
     email:string
+    pictureUrl?:string
     friends:User[]
     conversations:Conversation[]
 }
 
+//Interface for a friend/contact
 export interface Contact {
-    user_id:string
-    username:string
+    id:string
+    name:string
+    conversation_id?:string
+    pictureUrl?:string
 }

@@ -1,13 +1,13 @@
 import { User, Contact } from './Users'
 
 export interface Participant extends Contact{
-    join_date:Date;
+    join_date:Date|number
 }
 
 export interface Message{
     owner_id:string
-    username:string
-    date:Date
+    owner_name:string
+    date:number
     content:string
 }
 
