@@ -5,6 +5,7 @@ export interface Participant extends Contact{
 }
 
 export interface Message{
+    _id:string
     owner_id:string
     owner_name:string
     conversation_id:string
@@ -18,5 +19,5 @@ export interface Conversation {
     date:number
     participants:Participant[]
     name:string
-    messages:Message[]
+    messages:string[]
 }
