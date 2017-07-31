@@ -27,10 +27,11 @@ router.post('/', function onPost(req, res, next) {
             // get a collection and test its api
             var Users = db.collection('Users');
             return Users.insertOne({
-                owner_id: stitchClient.authedId(),
                 username: user.username,
                 password: user.hash,
-                email: req.body.email
+                email: req.body.email,
+                friends: [],
+                conversations: []
             });
         }, function reject(reason) {
             console.log(reason);

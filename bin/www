@@ -143,13 +143,21 @@ function usersConnection( socket ){
 
   });
 
-  socket.on('chatMessage', function(msg, usersTo){
-    usersTo.forEach( ( friend )=>{
-      if( friend.id !== msg.owner_id ){
+  socket.on('chatMessage', function(msg){
+    console.log('Got chat message from', msg.author_id );
+
+    msg.receivers.forEach( ( friend )=>{
+      if( friend.id !== msg.author_id ){
         console.log('Retransmitting message to',friend.name, 'in room', friend.id);
         socket.to( friend.id ).emit('chatMessage', msg);
       }
     } );
+    console.log('Friend broadcast complete!');
+  });
+
+  socket.on('messageReceived', function(msg,receiverId){
+    console.log(receiverId,'received msg', msg._id.toString() );
+    socket.to(msg.author_id).emit('messageReceived', {msg,receiverId});
   });
 
 }

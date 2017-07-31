@@ -77,10 +77,21 @@ export class SocketService {
     return this.socket;
   }
 
-  sendMessage( message:string, toContacts:Contact[] ){
+  sendMessage( message:Message ){
     if( this.socket ){
-      this.socket.emit('chatMessage', message, toContacts );
+      this.socket.emit('chatMessage', message );
     }else{
+      console.log('Socket not available to send message');
+      return null;
+    }
+  }
+
+  confirmMessageReceived( message:Message, receiverId:string ){
+    if( this.socket ){
+      console.log('Received', message._id.toString(),'sending confirmation...');
+      this.socket.emit('messageReceived', message );
+    }else{
+      console.log('Socket not available to confirm message');
       return null;
     }
   }

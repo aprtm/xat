@@ -6,7 +6,7 @@ import { ConversationsService } from '../../services/conversations.service';
 import { SocketService } from '../../services/socket.service';
 
 import { User, Contact } from '../../interfaces/Users';
-import { Conversation, Participant } from '../../interfaces/Conversations';
+import { Conversation, Participant, Message } from '../../interfaces/Conversations';
 
 
 @Component({
@@ -25,6 +25,7 @@ export class ManagerComponent implements OnInit {
   private currentList = this.lists[0];
 
   private selectedConversation:Conversation|null;
+  private currentMessages:Message[]=[];
 
   constructor(  private sessionService:SessionService,
                 private usersService:UsersService,
@@ -34,7 +35,6 @@ export class ManagerComponent implements OnInit {
   ngOnInit() {
     this.currentList = this.lists[0];
     this.updateListItems();
-
   }
 
   switchList( index:number ){
@@ -50,8 +50,9 @@ export class ManagerComponent implements OnInit {
   onFriendSelected( friend ){
       this.conversationsService.getConversation(friend.conversation_id).subscribe(
         ( convo )=>{ 
-          this.selectedConversation = convo.json();
-          this.selectedConversation._id = convo.json()._id['$oid'];
+          this.selectedConversation = convo.json().conversation;
+          this.currentMessages = convo.json().messages;
+          this.selectedConversation._id = convo.json().conversation._id['$oid'];
         },
         ( err ) => err
       )

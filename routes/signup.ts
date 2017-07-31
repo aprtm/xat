@@ -34,10 +34,11 @@ router.post('/', function onPost(req, res, next) {
                 let Users = db.collection('Users');
 
                 return Users.insertOne( {
-                        owner_id: stitchClient.authedId(),
                         username:user.username,
                         password:user.hash,
-                        email:req.body.email 
+                        email:req.body.email,
+                        friends:[],
+                        conversations:[]
                     } );
 
             }, function reject(reason){

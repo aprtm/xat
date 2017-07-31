@@ -6,18 +6,19 @@ export interface Participant extends Contact{
 
 export interface Message{
     _id:string
-    owner_id:string
-    owner_name:string
+    author_id:string
+    author_name:string
     conversation_id:string
     date:number
     content:string
+    receivers?:Contact[]
 }
 
 export interface Conversation {
     _id:string
-    owner_id:string
+    creator_id:string
     date:number
     participants:Participant[]
     name:string
-    messages:string[]
+    messages:Message[]
 }

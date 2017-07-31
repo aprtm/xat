@@ -23,8 +23,8 @@ export class ConversationsService {
     return this.http.get( '/api/conversations/'+cId );
   }
 
-  sendMessage( cId:string, message:string ){
-    return this.http.put( '/api/conversations/'+cId+'/messages', {message}, {headers:this.header} );
+  sendMessage( cId:string, message:string, toUsers:Contact[] ){
+    return this.http.put( '/api/conversations/'+cId+'/messages', {message,toUsers}, {headers:this.header} );
   }
 
   addParticipant( cId:string, participant:Participant ){
@@ -33,6 +33,10 @@ export class ConversationsService {
 
   changeName( cId:string, name:string ){
     return this.http.put( 'api/conversations/'+cId+'name', name, {headers:this.header} );
+  }
+
+  confirmMessageReceived( msgId:string, receiver_id:string ){
+    return this.http.post( 'api/conversations/messages/'+msgId+'/pending-receivers', {receiver_id:receiver_id} );
   }
 
 }

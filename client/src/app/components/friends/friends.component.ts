@@ -45,8 +45,14 @@ export class FriendsComponent implements OnInit {
   }
 
   openChat( i ){
-    console.log('Open chat:', this.friends[i].name);
-    this.onSelected.emit( this.friends[i] );
+    if( this.selectedContact && (this.selectedContact.id === this.friends[i].id) ){
+
+    }else{
+        console.log('Open chat:', this.friends[i].name);
+        this.selectedContact = this.friends[i];
+        this.onSelected.emit( this.friends[i] );
+    }  
   }
+
 
 }

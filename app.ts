@@ -16,6 +16,7 @@ import login from './routes/login';
 import logout from './routes/logout';
 import users from './routes/users';
 import conversations from './routes/conversations';
+// import messages from './routes/messages';
 
 let app = express();
 
@@ -48,6 +49,7 @@ app.use('/api/login', login);
 app.use('/api/logout', logout);
 app.use('/api/users', users);
 app.use('/api/conversations', conversations);
+// app.use('/api/messages', messages);
 
 // routing testing
 app.get('**', function(req,res){
