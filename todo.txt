@@ -19,6 +19,7 @@ x Move socket.io configuration/connection to a service
 - Add a map function to the service methods where possible to standardize output.
 - Check cookie first to catch any previously logged in users.
 - Add chat-header component
+- Add "Loading" animations
 
 Server
 - Create environment variables to run application settings with a bash script
