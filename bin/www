@@ -125,6 +125,7 @@ function onConnection(socket){
 
 function usersConnection( socket ){
   console.log('New connection with the Users namespace.');
+  
 
   socket.on('userConnected', function onUserConnection( user ){
 
@@ -143,6 +144,7 @@ function usersConnection( socket ){
 
   });
 
+
   socket.on('chatMessage', function(msg){
     console.log('Got chat message from', msg.author_id );
 
@@ -155,9 +157,17 @@ function usersConnection( socket ){
     console.log('Friend broadcast complete!');
   });
 
+
   socket.on('messageReceived', function(msg,receiverId){
     console.log(receiverId,'received msg', msg._id.toString() );
     socket.to(msg.author_id).emit('messageReceived', {msg,receiverId});
+  });
+
+
+  socket.on('friendRequest', function({fromContact, toContact}){
+    console.log(fromContact.name,'wants to be friends with', toContact.name );
+    socket.to(toContact.id).emit('friendRequest', fromContact);
+    console.log(toContact.name, 'notification sent.');
   });
 
 }

@@ -95,8 +95,15 @@ export class SocketService {
       return null;
     }
   }
-  // friendRequest( usrId:string, friendId:string ){
-    
-  // }
+
+  sendFriendRequest( toContact:Contact, fromContact:Contact ){
+    if( this.socket ){
+      this.socket.emit('friendRequest', {toContact, fromContact} );
+      console.log(toContact.name, 'got the friend request.');
+    }else{
+      console.log('Socket not available to notify friend request.');
+      return null;
+    }
+  }
 
 }

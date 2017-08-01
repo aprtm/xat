@@ -6,8 +6,9 @@ export interface User {
     username:string
     email:string
     pictureUrl?:string
-    friends:User[]
+    friends:Contact[]
     conversations:Conversation[]
+    requests:Contact[]
 }
 
 //Interface for a friend/contact

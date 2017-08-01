@@ -1,4 +1,5 @@
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms'
 
 import { SessionService } from '../../services/session.service';
 import { UsersService } from '../../services/users.service';
@@ -39,9 +40,21 @@ export class FriendsComponent implements OnInit {
 
   }
 
-  onFormSubmit( form ){
-    console.log( 'Sending friend request to:', form.value.friend );
-    this.usersService.sendFriendRequest( form.value.friend );
+  onFormSubmit( form:NgForm ){
+    console.log( 'Sending friend request to:', form.value.friendToBe );
+    this.usersService.sendFriendRequest( form.value.friendToBe, this.sessionService.getUserAsContact() )
+      .subscribe(
+        ( resp )=> {
+          if( resp.json() ){
+            console.log('Friend request processed. Notifying contact.' );
+            this.socketService.sendFriendRequest(resp.json(), this.sessionService.getUserAsContact())
+            form.controls.friendToBe.reset();
+          }else{
+            form.controls.friendToBe.reset();
+          }
+        } ,
+        ( err )=> err 
+      );
   }
 
   openChat( i ){

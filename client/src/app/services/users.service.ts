@@ -53,10 +53,7 @@ export class UsersService {
     return this.http.post('/api/logout', {});
   }
 
-  sendFriendRequest( usernameOrEmail:string ){
-    console.log('Friend request sent');
-    // return this.socketService.friendRequest()
-    
-    // return this.http.post('/api/users/friendRequest', {usernameOrEmail}, {headers:this.header} )
+  sendFriendRequest( contactNameOrEmail:string, fromContact:Contact ){
+    return this.http.post('/api/users/friendRequest', {contactNameOrEmail, fromContact}, {headers:this.header} )
   }
 }

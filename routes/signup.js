@@ -31,7 +31,8 @@ router.post('/', function onPost(req, res, next) {
                 password: user.hash,
                 email: req.body.email,
                 friends: [],
-                conversations: []
+                conversations: [],
+                requests: []
             });
         }, function reject(reason) {
             console.log(reason);

@@ -6,6 +6,7 @@ var mdbStitch = require("mongodb-stitch");
 var stitchClient = new mdbStitch.StitchClient('xat-mxymz');
 // get database instance from of a mongodb object with the XAT name
 var db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
+var Users = db.collection('Users');
 var router = express.Router();
 //+++++++++++++++++HANDLE GET TO API/USERS+++++++++++++++++++++++++++++++
 router.get('/:id', function routeHandler(req, res, next) {
@@ -13,7 +14,6 @@ router.get('/:id', function routeHandler(req, res, next) {
     if (req.isAuthenticated()) {
         stitchClient.login()
             .then(function onFulfilled() {
-            var Users = db.collection('Users');
             console.log('Connected to DB.');
             return Users.find({ _id: { $oid: req.params.id } });
         }, function onRejected(reason) {
@@ -49,12 +49,38 @@ router.get('/:id', function routeHandler(req, res, next) {
 });
 //+++++++++++++++++HANDLE POST TO API/USERS/FRIENDREQUEST+++++++++++++++++++++++++++++++
 router.post('/friendRequest', function routeHandler(req, res, next) {
-    console.log('Sending friend request...', req.body);
+    console.log(req.body.fromContact.name, 'friend request to', req.body.contactNameOrEmail);
     if (req.isAuthenticated()) {
-        // login to stitchClient
-        // get users collection
-        // get user reference
-        // emit friend request to user
+        stitchClient.login()
+            .then(function onFulfilled() {
+            console.log('looking for', req.body.contactNameOrEmail);
+            var upsert = true;
+            return Users.updateOne({ $or: [
+                    { username: req.body.contactNameOrEmail },
+                    { email: req.body.contactNameOrEmail }
+                ] }, {
+                $push: { requests: req.body.fromContact }
+            });
+        }, function onRejected() {
+            console.log('Login failed');
+            return res.sendStatus(500);
+        })
+            .then(function onFulfilled(updatedUsers) {
+            if (updatedUsers.result.length) {
+                console.log('Invite delivered to', updatedUsers.result[0].username);
+                return res.send({
+                    id: updatedUsers.result[0]._id.toString(),
+                    name: updatedUsers.result[0].username
+                });
+            }
+            else {
+                console.log('User not found');
+                return res.sendStatus(204).send({});
+            }
+        }, function onRejected(reason) {
+            console.log('Error finding and updating friend user.', reason);
+            return res.sendStatus(304);
+        })["catch"](function (err) { return err; });
     }
     else {
         return res.sendStatus(403);

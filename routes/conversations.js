@@ -111,7 +111,7 @@ router.post('/messages/:id/pending-receivers/', function deleteMessage(req, res,
         })
             .then(function onFulfilled(updated) {
             // let msgId = insertedIds[0].toString();
-            console.log('Updated message. Result', updated);
+            console.log('Updated message. Pending receivers:', updated.receivers.length);
             res.send(updated[0]._id.toString());
         }, function onRejected(reason) {
             console.log('Insertion failed.', reason);
