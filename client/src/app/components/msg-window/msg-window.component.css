@@ -1,5 +1,6 @@
 :host{
     width:64%;
+    border: dotted 2px darkorange;
 }
 #chat-wrapper{
     display:flex;

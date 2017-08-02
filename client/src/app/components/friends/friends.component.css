@@ -1,3 +1,6 @@
+:host{
+    border: dashed 3px lightcoral;
+}
 .friend-card div{
     display: inline-block;
 }

@@ -86,4 +86,34 @@ router.post('/friendRequest', function routeHandler(req, res, next) {
         return res.sendStatus(403);
     }
 });
+//+++++++++++++++++HANDLE DETELE TO API/USERS/FRIENDREQUEST+++++++++++++++++++++++++++++++
+router["delete"]('/friendRequest', function routeHandler(req, res, next) {
+    console.log('Delete friend request from', req.body);
+    if (req.isAuthenticated()) {
+        stitchClient.login()
+            .then(function onFulfilled() {
+            console.log('Updating friend requests of', req.user.username);
+            return Users.updateOne({
+                _id: req.user._id
+            }, {
+                $pull: {
+                    requests: { id: req.body }
+                }
+            });
+        }, function onRejected() {
+            console.log('Login failed');
+            return res.sendStatus(500);
+        })
+            .then(function onFulfilled(updated) {
+            console.log('Updated friend requests.');
+            return res.send({});
+        }, function onRejected(reason) {
+            console.log('Update failed.', reason);
+            res.sendStatus(500);
+        })["catch"](function (err) { return err; });
+    }
+    else {
+        return res.sendStatus(403);
+    }
+});
 exports["default"] = router;

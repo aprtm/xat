@@ -56,4 +56,12 @@ export class UsersService {
   sendFriendRequest( contactNameOrEmail:string, fromContact:Contact ){
     return this.http.post('/api/users/friendRequest', {contactNameOrEmail, fromContact}, {headers:this.header} )
   }
+
+  rejectFriendRequest( contactId:string ){
+    return this.http.delete('/api/users/friendRequest', contactId)
+  }
+
+  acceptFriendRequest( friend:Contact ){
+    // return this.http.put('/api/users/friends', );
+  }
 }

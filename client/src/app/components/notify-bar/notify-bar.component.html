@@ -1,0 +1,11 @@
+<div id="notification-text">
+  <div (click)="toggleNotifications()" >{{ notifications.length ? 'Pending notifications' : 'No notifications' }}</div>
+  <ul *ngIf="viewNotifications">
+    <li *ngFor="let notification of notifications; let i = index">
+      {{ notification.text }}
+      <div (click)="acceptRequest(notification.contact, i)">✔</div>
+      <div (click)="discardRequest(notification.contact, i)">✕</div>
+    </li>
+  </ul>
+
+</div>

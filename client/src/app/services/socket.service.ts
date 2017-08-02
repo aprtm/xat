@@ -13,7 +13,7 @@ export class SocketService {
 
   private _friendObservable:Observable<Contact>
   private _messageObservable:Observable<Message>
-  private _friendRequestObservable:Observable<Message>
+  private _friendRequestObservable:Observable<Contact>
 
   private socket:SocketIOClient.Socket;
   //should transform to use getters and setters

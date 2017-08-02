@@ -1,8 +1,12 @@
+:host{
+    border: solid 2px green;
+}
 #home-wrapper{
     border: dotted black 3px;
 }
 #home-elements{
     display:flex;
+    flex-direction: column;
 }
 #general-chat{
     border: solid blue 3px;

@@ -21,6 +21,7 @@ import { AsIterablePipe } from './pipes/asIterable.pipe';
 import { SessionGuard } from './guards/session.guard';
 import { FriendsComponent } from './components/friends/friends.component';
 import { ChatsComponent } from './components/chats/chats.component';
+import { NotifyBarComponent } from './components/notify-bar/notify-bar.component';
 
 const appRoutes:Routes = [
   { path:'', component:HomeComponent, canActivate:[SessionGuard] },
@@ -44,7 +45,8 @@ const appRoutes:Routes = [
     AsIterablePipe,
     ManagerComponent,
     FriendsComponent,
-    ChatsComponent
+    ChatsComponent,
+    NotifyBarComponent
   ],
   imports: [
     BrowserModule,
