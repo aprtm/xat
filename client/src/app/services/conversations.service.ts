@@ -36,7 +36,8 @@ export class ConversationsService {
   }
 
   confirmMessageReceived( msgId:string, receiver_id:string ){
-    return this.http.post( 'api/conversations/messages/'+msgId+'/pending-receivers', {receiver_id:receiver_id} );
+    console.log(receiver_id,'convo service confirm reception',msgId)
+    return this.http.post( 'api/conversations/messages/'+msgId+'/pending-receivers', {receiver_id} );
   }
 
 }

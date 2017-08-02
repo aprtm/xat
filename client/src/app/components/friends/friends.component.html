@@ -5,40 +5,21 @@
 </form>
 
 <div *ngIf="friends.length" id="friends-list">
-  <div (click)="openChat(i)" class="friend-card" *ngFor="let friend of friends; let i = index">
-    <div class="friendProfileCard">
+
+<!-- TODO: could replace this with a <friend> component -->
+  <div (click)="openChat(i)" class="friend-card" *ngFor="let friend of friends; let i = index" [ngClass]="friend.hasNewMessage?'has-new-message':''">
+
+    <div class="friendProfileCard" >
         <div><img [src]="friend.pictureUrl" alt=""></div>
         <div><span>User {{friend.name}}</span></div>
     </div>
+   
     <div class="friendCardOptions">
         <ul>
             <li>Remove</li>
         </ul>
     </div>
-  </div>
-</div>
 
-<!-- <div *ngIf="selected" id="friend-details-panel">
-
-  <div id="friend-profile">
-      <div id="element-picture">
-          <img [src]="selected.picture">
-      </div>
-      <div id="element-name">{{selected.name}}}</div>
-  </div>
-
-  <div id="friend-options">
-      <button>Remove</button>
   </div>
 
 </div>
-
-
-<div *ngIf="friends.length" id="friends-list">
-    {{ friends | json }}
-  <div class="friend-card" *ngFor="let friend of friends | async; let i = index">
-      <div><img [src]="friend.picture" alt=""></div>
-      <div><span>{{friend.name}}</span></div>
-  </div>
-
-</div> -->

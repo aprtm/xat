@@ -158,9 +158,9 @@ function usersConnection( socket ){
   });
 
 
-  socket.on('messageReceived', function(msg,receiverId){
+  socket.on('messageReceived', function({msg, receiverId}){
     console.log(receiverId,'received msg', msg._id.toString() );
-    socket.to(msg.author_id).emit('messageReceived', {msg,receiverId});
+    socket.to(msg.author_id).emit('messageReceived', msg);
   });
 
 

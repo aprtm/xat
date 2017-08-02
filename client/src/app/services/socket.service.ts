@@ -31,7 +31,7 @@ export class SocketService {
 
     this._messageObservable = new Observable( (observer)=>{
 
-      this.socket.on('chatMessage', ( message )=>{
+      this.socket.on('chatMessage', ( message:Message )=>{
         observer.next( message );
       } );
 
@@ -79,6 +79,7 @@ export class SocketService {
 
   sendMessage( message:Message ){
     if( this.socket ){
+      console.log('Socket sending message to all participants');
       this.socket.emit('chatMessage', message );
     }else{
       console.log('Socket not available to send message');
@@ -89,7 +90,7 @@ export class SocketService {
   confirmMessageReceived( message:Message, receiverId:string ){
     if( this.socket ){
       console.log('Received', message._id.toString(),'sending confirmation...');
-      this.socket.emit('messageReceived', message );
+      this.socket.emit('messageReceived', {msg:message, receiverId} );
     }else{
       console.log('Socket not available to confirm message');
       return null;

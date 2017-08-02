@@ -6,6 +6,11 @@ import { UsersService } from '../../services/users.service';
 import { SocketService } from '../../services/socket.service';
 
 import { User, Contact } from '../../interfaces/Users';
+import { Message } from '../../interfaces/Conversations';
+
+interface Friend extends Contact{
+  hasNewMessage:boolean
+}
 
 @Component({
   selector: 'chat-friends',
@@ -13,10 +18,10 @@ import { User, Contact } from '../../interfaces/Users';
   styleUrls: ['./friends.component.css']
 })
 export class FriendsComponent implements OnInit {
-  @Input() friends:Contact[];
+  @Input() friends:Friend[];
   @Output() onSelected = new EventEmitter<Contact>();
 
-  private selectedContact:Contact|null = null;
+  private selectedFriend:Friend|null = null;
 
 
   constructor(  private usersService:UsersService,
@@ -24,18 +29,40 @@ export class FriendsComponent implements OnInit {
                 private socketService:SocketService ) { }
 
   ngOnInit() {
-    this.completeFriendsData();
+    this.startFriendList();
+    
   }
 
-  completeFriendsData(){
+  startFriendList(){
 
     this.friends.forEach( friend => {
+
+      console.log( 'Updating data for', friend.name );
       this.usersService.getUser( friend.id ).subscribe(
         ( user ) => {
-          friend.pictureUrl = ( <Contact>user.json() ).pictureUrl || 'http://lorempixel.com/45/45/people/';
+          friend.pictureUrl =
+            (<Friend>user.json()).pictureUrl
+              || 'http://lorempixel.com/45/45/people/';
+          console.log( friend.name,'updated.' );
         },
         ( err ) => err
       );
+
+      console.log( 'Subscribe to message notifications from', friend.name );
+      this.socketService.messageObservable.subscribe(
+        ( msg:Message )=>{
+
+          if( this.selectedFriend && this.selectedFriend.id == msg.author_id ){
+              console.log('Class off!');
+              friend.hasNewMessage = false;
+          }else if( msg.author_id == friend.id ){
+              console.log('Class on!');
+              friend.hasNewMessage = true;
+          }
+        },
+        err => err
+      );
+
     });
 
   }
@@ -58,14 +85,14 @@ export class FriendsComponent implements OnInit {
   }
 
   openChat( i ){
-    if( this.selectedContact && (this.selectedContact.id === this.friends[i].id) ){
+    if( this.selectedFriend && (this.selectedFriend.id === this.friends[i].id) ){
 
     }else{
         console.log('Open chat:', this.friends[i].name);
-        this.selectedContact = this.friends[i];
+        this.friends[i].hasNewMessage = false;
+        this.selectedFriend = this.friends[i];
         this.onSelected.emit( this.friends[i] );
     }  
   }
-
 
 }

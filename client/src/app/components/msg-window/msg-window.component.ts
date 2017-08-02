@@ -42,6 +42,7 @@ export class MsgWindowComponent implements OnInit, OnChanges {
     let messageIndex = this.msgArr.push( messageTemplate )-1;
 
     //Send message to the server and then broadcast it to receivers
+    console.log('Sending message to', this.receivers.length,'friends');
     this.conversationsService.sendMessage(this.selectedConversation._id, form.value.currentMessage, this.receivers).subscribe(
       ( resp )=>{
         this.msgArr[messageIndex]._id = ( resp.text() );
@@ -83,8 +84,9 @@ export class MsgWindowComponent implements OnInit, OnChanges {
   }
 
   onNewMessageArrived( msg:Message ){
-    if( this.selectedConversation._id === msg.conversation_id ){
 
+    if( this.selectedConversation._id === msg.conversation_id ){
+      
       this.conversationsService.confirmMessageReceived(msg._id, this.sessionService.getUserAsContact().id).subscribe(
         (  )=>{
           this.socketService.confirmMessageReceived( msg, this.sessionService.getUserAsContact().id );
@@ -95,6 +97,7 @@ export class MsgWindowComponent implements OnInit, OnChanges {
       this.msgArr.push(msg);
     
     }
+
   }
 
 

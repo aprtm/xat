@@ -1,6 +1,11 @@
 .friend-card div{
     display: inline-block;
 }
+
+.has-new-message{
+    background-color: lightsteelblue;
+}
+
 #friends-details-panel{
     border: solid black 1px;
 }

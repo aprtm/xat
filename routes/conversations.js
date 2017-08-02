@@ -92,8 +92,8 @@ router.put('/:id/messages', function putMessage(req, res, next) {
     }
 });
 router.post('/messages/:id/pending-receivers/', function deleteMessage(req, res, next) {
-    // 'api/conversations/messages/'+msgId+'/pendingReceivers'
     console.log('Updating message...remove user from pending-receivers', req.params.id);
+    console.log(req.body.receiver_id, '===', req.user._id.toString());
     if (req.isAuthenticated()) {
         stitchClient.login()
             .then(function onFulfilled() {
@@ -110,9 +110,8 @@ router.post('/messages/:id/pending-receivers/', function deleteMessage(req, res,
             res.sendStatus(500);
         })
             .then(function onFulfilled(updated) {
-            // let msgId = insertedIds[0].toString();
-            console.log('Updated message. Pending receivers:', updated.receivers.length);
-            res.send(updated[0]._id.toString());
+            console.log('Updated message.');
+            return res.send({});
         }, function onRejected(reason) {
             console.log('Insertion failed.', reason);
             res.sendStatus(500);
@@ -122,7 +121,4 @@ router.post('/messages/:id/pending-receivers/', function deleteMessage(req, res,
         return res.sendStatus(403);
     }
 });
-//   confirmMessageReceived( msgId:string ){
-//     return this.http.patch( 'api/conversations/messages'+msgId,'received' );
-//   }
 exports["default"] = router;
