@@ -20,6 +20,7 @@ x Move socket.io configuration/connection to a service
 - Check cookie first to catch any previously logged in users.
 - Add chat-header component
 - Add "Loading" animations
+- Create Friend component to replace the DIV element
 
 Server
 - Create environment variables to run application settings with a bash script
