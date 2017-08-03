@@ -57,11 +57,18 @@ export class UsersService {
     return this.http.post('/api/users/friendRequest', {contactNameOrEmail, fromContact}, {headers:this.header} )
   }
 
-  rejectFriendRequest( contactId:string ){
-    return this.http.delete('/api/users/friendRequest', contactId)
+  rejectFriendRequest( contact:Contact ){
+    console.log('User service - DELETE request from', contact.id)
+    return this.http.delete('/api/users/friendRequest/'+contact.id)
   }
 
   acceptFriendRequest( friend:Contact ){
-    // return this.http.put('/api/users/friends', );
+    console.log('accept', friend );
+    return this.http.put('/api/users/friends',friend,{headers:this.header} );
   }
+
+  // getFriendRequests(){
+  //   return this.http.get('/api/users/friendRequest');
+  // }
+
 }

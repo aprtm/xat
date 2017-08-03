@@ -7,6 +7,7 @@ var stitchClient = new mdbStitch.StitchClient('xat-mxymz');
 // get database instance from of a mongodb object with the XAT name
 var db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
 var Users = db.collection('Users');
+var Conversations = db.collection('Conversations');
 var router = express.Router();
 //+++++++++++++++++HANDLE GET TO API/USERS+++++++++++++++++++++++++++++++
 router.get('/:id', function routeHandler(req, res, next) {
@@ -61,8 +62,8 @@ router.post('/friendRequest', function routeHandler(req, res, next) {
                 ] }, {
                 $push: { requests: req.body.fromContact }
             });
-        }, function onRejected() {
-            console.log('Login failed');
+        }, function onRejected(reason) {
+            console.log('Login failed', reason);
             return res.sendStatus(500);
         })
             .then(function onFulfilled(updatedUsers) {
@@ -87,8 +88,8 @@ router.post('/friendRequest', function routeHandler(req, res, next) {
     }
 });
 //+++++++++++++++++HANDLE DETELE TO API/USERS/FRIENDREQUEST+++++++++++++++++++++++++++++++
-router["delete"]('/friendRequest', function routeHandler(req, res, next) {
-    console.log('Delete friend request from', req.body);
+router["delete"]('/friendRequest/:contactId', function routeHandler(req, res, next) {
+    console.log('Delete friend request from', req.params.contactId);
     if (req.isAuthenticated()) {
         stitchClient.login()
             .then(function onFulfilled() {
@@ -97,7 +98,7 @@ router["delete"]('/friendRequest', function routeHandler(req, res, next) {
                 _id: req.user._id
             }, {
                 $pull: {
-                    requests: { id: req.body }
+                    requests: { id: req.params.contactId }
                 }
             });
         }, function onRejected() {
@@ -108,12 +109,89 @@ router["delete"]('/friendRequest', function routeHandler(req, res, next) {
             console.log('Updated friend requests.');
             return res.send({});
         }, function onRejected(reason) {
-            console.log('Update failed.', reason);
-            res.sendStatus(500);
+            console.log('Delete friend request failed', reason);
+            return res.sendStatus(500);
         })["catch"](function (err) { return err; });
     }
     else {
         return res.sendStatus(403);
     }
 });
+//+++++++++++++++++HANDLE PUT TO API/USERS/FRIENDS+++++++++++++++++++++++++++++++
+router.put('/friends', function routeHandler(req, res, next) {
+    console.log('Add friend', req.body.name);
+    if (req.isAuthenticated()) {
+        var convoDate_1 = Date.now(), currentUserContact_1 = {
+            id: req.user._id.toString(),
+            name: req.user.username,
+            join_date: convoDate_1
+        };
+        stitchClient.login()
+            .then(function onFulfilled() {
+            console.log('Creating conversation for:', req.body.name, ',', req.user.username);
+            req.body.join_date = convoDate_1;
+            return Conversations.insertOne({
+                date: convoDate_1,
+                participants: [
+                    currentUserContact_1,
+                    req.body
+                ],
+                name: req.body.name + ',' + currentUserContact_1.name,
+                pitureUrl: '',
+                messages: []
+            });
+        }, function onRejected(reason) {
+            console.log('Login failed');
+            return res.sendStatus(500);
+        })
+            .then(function onFulfilled(newConvo) {
+            console.log('Created conversation', newConvo.insertedIds[0].toString());
+            console.log('Making friends', req.body.name, '<-->', req.user.username);
+            // remove contact from pending friend requests
+            // add each user as friend of each other
+            var userUpdated = Users.updateOne({ _id: req.user._id }, {
+                $pull: { requests: { id: req.params.contactId } },
+                $push: { friends: req.body, conversations: newConvo.insertedIds[0].toString() }
+            });
+            var friendUpdated = Users.updateOne({ _id: { $oid: req.body.id } }, {
+                $push: { friends: currentUserContact_1, conversations: newConvo.insertedIds[0].toString() }
+            });
+            return Promise.all([userUpdated, friendUpdated]);
+            // res.sendStatus(200);
+        }, function onRejected() {
+            console.log('Creating conversation failed');
+            return res.sendStatus(500);
+        })
+            .then(function onFulfilled(updated) {
+            console.log('Updated friend list.', updated);
+            return res.send({});
+        }, function onRejected(reason) {
+            console.log('Accept friend request failed', reason);
+            return res.sendStatus(500);
+        })["catch"](function (err) { return err; });
+    }
+    else {
+        return res.sendStatus(403);
+    }
+});
+//+++++++++++++++++HANDLE PUT TO API/USERS/FRIENDREQUEST+++++++++++++++++++++++++++++++
+// router.get('/friendRequest', function routeHandler(req, res, next){
+//     console.log('Getting friend requests', req.body.name );
+//     if( req.isAuthenticated() ){
+//         stitchClient.login()
+//             .then(
+//                 function onFulfilled(){
+//                     console.log('Request user friend requests', )
+//                     return
+//                 },
+//                 function onRejected( reason ){
+//                     console.log('Login failed');
+//                     return res.sendStatus(500);
+//                 }
+//             )
+//             .catch( err => err)
+//     } else {
+//         return res.sendStatus(403);
+//     }
+// } );
 exports["default"] = router;

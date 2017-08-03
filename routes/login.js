@@ -29,7 +29,8 @@ router.post('/', function routeHandler(req, res, next) {
                 username: user.username,
                 email: user.email,
                 friends: user.friends,
-                conversations: user.conversations
+                conversations: user.conversations,
+                requests: user.requests
             });
         });
     })(req, res, next);
