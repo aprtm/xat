@@ -48,6 +48,7 @@ export class ManagerComponent implements OnInit {
   }
 
   onFriendSelected( friend ){
+    console.log('Retrieve conversation',friend.conversation_id,'with',friend.name)
       this.conversationsService.getConversation(friend.conversation_id).subscribe(
         ( convo )=>{ 
           this.selectedConversation = convo.json().conversation;

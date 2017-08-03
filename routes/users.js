@@ -147,6 +147,8 @@ router.put('/friends', function routeHandler(req, res, next) {
             .then(function onFulfilled(newConvo) {
             console.log('Created conversation', newConvo.insertedIds[0].toString());
             console.log('Making friends', req.body.name, '<-->', req.user.username);
+            req.body.conversation_id = newConvo.insertedIds[0].toString();
+            currentUserContact_1.conversation_id = newConvo.insertedIds[0].toString();
             // remove contact from pending friend requests
             // add each user as friend of each other
             var userUpdated = Users.updateOne({ _id: req.user._id }, {

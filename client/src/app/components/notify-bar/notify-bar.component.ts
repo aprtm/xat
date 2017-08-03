@@ -23,7 +23,7 @@ class FriendRequest{
   styleUrls: ['./notify-bar.component.css']
 })
 export class NotifyBarComponent implements OnInit {
-  @Output() newFriend = new EventEmitter<Contact>();
+  // @Output() newFriend = new EventEmitter<Contact>();
 
   private notifications:FriendRequest[] = [];
   private viewNotifications:boolean = false;
@@ -63,7 +63,7 @@ export class NotifyBarComponent implements OnInit {
       ( res )=>{
         console.log( 'Request arrived to the server');
         this.notifications.splice(notificationIndex, 1);
-        this.newFriend.emit( contact );
+        // this.newFriend.emit( contact );
       },
       err=>err
     );
