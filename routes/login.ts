@@ -33,6 +33,7 @@ router.post('/', function routeHandler(req, res, next){
             return res.send( {
                 _id: user._id,
                 username: user.username,
+                pictureUrl: user.pictureUrl,
                 email: user.email,
                 friends: user.friends,
                 conversations: user.conversations,

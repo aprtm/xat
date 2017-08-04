@@ -15,7 +15,7 @@ export class SessionService {
     this.session.user = user;
     this.session.user._id = user._id['$oid'];
     this.session.active = true;
-    console.log( 'User in session: ', this.session.user.username )
+    console.log( 'User in session: ', this.session.user );
   }
 
   updateSession( onComplete?:()=>any ){

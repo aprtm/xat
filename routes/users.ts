@@ -174,7 +174,7 @@ router.put('/friends', function routeHandler(req, res, next){
     if( req.isAuthenticated() ){
 
         let convoDate:number = Date.now(),
-        currentUserContact:{id:string, name:string, join_date:number, conversation_id?:string} = {
+        currentUserContact:{id:string, name:string, join_date:number, conversation_id?:string, pictureUrl?:string} = {
             id: req.user._id.toString(),
             name: req.user.username,
             join_date: convoDate
@@ -187,6 +187,7 @@ router.put('/friends', function routeHandler(req, res, next){
                     console.log('Creating conversation for:',req.body.name,',',req.user.username);
 
                     req.body.join_date = convoDate;
+                    
                     
                     return Conversations.insertOne(
                         {
@@ -211,9 +212,10 @@ router.put('/friends', function routeHandler(req, res, next){
                 function onFulfilled( newConvo ){
                     console.log( 'Created conversation',newConvo.insertedIds[0].toString() );
                     console.log( 'Making friends',req.body.name,'<-->',req.user.username );
-                    
+                    console.log( 'Requestee', req.body );
                     req.body.conversation_id = newConvo.insertedIds[0].toString();
-                    currentUserContact.conversation_id = newConvo.insertedIds[0].toString()
+                    currentUserContact.conversation_id = newConvo.insertedIds[0].toString();
+                    currentUserContact.pictureUrl = req.user.pictureUrl;
                     // remove contact from pending friend requests
                     // add each user as friend of each other
                     let userUpdated = Users.updateOne(
