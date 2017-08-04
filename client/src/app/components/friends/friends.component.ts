@@ -40,33 +40,17 @@ export class FriendsComponent implements OnInit {
 
   startFriendList(){
 
-    this.friends.forEach( (friend,i) => {
-      
-      console.log('forEAchScope', friend === this.friends[i]);
-      console.log( 'Subscribe to message notifications from', friend.name );
-      console.dir(this);
-
       this.socketService.messageObservable.subscribe(
         ( msg:Message )=>{
 
-          console.dir(this);
-          console.dir(this.friends);
-
-          if( this.selectedFriend && this.selectedFriend.id == msg.author_id ){
-              console.log('Class off!');
-              friend.hasNewMessage = false;
-          }else if( msg.author_id == friend.id ){
-              friend.hasNewMessage = true;
-              console.log(friend.id)
-              // this.friends[i].hasNewMessage = true;
-              console.log( this.friends[i].id );
-              console.log(friend, 'VS', this.friends[i], friend === this.friends[i] );
+          for( let f = 0; f<this.friends.length; f++){
+            if( this.friends[f].id == msg.author_id ){
+              this.friends[f].hasNewMessage = true;
+            }
           }
         },
         err => err
       );
-
-    });
 
   }
 
