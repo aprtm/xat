@@ -137,7 +137,7 @@ router.put('/friends', function routeHandler(req, res, next) {
                     req.body
                 ],
                 name: req.body.name + ',' + currentUserContact_1.name,
-                pitureUrl: '',
+                pictureUrl: '',
                 messages: []
             });
         }, function onRejected(reason) {
@@ -151,10 +151,8 @@ router.put('/friends', function routeHandler(req, res, next) {
             req.body.conversation_id = newConvo.insertedIds[0].toString();
             currentUserContact_1.conversation_id = newConvo.insertedIds[0].toString();
             currentUserContact_1.pictureUrl = req.user.pictureUrl;
-            // remove contact from pending friend requests
-            // add each user as friend of each other
             var userUpdated = Users.updateOne({ _id: req.user._id }, {
-                $pull: { requests: { id: req.params.contactId } },
+                $pull: { requests: { id: req.body.id } },
                 $push: { friends: req.body, conversations: newConvo.insertedIds[0].toString() }
             });
             var friendUpdated = Users.updateOne({ _id: { $oid: req.body.id } }, {

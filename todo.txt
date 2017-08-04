@@ -29,6 +29,8 @@ Server
 - Validate document before inserting it into the database
 - Handle GET user through /api/users. Should return everything but the password
 - check if socket.io can be moved outside
+- validate adding yourself as friend request
+- should not have same friend request twice
 
 Database
 - Validate before inserting

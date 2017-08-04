@@ -63,7 +63,7 @@ export class UsersService {
   }
 
   acceptFriendRequest( friend:Contact ){
-    console.log('accept', friend );
+    console.log('user service accept', friend );
     return this.http.put('/api/users/friends',friend,{headers:this.header} );
   }
 

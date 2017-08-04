@@ -24,6 +24,8 @@ export class FriendsComponent implements OnInit {
   private selectedFriend:Friend|null = null;
   private unfriendables:string[] = [];
 
+  private currentUser;
+
   constructor(  private usersService:UsersService,
                 private sessionService:SessionService,
                 private socketService:SocketService ) { }
@@ -32,22 +34,13 @@ export class FriendsComponent implements OnInit {
     this.startFriendList();
     this.unfriendables.push( this.sessionService.getSession().user.username );
     this.unfriendables.push( this.sessionService.getSession().user.email );
+
+    this.currentUser = this.sessionService.getUserAsContact();
   }
 
   startFriendList(){
 
     this.friends.forEach( friend => {
-
-      // console.log( 'Updating data for', friend.name );
-      // this.usersService.getUser( friend.id ).subscribe(
-      //   ( user ) => {
-      //     friend.pictureUrl =
-      //       (<Friend>user.json()).pictureUrl
-      //         || 'http://lorempixel.com/45/45/people/';
-      //     console.log( friend.name,'updated.' );
-      //   },
-      //   ( err ) => err
-      // );
 
       console.log( 'Subscribe to message notifications from', friend.name );
       this.socketService.messageObservable.subscribe(

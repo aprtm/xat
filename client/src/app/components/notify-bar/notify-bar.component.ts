@@ -1,4 +1,4 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 import { SessionService } from '../../services/session.service';
 import { SocketService } from '../../services/socket.service';
@@ -23,6 +23,7 @@ class FriendRequest{
   styleUrls: ['./notify-bar.component.css']
 })
 export class NotifyBarComponent implements OnInit {
+  @Output() newFriendAdded = new EventEmitter<Contact>();
 
   private notifications:FriendRequest[] = [];
   private viewNotifications:boolean = false;
@@ -61,7 +62,8 @@ export class NotifyBarComponent implements OnInit {
         console.log( 'Request arrived at the server');
         this.socketService.confirmNewFriend( contact, this.sessionService.getUserAsContact() );
         this.notifications.splice(notificationIndex, 1);
-        //close notification window length is 0
+        this.newFriendAdded.emit( contact );
+        //close notification window if notifications length is 0
       },
       err=>err
     );

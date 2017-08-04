@@ -22,7 +22,7 @@ export class SessionService {
     this.usersService.getUser( this.session.user._id ).subscribe(
       ( resp ) => {
         this.session.user = resp.json();
-        console.log('Updated user session correctly.');
+        this.session.user._id = resp.json()._id['$oid'];
         onComplete && onComplete();
         return this.session;
       },

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 
 import { SessionService } from '../../services/session.service';
 import { UsersService } from '../../services/users.service';
@@ -15,13 +15,14 @@ import { Conversation, Participant, Message } from '../../interfaces/Conversatio
   styleUrls: ['./manager.component.css']
 })
 export class ManagerComponent implements OnInit {
+  @Input() newFriend:Contact;
 
   private lists = [
     {name:'Friends', userKey:'friends'},
     {name:'Chats', userKey:'conversations'}
   ]
 
-  private listItems:Contact[]|Conversation[];
+  private listItems:Contact[]|Conversation[] = [];
   private currentList = this.lists[0];
 
   private selectedConversation:Conversation|null;
@@ -46,6 +47,14 @@ export class ManagerComponent implements OnInit {
       err=>err
     );
 
+  }
+
+  ngOnChanges( changes ){
+    if( changes['newFriend'] ){
+      this.sessionService.updateSession(()=>{
+        this.updateListItems();
+      });
+    }
   }
 
   switchList( index:number ){
