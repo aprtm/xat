@@ -22,7 +22,7 @@ export class FriendsComponent implements OnInit {
   @Output() onSelected = new EventEmitter<Contact>();
 
   private selectedFriend:Friend|null = null;
-
+  private unfriendables:string[] = [];
 
   constructor(  private usersService:UsersService,
                 private sessionService:SessionService,
@@ -30,7 +30,8 @@ export class FriendsComponent implements OnInit {
 
   ngOnInit() {
     this.startFriendList();
-    
+    this.unfriendables.push( this.sessionService.getSession().user.username );
+    this.unfriendables.push( this.sessionService.getSession().user.email );
   }
 
   startFriendList(){

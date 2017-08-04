@@ -22,6 +22,7 @@ import { SessionGuard } from './guards/session.guard';
 import { FriendsComponent } from './components/friends/friends.component';
 import { ChatsComponent } from './components/chats/chats.component';
 import { NotifyBarComponent } from './components/notify-bar/notify-bar.component';
+import { TextEqualValidatorDirective } from './directives/text-equal-validator.directive';
 
 const appRoutes:Routes = [
   { path:'', component:HomeComponent, canActivate:[SessionGuard] },
@@ -46,7 +47,8 @@ const appRoutes:Routes = [
     ManagerComponent,
     FriendsComponent,
     ChatsComponent,
-    NotifyBarComponent
+    NotifyBarComponent,
+    TextEqualValidatorDirective
   ],
   imports: [
     BrowserModule,

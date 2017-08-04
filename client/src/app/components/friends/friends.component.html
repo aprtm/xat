@@ -1,7 +1,11 @@
 <form #friendForm="ngForm" (ngSubmit)="onFormSubmit(friendForm)" novalidate>
     <label for="nameOfFriend">Friend request to: </label>
-    <input type="text" name="friendToBe" id="nameOfFriend" ngModel>
-    <button name="request">Request</button>
+    <input type="text" name="friendToBe" id="nameOfFriend" [textEqual]="unfriendables" required ngModel>
+    <div *ngIf="friendForm.hasError('textEqual','friendToBe')">Oops, that is you.</div>
+    
+    <!-- cannot check errors array directly -->
+    
+    <button name="request" [hidden]="friendForm.invalid" >Request</button>
 </form>
 
 <div *ngIf="friends.length" id="friends-list">
