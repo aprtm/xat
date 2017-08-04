@@ -12,7 +12,8 @@
 
 <!-- TODO: could replace this with a <friend> component -->
   <div (click)="openChat(i)" class="friend-card" *ngFor="let friend of friends; let i = index" [ngClass]="friend.hasNewMessage?'has-new-message':''">
-
+<div *ngIf="friend.hasNewMessage"> HAS?</div>
+<div *ngIf="!friend.hasNewMessage"> HAS NOT?</div>
     <div class="friendProfileCard" >
         <div><img [src]="friend.pictureUrl" alt=""></div>
         <div><span>User {{friend.name}}</span></div>
