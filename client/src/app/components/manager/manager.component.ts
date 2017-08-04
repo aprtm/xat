@@ -35,6 +35,17 @@ export class ManagerComponent implements OnInit {
   ngOnInit() {
     this.currentList = this.lists[0];
     this.updateListItems();
+
+    this.socketService.newFriendObservable.subscribe(
+      ( newFriend )=>{
+        this.sessionService.updateSession( ()=>{
+          console.log( 'Updated friend list to include', newFriend )
+          this.updateListItems();
+        } );
+      },
+      err=>err
+    );
+
   }
 
   switchList( index:number ){
@@ -58,13 +69,5 @@ export class ManagerComponent implements OnInit {
         ( err ) => err
       )
   }
-
-  // getUserData(){
-  //   this.usersService.getUser( this.sessionService.getSession().user._id ).subscribe(
-  //     ( user ) => console.log( 'Got user data:', user ),
-  //     ( err ) => err,
-  //     ( ) => console.log('Done!')
-  //   );
-  // }
 
 }

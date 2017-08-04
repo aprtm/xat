@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 
 import { SessionService } from '../../services/session.service';
 import { SocketService } from '../../services/socket.service';
@@ -23,7 +23,6 @@ class FriendRequest{
   styleUrls: ['./notify-bar.component.css']
 })
 export class NotifyBarComponent implements OnInit {
-  // @Output() newFriend = new EventEmitter<Contact>();
 
   private notifications:FriendRequest[] = [];
   private viewNotifications:boolean = false;
@@ -56,14 +55,13 @@ export class NotifyBarComponent implements OnInit {
   }
 
   acceptRequest( notificationIndex:number ){
-    console.log('Index:',notificationIndex);
-    console.log('Array', this.notifications);
     let contact = this.notifications[notificationIndex].contact
     this.usersService.acceptFriendRequest( contact ).subscribe(
       ( res )=>{
-        console.log( 'Request arrived to the server');
+        console.log( 'Request arrived at the server');
+        this.socketService.confirmNewFriend( contact, this.sessionService.getUserAsContact() );
         this.notifications.splice(notificationIndex, 1);
-        // this.newFriend.emit( contact );
+        //close notification window length is 0
       },
       err=>err
     );
@@ -75,6 +73,7 @@ export class NotifyBarComponent implements OnInit {
       ()=>{
         console.log('Successfully removed request.');
         this.notifications.splice(notificationIndex, 1);
+        //close notification window length is 0
       },
       err => err
     );

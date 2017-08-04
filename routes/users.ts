@@ -44,7 +44,7 @@ router.get('/:id', function routeHandler(req, res, next){
                             _id: users[0]._id,
                             username: users[0].username,
                             email: users[0].email,
-                            pictureUrl: users[0].picture,
+                            pictureUrl: users[0].pictureUrl,
                             friends: users[0].friends,
                             conversations: users[0].conversations
                         } );

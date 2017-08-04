@@ -37,7 +37,7 @@ var io = require('socket.io')(server);
 var usersNsp = io.of('/users');
 usersNsp.on('connection', usersConnection);
 
-io.on('connection', onConnection);
+// io.on('connection', onConnection);
 
 
 /**
@@ -104,28 +104,34 @@ function onListening() {
 /**
  * Event listener for socket connections
  */
-function onConnection(socket){
 
-  console.log('Connecting...')
-  
-  socket.on('userConnected', (userId) => {
+/*
+  function onConnection(socket){
 
-  });
+    console.log('Connecting...')
+    
+    socket.on('userConnected', (userId) => {
 
-  socket.on('userDisconnected', (username)=> console.log(username, 'user disconnected.') );
-  
-  socket.on('disconnect', (reason)=>console.log(reason) );
+    });
 
-  socket.on('chat message', (msg) => {
-    console.log(msg);
-    io.emit('chat message', msg);
-  } );
-  
-}
+    socket.on('userDisconnected', (username)=> console.log(username, 'user disconnected.') );
+    
+    socket.on('disconnect', (reason)=>console.log(reason) );
+
+    socket.on('chat message', (msg) => {
+      console.log(msg);
+      io.emit('chat message', msg);
+    } );
+    
+  }
+  */
 
 function usersConnection( socket ){
   console.log('New connection with the Users namespace.');
   
+  socket.on('userDisconnected', function onUserDisconnection( username ){
+    console.log( username,'disconnected');
+  })
 
   socket.on('userConnected', function onUserConnection( user ){
 
@@ -169,5 +175,10 @@ function usersConnection( socket ){
     socket.to(toContact.id).emit('friendRequest', fromContact);
     console.log(toContact.name, 'notification sent.');
   });
+
+   socket.on('friendRequestAccepted', function({requester, requestee}){
+    console.log(requestee.name,'accepted', requester.name );
+    socket.to(requester.id).emit('friendRequestAccepted', requestee);
+  }); 
 
 }

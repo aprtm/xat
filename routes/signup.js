@@ -29,6 +29,7 @@ router.post('/', function onPost(req, res, next) {
             return Users.insertOne({
                 username: user.username,
                 password: user.hash,
+                pictureUrl: 'http://lorempixel.com/45/45/people/',
                 email: req.body.email,
                 friends: [],
                 conversations: [],

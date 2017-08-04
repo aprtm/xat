@@ -19,8 +19,9 @@ export class AppComponent implements OnInit {
   }
   
   logout(){
+    let username = this.sessionService.getSession().user.username;
+    this.socketService.disconnect( username );
     this.sessionService.endSession();
-    this.socketService.disconnect( this.sessionService.getSession().user.username )
     this.router.navigateByUrl('/login');
   }
 

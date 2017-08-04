@@ -14,6 +14,7 @@ export class SocketService {
   private _friendObservable:Observable<Contact>
   private _messageObservable:Observable<Message>
   private _friendRequestObservable:Observable<Contact>
+  private _newFriendObservable:Observable<Contact>
 
   private socket:SocketIOClient.Socket;
   //should transform to use getters and setters
@@ -44,6 +45,12 @@ export class SocketService {
       } );
     } );
 
+    this._newFriendObservable = new Observable( (observer)=>{
+      this.socket.on('friendRequestAccepted', ( friend )=>{
+        console.log(friend.name, 'accepted your request!');
+        observer.next( friend );
+      } );
+    } );
   }
 
   get friendObservable(){
@@ -58,20 +65,23 @@ export class SocketService {
     return this._friendRequestObservable;
   }
 
+  get newFriendObservable(){
+    return this._newFriendObservable;
+  }
+
   connect( user:User ){
-    if( !this.socket ){
-      this.socket = io('http://localhost:3000/users');
-    }
+    this.socket = io('http://localhost:3000/users' );
 
     this.socket.emit('userConnected', user);
 
     return this.socket;
   }
 
-  disconnect( username='anon' ){
+  disconnect( username ){
     if( this.socket ){
       this.socket.emit('userDisconnected', username);
       this.socket = this.socket.disconnect();
+      
       // this.socket = null;
     }
     return this.socket;
@@ -103,6 +113,16 @@ export class SocketService {
       console.log(toContact.name, 'got the friend request.');
     }else{
       console.log('Socket not available to notify friend request.');
+      return null;
+    }
+  }
+
+  confirmNewFriend( requester:Contact, requestee:Contact ){
+    if( this.socket ){
+      this.socket.emit('friendRequestAccepted', {requester, requestee} );
+      console.log( requester.name, 'and', requestee.name, 'can chat now.' );
+    }else{
+      console.log('Socket not available to confirm new friend.');
       return null;
     }
   }
