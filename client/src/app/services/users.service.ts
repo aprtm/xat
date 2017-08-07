@@ -66,7 +66,6 @@ export class UsersService {
     console.log('user service accept', friend );
     return this.http.put('/api/users/friends',friend,{headers:this.header} );
   }
-
   // getFriendRequests(){
   //   return this.http.get('/api/users/friendRequest');
   // }

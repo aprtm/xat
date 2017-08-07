@@ -1,3 +1,45 @@
-<p>
-  chats works!
-</p>
+<!-- <form #chatsForm="ngForm" (ngSubmit)="onFormSubmit(chatsForm)" novalidate>
+    
+  <label for="nameOfFriend">Invite a friend:</label>
+  <input type="text" name="friendToJoin" id="nameOfFriend" [textEqual]="uninvitables" required ngModel>
+
+  <div *ngIf="chatsForm.hasError('textEqual','friendToJoin')">Already invited or in current chat.</div>
+
+  <button [disabled]=chatsForm.invalid (click)="addToInvitations( chatsForm.value.friendToJoin )">Add</button>
+
+  <span>Invitations</span>
+  <ul name="chatInvitations" id="currentInvitations">
+    <li *ngFor='let invitation of invitations; let i = index'>
+      {{ invitation.name }} <div (click)="uninvite( i )">✕</div>
+    </li>
+  </ul>
+
+  <button name="request" [hidden]="chatsForm.invalid" [disabled]="chatsForm.invalid"
+          (click)="createNewChat( invitations )" >
+          Create!
+  </button>
+  
+  <button *ngIf="selectedChat" name="request"
+          [hidden]="chatsForm.invalid" [disabled]="chatsForm.invalid" 
+          (click)="inviteToChat( invitations, selectedChat )" >
+          Invite!
+  </button>
+
+</form> -->
+
+
+<div *ngIf="chats.length" id="chats-list">
+
+<!-- TODO: could replace this with a <chat> component -->
+  <div (click)="openChat(i)" class="chat-card" *ngFor="let chat of chats; let i = index" [ngClass]="chat.hasNewMessage?'has-new-message':''">
+    <div class="chatProfileCard" >
+        <div><img [src]="chat.pictureUrl" alt=""></div>
+        <div><span>Chat {{chat.name}}</span></div>
+    </div>
+   
+    <div class="chatCardOptions">
+    </div>
+
+  </div>
+
+</div>

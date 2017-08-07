@@ -180,12 +180,14 @@ router.put('/friends', function routeHandler(req, res, next){
     }
     if( req.isAuthenticated() ){
 
-        let convoDate:number = Date.now(),
-        currentUserContact:Friend = {
-            id: req.user._id.toString(),
-            name: req.user.username,
-            join_date: convoDate
-        };
+        let newConvoDate:number = Date.now(),
+            currentUserContact:Friend = {
+                id: req.user._id.toString(),
+                name: req.user.username,
+                join_date: newConvoDate
+            },
+            newConvoName:string = req.body.name+','+currentUserContact.name,
+            newConvoPicture:string = 'http://lorempixel.com/45/45/abstract/';
 
         stitchClient.login()
 
@@ -193,18 +195,18 @@ router.put('/friends', function routeHandler(req, res, next){
                 function onFulfilled(){
                     console.log('Creating conversation for:',req.body.name,',',req.user.username);
 
-                    req.body.join_date = convoDate;
+                    req.body.join_date = newConvoDate;
                     
                     
                     return Conversations.insertOne(
                         {
-                            date: convoDate,
+                            date: newConvoDate,
                             participants:[
                                 currentUserContact,
                                 req.body
                             ],
-                            name: req.body.name+','+currentUserContact.name,
-                            pictureUrl: '',
+                            name: newConvoName,
+                            pictureUrl: newConvoPicture,
                             messages: []
                         }
                     )
@@ -219,16 +221,22 @@ router.put('/friends', function routeHandler(req, res, next){
                 function onFulfilled( newConvo ){
                     console.log( 'Created conversation',newConvo.insertedIds[0].toString() );
                     console.log( 'Making friends',req.body.name,'<-->',req.user.username );
-                    console.log( 'Requestee', req.body );
+                    
                     req.body.conversation_id = newConvo.insertedIds[0].toString();
                     currentUserContact.conversation_id = newConvo.insertedIds[0].toString();
                     currentUserContact.pictureUrl = req.user.pictureUrl;
+
+                    let createdConvo = {
+                        id: newConvo.insertedIds[0].toString(),
+                        name: newConvoName,
+                        pictureUrl: newConvoPicture
+                    }
                     
                     let userUpdated = Users.updateOne(
                         { _id : req.user._id },
                         {
                             $pull : { requests: { id: req.body.id } },
-                            $push : { friends: req.body, conversations: newConvo.insertedIds[0].toString() },
+                            $push : { friends: req.body, conversations: createdConvo },
 
                         } 
                     );
@@ -236,7 +244,7 @@ router.put('/friends', function routeHandler(req, res, next){
                     let friendUpdated = Users.updateOne(
                         { _id : {$oid:req.body.id} },
                         {
-                            $push : { friends: currentUserContact, conversations: newConvo.insertedIds[0].toString() },
+                            $push : { friends: currentUserContact, conversations: createdConvo },
                         }
                     );
 

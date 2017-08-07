@@ -6,7 +6,7 @@ import { ConversationsService } from '../../services/conversations.service';
 import { SocketService } from '../../services/socket.service';
 
 import { User, Contact } from '../../interfaces/Users';
-import { Conversation, Participant, Message } from '../../interfaces/Conversations';
+import { Conversation, Participant, Message, Room } from '../../interfaces/Conversations';
 
 
 @Component({
@@ -67,9 +67,10 @@ export class ManagerComponent implements OnInit {
     this.listItems = this.sessionService.getSession().user[this.currentList.userKey];
   }
 
-  onFriendSelected( friend ){
-    console.log('Retrieve conversation',friend.conversation_id,'with',friend.name)
-      this.conversationsService.getConversation(friend.conversation_id).subscribe(
+  onElementSelected( element ){
+    console.log('Chat',element.name);
+    let convoId = element.conversation_id ? element.conversation_id:element.id;
+      this.conversationsService.getConversation( convoId ).subscribe(
         ( convo )=>{ 
           this.selectedConversation = convo.json().conversation;
           this.currentMessages = convo.json().messages;
@@ -78,5 +79,6 @@ export class ManagerComponent implements OnInit {
         ( err ) => err
       )
   }
+
 
 }

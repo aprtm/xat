@@ -121,23 +121,23 @@ router["delete"]('/friendRequest/:contactId', function routeHandler(req, res, ne
 router.put('/friends', function routeHandler(req, res, next) {
     console.log('Add friend', req.body.name);
     if (req.isAuthenticated()) {
-        var convoDate_1 = Date.now(), currentUserContact_1 = {
+        var newConvoDate_1 = Date.now(), currentUserContact_1 = {
             id: req.user._id.toString(),
             name: req.user.username,
-            join_date: convoDate_1
-        };
+            join_date: newConvoDate_1
+        }, newConvoName_1 = req.body.name + ',' + currentUserContact_1.name, newConvoPicture_1 = 'http://lorempixel.com/45/45/abstract/';
         stitchClient.login()
             .then(function onFulfilled() {
             console.log('Creating conversation for:', req.body.name, ',', req.user.username);
-            req.body.join_date = convoDate_1;
+            req.body.join_date = newConvoDate_1;
             return Conversations.insertOne({
-                date: convoDate_1,
+                date: newConvoDate_1,
                 participants: [
                     currentUserContact_1,
                     req.body
                 ],
-                name: req.body.name + ',' + currentUserContact_1.name,
-                pictureUrl: '',
+                name: newConvoName_1,
+                pictureUrl: newConvoPicture_1,
                 messages: []
             });
         }, function onRejected(reason) {
@@ -147,16 +147,20 @@ router.put('/friends', function routeHandler(req, res, next) {
             .then(function onFulfilled(newConvo) {
             console.log('Created conversation', newConvo.insertedIds[0].toString());
             console.log('Making friends', req.body.name, '<-->', req.user.username);
-            console.log('Requestee', req.body);
             req.body.conversation_id = newConvo.insertedIds[0].toString();
             currentUserContact_1.conversation_id = newConvo.insertedIds[0].toString();
             currentUserContact_1.pictureUrl = req.user.pictureUrl;
+            var createdConvo = {
+                id: newConvo.insertedIds[0].toString(),
+                name: newConvoName_1,
+                pictureUrl: newConvoPicture_1
+            };
             var userUpdated = Users.updateOne({ _id: req.user._id }, {
                 $pull: { requests: { id: req.body.id } },
-                $push: { friends: req.body, conversations: newConvo.insertedIds[0].toString() }
+                $push: { friends: req.body, conversations: createdConvo }
             });
             var friendUpdated = Users.updateOne({ _id: { $oid: req.body.id } }, {
-                $push: { friends: currentUserContact_1, conversations: newConvo.insertedIds[0].toString() }
+                $push: { friends: currentUserContact_1, conversations: createdConvo }
             });
             return Promise.all([userUpdated, friendUpdated]);
             // res.sendStatus(200);

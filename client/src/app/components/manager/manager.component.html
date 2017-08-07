@@ -7,8 +7,8 @@
     <div>{{currentList.name}}</div>
     
     <!-- <ng-template></ng-template> -->
-     <chat-friends [friends]="listItems" (onSelected)="onFriendSelected($event)"></chat-friends> 
-    <!-- <chat-chats *ngIf="currentList.name==='Chats'" [currentList]= ></chat-chats> -->
+    <chat-friends *ngIf="currentList.name==='Friends'" [friends]="listItems" (onSelected)="onElementSelected($event)"></chat-friends>
+    <chat-chats *ngIf="currentList.name==='Chats'" [chats]="listItems" (onSelected)="onElementSelected($event)"></chat-chats> 
 
 </div>
 <div id="chat-window-wrapper">

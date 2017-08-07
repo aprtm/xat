@@ -22,3 +22,9 @@ export interface Conversation {
     name:string
     messages:Message[]
 }
+
+export interface Room{
+    id:string
+    name:string,
+    pictureUrl:string
+}
