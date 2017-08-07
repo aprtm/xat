@@ -30,7 +30,7 @@ Server
 - Handle GET user through /api/users. Should return everything but the password
 - check if socket.io can be moved outside
 - validate adding yourself as friend request
-- should not have same friend request twice
+- Prevent repeated friend requests from the same user
 
 Database
 - Validate before inserting
