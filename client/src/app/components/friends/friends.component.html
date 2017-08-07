@@ -5,15 +5,13 @@
     
     <!-- cannot check errors array directly -->
     
-    <button name="request" [hidden]="friendForm.invalid" >Request</button>
+    <button name="request" [hidden]="friendForm.invalid" [disabled]="friendForm.invalid">Request</button>
 </form>
 
 <div *ngIf="friends.length" id="friends-list">
 
 <!-- TODO: could replace this with a <friend> component -->
   <div (click)="openChat(i)" class="friend-card" *ngFor="let friend of friends; let i = index" [ngClass]="friend.hasNewMessage?'has-new-message':''">
-<div *ngIf="friend.hasNewMessage"> HAS?</div>
-<div *ngIf="!friend.hasNewMessage"> HAS NOT?</div>
     <div class="friendProfileCard" >
         <div><img [src]="friend.pictureUrl" alt=""></div>
         <div><span>User {{friend.name}}</span></div>

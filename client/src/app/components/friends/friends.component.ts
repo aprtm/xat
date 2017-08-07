@@ -22,7 +22,7 @@ export class FriendsComponent implements OnInit {
   @Output() onSelected = new EventEmitter<Contact>();
 
   private selectedFriend:Friend|null = null;
-  private unfriendables:string[] = [];
+  private unfriendables:string[];
 
   private currentUser;
 
@@ -32,8 +32,10 @@ export class FriendsComponent implements OnInit {
 
   ngOnInit() {
     this.startFriendList();
-    this.unfriendables.push( this.sessionService.getSession().user.username );
-    this.unfriendables.push( this.sessionService.getSession().user.email );
+    this.unfriendables = [
+      this.sessionService.getSession().user.username,
+      this.sessionService.getSession().user.email
+    ];
 
     this.currentUser = this.sessionService.getUserAsContact();
   }
@@ -44,6 +46,10 @@ export class FriendsComponent implements OnInit {
         ( msg:Message )=>{
 
           for( let f = 0; f<this.friends.length; f++){
+            if( this.selectedFriend && this.selectedFriend.id == msg.author_id ){
+              this.friends[f].hasNewMessage = false;
+              return;
+            }
             if( this.friends[f].id == msg.author_id ){
               this.friends[f].hasNewMessage = true;
             }
