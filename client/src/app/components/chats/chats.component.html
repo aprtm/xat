@@ -1,31 +1,38 @@
-<!-- <form #chatsForm="ngForm" (ngSubmit)="onFormSubmit(chatsForm)" novalidate>
+ <form #chatsForm="ngForm" novalidate>
     
-  <label for="nameOfFriend">Invite a friend:</label>
-  <input type="text" name="friendToJoin" id="nameOfFriend" [textEqual]="uninvitables" required ngModel>
+  <label for="nameOfFriend">Invite friend:</label>
+    <!-- TODO: CHANGE TO A SELECT_OPTION LIST OF FRIENDS -->
+    <input type="text" name="friendToJoin" id="nameOfFriend" ngModel>
+    <!-- <input type="text" name="friendToJoin" id="nameOfFriend" [textEqual]="uninvitables" required ngModel> -->
 
   <div *ngIf="chatsForm.hasError('textEqual','friendToJoin')">Already invited or in current chat.</div>
 
-  <button [disabled]=chatsForm.invalid (click)="addToInvitations( chatsForm.value.friendToJoin )">Add</button>
-
-  <span>Invitations</span>
-  <ul name="chatInvitations" id="currentInvitations">
-    <li *ngFor='let invitation of invitations; let i = index'>
-      {{ invitation.name }} <div (click)="uninvite( i )">✕</div>
-    </li>
-  </ul>
-
-  <button name="request" [hidden]="chatsForm.invalid" [disabled]="chatsForm.invalid"
-          (click)="createNewChat( invitations )" >
-          Create!
+  <button [hidden]="chatsForm.value.friendToJoin === ''"
+          [disabled]="chatsForm.invalid" (click)="addToInvitations( chatsForm )">
+    Add another
   </button>
-  
-  <button *ngIf="selectedChat" name="request"
+
+  <button *ngIf="selectedChat && friendInvitations.length" name="inviteChat"
           [hidden]="chatsForm.invalid" [disabled]="chatsForm.invalid" 
-          (click)="inviteToChat( invitations, selectedChat )" >
-          Invite!
+          (click)="inviteToChat( friendInvitations )" >
+    Invite
   </button>
 
-</form> -->
+  <button *ngIf="friendInvitations.length" name="createChat" [hidden]="chatsForm.invalid" [disabled]="chatsForm.invalid"
+          (click)="createNewChat()" >
+    New Chat
+  </button>
+        
+  <div id="invitations" *ngIf="friendInvitations.length">
+    <span>Invitations</span>
+      <ul name="chatInvitations" id="currentInvitations">
+        <li class="friend-invitation" *ngFor='let friend of friendInvitations; let i = index'>
+          {{ friend.name }} <span (click)="removeFromInvitations( i )">✕</span>
+        </li>
+      </ul>
+  </div>
+
+</form> 
 
 
 <div *ngIf="chats.length" id="chats-list">
@@ -38,6 +45,9 @@
     </div>
    
     <div class="chatCardOptions">
+      <ul>
+        <li>Leave</li>
+      </ul>
     </div>
 
   </div>

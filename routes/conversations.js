@@ -10,6 +10,45 @@ var db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
 var Conversations = db.collection('Conversations');
 var Messages = db.collection('Messages');
 var router = express.Router();
+router.post('/', function postConversation(req, res, next) {
+    var dateNow = Date.now();
+    var convoName = req.body.name + ' and friends';
+    console.log('Creating conversation ' + convoName, req.body);
+    if (req.isAuthenticated()) {
+        stitchClient.login()
+            .then(function onFulfilled() {
+            console.log('Logged in to DB.');
+            return Conversations.insertOne({
+                date: dateNow,
+                owner_id: req.user._id.toString(),
+                participants: [req.body],
+                name: convoName,
+                pictureUrl: 'http://lorempixel.com/45/45/abstract/',
+                messages: []
+            });
+        }, function onRejected(reason) {
+            console.log('Error connecting to DB.');
+            return res.sendStatus(reason);
+        })
+            .then(function onFulfilled(newConvoId) {
+            console.log('Created conversation', newConvoId.insertedIds[0].toString());
+            return Conversations.find({ _id: newConvoId.insertedIds[0] });
+        }, function onRejected(reason) {
+            console.log('Failed to create conversation.', reason);
+            return res.sendStatus(500);
+        })
+            .then(function onFulfilled(newConvos) {
+            console.log('New conversation:', newConvos[0]);
+            return res.send(newConvos[0]);
+        }, function onRejected(reason) {
+            console.log('Failed to create conversation.', reason);
+            return res.sendStatus(500);
+        })["catch"](function (err) { return err; });
+    }
+    else {
+        return res.sendStatus(403);
+    }
+});
 router.get('/:id', function getConversation(req, res, next) {
     console.log('Fetching conversation...', req.params.id);
     if (req.isAuthenticated) {
@@ -66,8 +105,8 @@ router.put('/:id/messages', function putMessage(req, res, next) {
             console.log('Trying to insert >', currentMsg.content, '< from', currentMsg.author_name);
             return Messages.insertOne(currentMsg);
         }, function onRejected(reason) {
-            console.log('Error connecting to DB.');
-            return res.sendStatus(reason);
+            console.log('Error connecting to DB.', reason);
+            return res.sendStatus(500);
         })
             .then(function onFulfilled(_a) {
             var insertedIds = _a.insertedIds;

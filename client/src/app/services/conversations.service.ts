@@ -10,13 +10,11 @@ export class ConversationsService {
   private header:Headers = new Headers( {'Content-Type':'application/json'} );
 
   constructor( private http:Http ) { }
-
-  createConversation( participants:Contact[] ){
-    let newConversation = {
-      date: Date.now(),
-      participants: participants
-    }
-    return this.http.post( '/api/conversations', newConversation, {headers:this.header} );
+  
+  createConversation( creator:Participant ){
+    //SEND ARRAY OF PARTICIPANTS
+    console.log('Service-New conversation with',creator);
+    return this.http.post( '/api/conversations', creator, {headers:this.header} );
   }
 
   getConversation( cId:string ){

@@ -1,7 +1,7 @@
 import { User, Contact } from './Users'
 
 export interface Participant extends Contact{
-    join_date:Date|number
+    join_date?:Date|number
 }
 
 export interface Message{

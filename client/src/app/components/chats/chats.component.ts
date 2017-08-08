@@ -4,13 +4,18 @@ import { FormsModule, NgForm } from '@angular/forms'
 import { SessionService } from '../../services/session.service';
 import { UsersService } from '../../services/users.service';
 import { SocketService } from '../../services/socket.service';
+import { ConversationsService } from '../../services/conversations.service';
 
 import { User, Contact } from '../../interfaces/Users';
-import { Conversation, Room } from '../../interfaces/Conversations'
+import { Conversation, Participant, Room } from '../../interfaces/Conversations'
 import { Message } from '../../interfaces/Conversations';
 
 interface Chat extends Room{
   hasNewMessage:boolean
+}
+interface Invitation{
+  friend:Contact,
+
 }
 
 @Component({
@@ -25,9 +30,12 @@ export class ChatsComponent implements OnInit {
   private selectedChat:Chat|null = null;
   private uninvitables:string[] = [];
 
+  private friendInvitations:Participant[] = [];
+
   constructor(  private usersService:UsersService,
                 private sessionService:SessionService,
-                private socketService:SocketService ) { }
+                private socketService:SocketService,
+                private conversationService: ConversationsService ) { }
 
   ngOnInit() {
     this.startChatList();
@@ -35,23 +43,23 @@ export class ChatsComponent implements OnInit {
     this.uninvitables.push( this.sessionService.getSession().user.username )
   }
 
-    startChatList(){
+startChatList(){
 
-      // this.socketService.messageObservable.subscribe(
-      //   ( msg:Message )=>{
+  // this.socketService.messageObservable.subscribe(
+  //   ( msg:Message )=>{
 
-      //     for( let f = 0; f<this.chat.length; f++){
-      //       if( this.selectedChat && this.selectedChat.id == msg.author_id ){
-      //         this.friends[f].hasNewMessage = false;
-      //         return;
-      //       }
-      //       if( this.friends[f].id == msg.author_id ){
-      //         this.friends[f].hasNewMessage = true;
-      //       }
-      //     }
-      //   },
-      //   err => err
-      // );
+  //     for( let f = 0; f<this.chat.length; f++){
+  //       if( this.selectedChat && this.selectedChat.id == msg.author_id ){
+  //         this.friends[f].hasNewMessage = false;
+  //         return;
+  //       }
+  //       if( this.friends[f].id == msg.author_id ){
+  //         this.friends[f].hasNewMessage = true;
+  //       }
+  //     }
+  //   },
+  //   err => err
+  // );
 
   }
 
@@ -82,6 +90,42 @@ export class ChatsComponent implements OnInit {
         this.onSelected.emit( this.chats[i] );
     }  
 
+  }
+
+  createNewChat( ){
+    console.log( 'Creating new chat with', this.friendInvitations );
+    this.conversationService.createConversation( this.sessionService.getUserAsContact() ).subscribe(
+      ( newConvo )=>{
+        console.log( 'Created conversation', (<Conversation>newConvo.json()).name );
+        // this.socketService.
+      },
+      err=>err
+    );
+  }
+
+  inviteToChat( invitedFriends ){
+    console.log( 'Inviting',invitedFriends,' to current chat',this.selectedChat );
+  }
+
+  addToInvitations( chatsForm:NgForm ){
+
+    let invited:Contact = this.sessionService.getSession().user.friends.find( (friend:Contact) =>{
+      return friend.name === chatsForm.value.friendToJoin ;
+    } );
+
+    let friend:Participant = {
+      id: invited.id,
+      name: invited.name
+    }
+
+    this.friendInvitations.push( friend );
+
+    chatsForm.controls.friendToJoin.reset();
+    
+  }
+
+  removeFromInvitations( friendIndex ){
+    this.friendInvitations.splice(friendIndex,1);
   }
 
 }
