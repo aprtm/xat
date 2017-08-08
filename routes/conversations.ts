@@ -18,6 +18,7 @@ let router = express.Router();
 router.post('/', function postConversation(req,res,next){
     const dateNow = Date.now();
     let convoName = req.body.name + ' and friends';
+    req.body.join_date = dateNow;
 
     console.log( 'Creating conversation ' + convoName, req.body );
 

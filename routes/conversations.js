@@ -13,6 +13,7 @@ var router = express.Router();
 router.post('/', function postConversation(req, res, next) {
     var dateNow = Date.now();
     var convoName = req.body.name + ' and friends';
+    req.body.join_date = dateNow;
     console.log('Creating conversation ' + convoName, req.body);
     if (req.isAuthenticated()) {
         stitchClient.login()
