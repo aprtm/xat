@@ -58,9 +58,13 @@ export class ManagerComponent implements OnInit {
   }
 
   switchList( index:number ){
-    this.currentList = this.lists[index];
-    this.updateListItems();
-    console.log( 'Viewing', this.currentList.name );
+    if( this.currentList.name !== this.lists[index].name ){
+      this.currentList = this.lists[index];
+      this.updateListItems();
+      console.log( 'Viewing', this.currentList.name );
+    }
+    else{ console.log('List already selected'); }
+    
   }
 
   updateListItems(){
