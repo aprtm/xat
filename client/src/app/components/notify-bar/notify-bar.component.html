@@ -1,5 +1,5 @@
 <div id="notification-text">
-  <div (click)="toggleNotifications()" >{{ notifications.length ? 'Pending friend requests' : 'No notifications' }}</div>
+  <div (click)="toggleNotifications()" >{{ notifications.length ? 'Pending requests' : 'No notifications' }}</div>
   <ul *ngIf="viewNotifications">
     <li *ngFor="let notification of notifications; let i = index">
       {{ notification.text }}

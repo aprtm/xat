@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 
 
 import { User, Contact } from '../interfaces/Users';
-import { Message } from '../interfaces/Conversations';
+import { Message, Room, Participant } from '../interfaces/Conversations';
 
 
 import * as io from 'socket.io-client';
@@ -15,6 +15,7 @@ export class SocketService {
   private _messageObservable:Observable<Message>
   private _friendRequestObservable:Observable<Contact>
   private _newFriendObservable:Observable<Contact>
+  private _chatInviteObservable:Observable<Contact>
 
   private socket:SocketIOClient.Socket;
   //should transform to use getters and setters
@@ -51,6 +52,14 @@ export class SocketService {
         observer.next( friend );
       } );
     } );
+
+    this._chatInviteObservable = new Observable( (observer)=>{
+      this.socket.on('chatInvitation', ( chatInvitation:Contact )=>{
+        console.log('Chat',chatInvitation.conversation_id,'invitation from', chatInvitation.name);
+        observer.next( chatInvitation );
+      });
+    })
+
   }
 
   get friendObservable(){
@@ -67,6 +76,10 @@ export class SocketService {
 
   get newFriendObservable(){
     return this._newFriendObservable;
+  }
+
+  get chatInviteObservable(){
+    return this._chatInviteObservable;
   }
 
   connect( user:User ){
@@ -119,10 +132,26 @@ export class SocketService {
 
   confirmNewFriend( requester:Contact, requestee:Contact ){
     if( this.socket ){
-      this.socket.emit('friendRequestAccepted', {requester, requestee} );
+      this.socket.emit( 'friendRequestAccepted', {requester, requestee} );
       console.log( requester.name, 'and', requestee.name, 'can chat now.' );
     }else{
       console.log('Socket not available to confirm new friend.');
+      return null;
+    }
+  }
+
+  sendChatInvitation(chat:Room, fromContact:Participant, toContact:Participant){
+    if( this.socket ){
+      let chatRequest = {
+          id: fromContact.id,
+          name: fromContact.name,
+          pictureUrl: fromContact.pictureUrl,
+          conversation_id: chat.id
+      }
+      this.socket.emit( 'chatInvitation', {chatRequest, toContact} );
+      console.log(fromContact.name, 'sent chat', chat.name, 'invitation to', toContact.name);
+    }else{
+      console.log('Socket not available to notify chat invitation.');
       return null;
     }
   }

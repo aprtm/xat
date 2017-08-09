@@ -8,11 +8,11 @@ import { UsersService } from '../../services/users.service';
 // import { Conversation, Message } from '../../interfaces/Conversations';
 import { Contact } from '../../interfaces/Users';
 
-class FriendRequest{
-  contact:Contact
+class Notification{
+  userRequest:Contact
   text:string
-  constructor(contact, text){
-    this.contact = contact;
+  constructor(usrRequest, text){
+    this.userRequest = usrRequest;
     this.text = text;
   }
 }
@@ -25,7 +25,7 @@ class FriendRequest{
 export class NotifyBarComponent implements OnInit {
   @Output() newFriendAdded = new EventEmitter<Contact>();
 
-  private notifications:FriendRequest[] = [];
+  private notifications:Notification[] = [];
   private viewNotifications:boolean = false;
 
   constructor(  private socketService:SocketService,
@@ -37,16 +37,28 @@ export class NotifyBarComponent implements OnInit {
     let usrRequests = this.sessionService.getSession().user.requests;
 
     if( usrRequests.length ){
-      usrRequests.forEach( ( contact )=>{
-        this.notifications.push( new FriendRequest( contact, contact.name+' wants to chat!' ) )
+      usrRequests.forEach( ( userRequest )=>{
+        if( userRequest.conversation_id ){
+          this.notifications.push( new Notification( userRequest,'Group invitation by '+userRequest.name) );  
+        }else{
+          this.notifications.push( new Notification( userRequest, userRequest.name+' wants to chat!' ) )
+        }
+        
       } );
     }
 
     this.socketService.friendRequestObservable.subscribe(
       ( requester:Contact )=>{
-        this.notifications.push( new FriendRequest( requester, requester.name+' wants to chat!' ) )
+        this.notifications.push( new Notification( requester, requester.name+' wants to chat!' ) )
       },
       err => err
+    );
+
+    this.socketService.chatInviteObservable.subscribe(
+      ( chatRequest )=>{
+        this.notifications.push( new Notification( chatRequest,'Group invitation by '+chatRequest.name) );
+      },
+      err=>err
     );
 
   }
@@ -56,21 +68,35 @@ export class NotifyBarComponent implements OnInit {
   }
 
   acceptRequest( notificationIndex:number ){
-    let contact = this.notifications[notificationIndex].contact
-    this.usersService.acceptFriendRequest( contact ).subscribe(
-      ( res )=>{
-        console.log( 'Request arrived at the server');
-        this.socketService.confirmNewFriend( contact, this.sessionService.getUserAsContact() );
-        this.notifications.splice(notificationIndex, 1);
-        this.newFriendAdded.emit( contact );
-        //close notification window if notifications length is 0
-      },
-      err=>err
-    );
+    let contact = this.notifications[notificationIndex].userRequest
+    if( contact.conversation_id ){
+      console.log( 'Accept chat invitation' );
+      // this.usersService.acceptChatInvitation( contact ).subscribe(
+      //   ( res )=>{
+          // console.log( 'Request arrived at the server');
+          // this.socketService.confirmNewFriend( contact, this.sessionService.getUserAsContact() );
+          // this.notifications.splice(notificationIndex, 1);
+          // this.newFriendAdded.emit( contact );
+          //close notification window if notifications length is 0
+      //   },
+      //   err=>err
+      // );
+    }else{
+      this.usersService.acceptFriendRequest( contact ).subscribe(
+        ( res )=>{
+          console.log( 'Accepted friend request');
+          this.socketService.confirmNewFriend( contact, this.sessionService.getUserAsContact() );
+          this.notifications.splice(notificationIndex, 1);
+          this.newFriendAdded.emit( contact );
+          //close notification window if notifications length is 0
+        },
+        err=>err
+      );
+    }
   }
 
   discardRequest( notificationIndex:number ){
-    let contact = this.notifications[notificationIndex].contact
+    let contact = this.notifications[notificationIndex].userRequest
     this.usersService.rejectFriendRequest( contact ).subscribe(
       ()=>{
         console.log('Successfully removed request.');

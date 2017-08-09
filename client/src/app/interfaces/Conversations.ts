@@ -16,10 +16,10 @@ export interface Message{
 
 export interface Conversation {
     _id:string
-    creator_id:string
     date:number
     participants:Participant[]
     name:string
+    pictureUrl:string
     messages:Message[]
 }
 

@@ -41,9 +41,14 @@ export class ChatsComponent implements OnInit {
     this.startChatList();
     this.uninvitables.push( this.sessionService.getSession().user.email )
     this.uninvitables.push( this.sessionService.getSession().user.username )
+    
   }
 
 startChatList(){
+
+  this.socketService.chatInviteObservable.subscribe( (invitation)=>{
+    console.log(invitation);
+  } );
 
   // this.socketService.messageObservable.subscribe(
   //   ( msg:Message )=>{
@@ -93,11 +98,30 @@ startChatList(){
   }
 
   createNewChat( ){
-    console.log( 'Creating new chat with', this.friendInvitations );
+    console.log( 'Creating new chat with', this.friendInvitations );    
     this.conversationService.createConversation( this.sessionService.getUserAsContact() ).subscribe(
-      ( newConvo )=>{
-        console.log( 'Created conversation', (<Conversation>newConvo.json()).name );
-        // this.socketService.
+      ( convoResp )=>{
+        let newConvo:Conversation = convoResp.json();
+        newConvo._id = newConvo._id['$oid'];
+        console.log( 'Created conversation', (newConvo) );
+
+        let newChat:Room = {
+          id: newConvo._id,
+          name: newConvo.name,
+          pictureUrl: newConvo.pictureUrl
+        };
+        
+        this.friendInvitations.forEach( friend =>{
+          this.usersService.sendChatInvitation( newChat, this.sessionService.getUserAsContact(), friend )
+            .subscribe(
+              ( inviteResp )=>{
+                console.log('Notifying',friend.name);;
+                this.socketService.sendChatInvitation( newChat, this.sessionService.getUserAsContact(), friend  );
+              },
+              err=>err
+            );
+        } );
+
       },
       err=>err
     );

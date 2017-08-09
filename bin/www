@@ -176,9 +176,18 @@ function usersConnection( socket ){
     console.log(toContact.name, 'notification sent.');
   });
 
-   socket.on('friendRequestAccepted', function({requester, requestee}){
+  socket.on('friendRequestAccepted', function({requester, requestee}){
     console.log(requestee.name,'accepted', requester.name );
     socket.to(requester.id).emit('friendRequestAccepted', requestee);
   }); 
+
+  socket.on('chatInvitation', function({chatRequest,toContact}){
+    console.log('Socket-',chatRequest.name,'sent invitation to group chat',chatRequest.conversation_id);
+
+    socket.to(toContact.id).emit('chatInvitation', chatRequest);
+    console.log('Invitation sent to', toContact.name);
+
+  });
+
 
 }

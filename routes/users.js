@@ -121,20 +121,24 @@ router["delete"]('/friendRequest/:contactId', function routeHandler(req, res, ne
 router.put('/friends', function routeHandler(req, res, next) {
     console.log('Add friend', req.body.name);
     if (req.isAuthenticated()) {
-        var newConvoDate_1 = Date.now(), currentUserContact_1 = {
-            id: req.user._id.toString(),
-            name: req.user.username,
-            join_date: newConvoDate_1
-        }, newConvoName_1 = req.body.name + ',' + currentUserContact_1.name, newConvoPicture_1 = 'http://lorempixel.com/45/45/abstract/';
+        var newConvoDate_1 = Date.now(), newConvoName_1 = req.body.name + ', ' + req.user.username, newConvoPicture_1 = 'http://lorempixel.com/45/45/abstract/';
         stitchClient.login()
             .then(function onFulfilled() {
             console.log('Creating conversation for:', req.body.name, ',', req.user.username);
-            req.body.join_date = newConvoDate_1;
+            var currentUser = {
+                id: req.user._id.toString(),
+                name: req.user.username,
+                join_date: newConvoDate_1
+            }, otherUser = {
+                id: req.body.id,
+                name: req.body.name,
+                join_date: newConvoDate_1
+            };
             return Conversations.insertOne({
                 date: newConvoDate_1,
                 participants: [
-                    currentUserContact_1,
-                    req.body
+                    currentUser,
+                    otherUser
                 ],
                 name: newConvoName_1,
                 pictureUrl: newConvoPicture_1,
@@ -147,22 +151,29 @@ router.put('/friends', function routeHandler(req, res, next) {
             .then(function onFulfilled(newConvo) {
             console.log('Created conversation', newConvo.insertedIds[0].toString());
             console.log('Making friends', req.body.name, '<-->', req.user.username);
-            req.body.conversation_id = newConvo.insertedIds[0].toString();
-            currentUserContact_1.conversation_id = newConvo.insertedIds[0].toString();
-            currentUserContact_1.pictureUrl = req.user.pictureUrl;
-            var createdConvo = {
+            var currentUser = {
+                id: req.user._id.toString(),
+                name: req.user.username,
+                pictureUrl: req.user.pictureUrl,
+                conversation_id: newConvo.insertedIds[0].toString()
+            }, otherUser = {
+                id: req.body.id,
+                name: req.body.name,
+                pictureUrl: req.body.pictureUrl,
+                conversation_id: newConvo.insertedIds[0].toString()
+            }, createdConvo = {
                 id: newConvo.insertedIds[0].toString(),
                 name: newConvoName_1,
                 pictureUrl: newConvoPicture_1
             };
-            var userUpdated = Users.updateOne({ _id: req.user._id }, {
+            var userUpdatedPromise = Users.updateOne({ _id: req.user._id }, {
                 $pull: { requests: { id: req.body.id } },
-                $push: { friends: req.body, conversations: createdConvo }
+                $push: { friends: otherUser, conversations: createdConvo }
             });
-            var friendUpdated = Users.updateOne({ _id: { $oid: req.body.id } }, {
-                $push: { friends: currentUserContact_1, conversations: createdConvo }
+            var friendUpdatedPromise = Users.updateOne({ _id: { $oid: req.body.id } }, {
+                $push: { friends: currentUser, conversations: createdConvo }
             });
-            return Promise.all([userUpdated, friendUpdated]);
+            return Promise.all([userUpdatedPromise, friendUpdatedPromise]);
             // res.sendStatus(200);
         }, function onRejected() {
             console.log('Creating conversation failed');
@@ -180,24 +191,45 @@ router.put('/friends', function routeHandler(req, res, next) {
         return res.sendStatus(403);
     }
 });
-//+++++++++++++++++HANDLE PUT TO API/USERS/FRIENDREQUEST+++++++++++++++++++++++++++++++
-// router.get('/friendRequest', function routeHandler(req, res, next){
-//     console.log('Getting friend requests', req.body.name );
-//     if( req.isAuthenticated() ){
-//         stitchClient.login()
-//             .then(
-//                 function onFulfilled(){
-//                     console.log('Request user friend requests', )
-//                     return
-//                 },
-//                 function onRejected( reason ){
-//                     console.log('Login failed');
-//                     return res.sendStatus(500);
-//                 }
-//             )
-//             .catch( err => err)
-//     } else {
-//         return res.sendStatus(403);
-//     }
-// } );
+//+++++++++++++++++HANDLE PUT TO API/USERS/CHATINVITATIONS+++++++++++++++++++++++++++++++
+router.post('/chatInvitation', function routeHandler(req, res, next) {
+    console.log('Chat', req.body.chat, 'from', req.body.host.name, 'to', req.body.friend.name);
+    var chatRequest = {
+        id: req.body.host.id,
+        name: req.body.host.name,
+        pictureUrl: req.body.host.pictureUrl,
+        conversation_id: req.body.chat.id
+    };
+    if (req.isAuthenticated()) {
+        stitchClient.login()
+            .then(function onFulfilled() {
+            console.log('DB Login. Update', req.body.friend.name, 'requests');
+            return Users.updateOne({ _id: { $oid: req.body.friend.id } }, {
+                $push: { requests: chatRequest }
+            });
+        }, function onRejected(reason) {
+            console.log('Login failed', reason);
+            return res.sendStatus(500);
+        })
+            .then(function onFulfilled(updatedUsers) {
+            if (updatedUsers.result.length) {
+                console.log('Invite added to', updatedUsers.result[0].username);
+                return res.send({
+                    id: updatedUsers.result[0]._id.toString(),
+                    name: updatedUsers.result[0].username
+                });
+            }
+            else {
+                console.log('User not found');
+                return res.sendStatus(204).send({});
+            }
+        }, function onRejected(reason) {
+            console.log('Error finding and updating friend user.', reason);
+            return res.sendStatus(304);
+        })["catch"](function (err) { return err; });
+    }
+    else {
+        return res.sendStatus(403);
+    }
+});
 exports["default"] = router;

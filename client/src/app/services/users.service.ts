@@ -3,8 +3,10 @@ import { Observable } from 'rxjs/Observable'
 import { Injectable } from '@angular/core';
 
 import { SocketService } from './socket.service'
+import { ConversationsService } from './conversations.service'
 
 import { Contact } from '../interfaces/Users'
+import { Room } from '../interfaces/Conversations'
 
 interface Candidate{
   username:string
@@ -16,7 +18,7 @@ interface Candidate{
 export class UsersService {
   private header:Headers = new Headers( {'Content-Type':'application/json'} )
   
-  constructor( public http:Http, private socketService:SocketService ) { 
+  constructor( public http:Http, private socketService:SocketService, private conversationsService:ConversationsService ) { 
     this.valueExists = this.valueExists.bind(this);
   }
 
@@ -63,11 +65,18 @@ export class UsersService {
   }
 
   acceptFriendRequest( friend:Contact ){
-    console.log('user service accept', friend );
+    console.log('user service->accept', friend );
     return this.http.put('/api/users/friends',friend,{headers:this.header} );
   }
-  // getFriendRequests(){
-  //   return this.http.get('/api/users/friendRequest');
-  // }
+  
+  sendChatInvitation( chat:Room, host:Contact ,friend:Contact ){
+    console.log('users Service->',host.name, 'invites to', chat.name);
+    return this.http.post('/api/users/chatInvitation', {chat, host, friend}, {headers:this.header})
+  }
+
+  acceptChatInvitation( contact:Contact ){
+    console.log('user service->accept chat', contact.conversation_id, 'from', contact.name );
+    return this.conversationsService.addParticipant(contact.conversation_id, contact);
+  }
 
 }
