@@ -14,10 +14,10 @@
   <div (click)="openChat(i)" class="friend-card" *ngFor="let friend of friends; let i = index" [ngClass]="friend.hasNewMessage?'has-new-message':''">
     <div class="friendProfileCard" >
         <div><img [src]="friend.pictureUrl" alt=""></div>
-        <div><span>User {{friend.name}}</span></div>
+        <div>User {{friend.name}}</div>
     </div>
    
-    <div class="friendCardOptions">
+    <div class="friend-card-options">
         <ul>
             <li>Remove</li>
         </ul>
