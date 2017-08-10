@@ -21,6 +21,7 @@ x Move socket.io configuration/connection to a service
 - Add chat-header component
 - Add "Loading" animations
 - Create Friend component to replace the DIV element
+- Highlight new messages received while offline.
 
 Server
 - Create environment variables to run application settings with a bash script

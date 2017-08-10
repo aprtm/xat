@@ -189,5 +189,21 @@ function usersConnection( socket ){
 
   });
 
+  socket.on('chatAccepted', function ({newPart, conversation}){
+    console.log(newPart.name,'joined chat',conversation.name);
+
+    conversation.participants.forEach(function(participant){
+      
+      if( newPart.id !== participant.id){
+
+        socket.to(participant.id).emit('friendJoinedChat', {newPart,conversation});
+        console.log('Notifyied',participant.name, 'about', newPart.name,'joining', conversation.name);
+
+      }
+
+    });
+
+  } );
+
 
 }

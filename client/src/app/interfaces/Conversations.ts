@@ -17,6 +17,7 @@ export interface Message{
 export interface Conversation {
     _id:string
     date:number
+    creator_id?:string
     participants:Participant[]
     name:string
     pictureUrl:string

@@ -12,12 +12,11 @@ export class ConversationsService {
   constructor( private http:Http ) { }
   
   createConversation( creator:Participant ){
-    //SEND ARRAY OF PARTICIPANTS
     console.log('Service-New conversation with',creator);
     return this.http.post( '/api/conversations', creator, {headers:this.header} );
   }
 
-  getConversation( cId:string ){
+  getConversationAndMessages( cId:string ){
     return this.http.get( '/api/conversations/'+cId );
   }
 
@@ -26,7 +25,7 @@ export class ConversationsService {
   }
 
   addParticipant( cId:string, participant:Participant ){
-    return this.http.put( 'api/conversations/'+cId+'/participants', participant, {headers:this.header} );
+    return this.http.post( 'api/conversations/'+cId+'/participants', participant, {headers:this.header} );
   }
 
   changeName( cId:string, name:string ){

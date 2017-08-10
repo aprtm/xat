@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 
 
 import { User, Contact } from '../interfaces/Users';
-import { Message, Room, Participant } from '../interfaces/Conversations';
+import { Message, Room, Participant, Conversation } from '../interfaces/Conversations';
 
 
 import * as io from 'socket.io-client';
@@ -16,6 +16,7 @@ export class SocketService {
   private _friendRequestObservable:Observable<Contact>
   private _newFriendObservable:Observable<Contact>
   private _chatInviteObservable:Observable<Contact>
+  private _newChatUserObservable:Observable<{newPart:Participant,conversation:Conversation}>
 
   private socket:SocketIOClient.Socket;
   //should transform to use getters and setters
@@ -60,6 +61,12 @@ export class SocketService {
       });
     })
 
+    this._newChatUserObservable = new Observable( (observer)=>{
+      this.socket.on('friendJoinedChat', ( {newPart, conversation} )=>{
+        console.log('newPartObs',newPart.name,'joined',conversation.name);
+        observer.next({newPart, conversation})
+      });
+    } )
   }
 
   get friendObservable(){
@@ -80,6 +87,10 @@ export class SocketService {
 
   get chatInviteObservable(){
     return this._chatInviteObservable;
+  }
+
+  get newChatUserObservable(){
+    return this._newChatUserObservable;
   }
 
   connect( user:User ){
@@ -150,6 +161,17 @@ export class SocketService {
       }
       this.socket.emit( 'chatInvitation', {chatRequest, toContact} );
       console.log(fromContact.name, 'sent chat', chat.name, 'invitation to', toContact.name);
+    }else{
+      console.log('Socket not available to notify chat invitation.');
+      return null;
+    }
+  }
+
+  confirmChatAccepted( newPart:Participant, conversation:Conversation ){
+    //COULD ALSO USE THE CONVERSATION OBJECT
+    if( this.socket ){
+      console.log( 'Joined to chat',conversation.name,'Notifying',conversation.participants );
+      this.socket.emit('chatAccepted', {newPart, conversation} )
     }else{
       console.log('Socket not available to notify chat invitation.');
       return null;

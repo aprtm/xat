@@ -9,7 +9,9 @@ var stitchClient = new mdbStitch.StitchClient('xat-mxymz');
 var db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
 var Conversations = db.collection('Conversations');
 var Messages = db.collection('Messages');
+var Users = db.collection('Users');
 var router = express.Router();
+//+++++++++++++++++HANDLE POST TO API/CONVERSATIONS/+++++++++++++++++++++++++++++++
 router.post('/', function postConversation(req, res, next) {
     var dateNow = Date.now();
     var convoName = req.body.name + ' and friends';
@@ -21,7 +23,7 @@ router.post('/', function postConversation(req, res, next) {
             console.log('Logged in to DB.');
             return Conversations.insertOne({
                 date: dateNow,
-                owner_id: req.user._id.toString(),
+                creator_id: req.user._id.toString(),
                 participants: [req.body],
                 name: convoName,
                 pictureUrl: 'http://lorempixel.com/45/45/abstract/',
@@ -29,20 +31,29 @@ router.post('/', function postConversation(req, res, next) {
             });
         }, function onRejected(reason) {
             console.log('Error connecting to DB.');
-            return res.sendStatus(reason);
+            return res.send(reason);
         })
-            .then(function onFulfilled(newConvoId) {
-            console.log('Created conversation', newConvoId.insertedIds[0].toString());
-            return Conversations.find({ _id: newConvoId.insertedIds[0] });
+            .then(function onFulfilled(newConvId) {
+            //ADD NEW CONVERSATION ID TO CURRENT USER'S CONVERSATIONS ARRAY
+            console.log('Created conversation', newConvId.insertedIds[0].toString());
+            var newConversation = Conversations.find({ _id: newConvId.insertedIds[0] });
+            var updatedUser = Users.updateOne({ _id: req.user._id }, { $push: { conversations: {
+                        id: newConvId.insertedIds[0].toString(),
+                        name: convoName,
+                        pictureUrl: 'http://lorempixel.com/45/45/abstract/'
+                    } } });
+            return Promise.all([newConversation, updatedUser]);
         }, function onRejected(reason) {
             console.log('Failed to create conversation.', reason);
             return res.sendStatus(500);
         })
-            .then(function onFulfilled(newConvos) {
-            console.log('New conversation:', newConvos[0]);
-            return res.send(newConvos[0]);
+            .then(function onFulfilled(_a) {
+            var newConversation = _a[0], updatedUser = _a[1];
+            console.log('New conversation:', newConversation[0]);
+            console.log('User updated:', updatedUser.result[0]);
+            return res.send(newConversation[0]);
         }, function onRejected(reason) {
-            console.log('Failed to create conversation.', reason);
+            console.log('Failed to create conversation or update user.', reason);
             return res.sendStatus(500);
         })["catch"](function (err) { return err; });
     }
@@ -50,6 +61,52 @@ router.post('/', function postConversation(req, res, next) {
         return res.sendStatus(403);
     }
 });
+//+++++++++++++++++HANDLE POST TO API/CONVERSATIONS/:CONVID/PARTICIPANTS+++++++++++++++++++++++++++++++
+router.post('/:convId/participants', function addParticipant(req, res, next) {
+    console.log('Add current user', req.user.username, 'to conversation', req.params.convId);
+    // console.log( 'Available body:', req.body, '. Available user:', req.user );
+    if (req.isAuthenticated) {
+        var dateNow = Date.now(), userParticipant_1 = {
+            id: req.user._id.toString(),
+            name: req.user.username,
+            pictureUrl: req.user.pictureUrl,
+            join_date: dateNow
+        };
+        stitchClient.login()
+            .then(function onFulfilled() {
+            console.log('DB connected. Add', req.user.username);
+            return Conversations.updateOne({ _id: { $oid: req.params.convId } }, { $push: { participants: userParticipant_1 } });
+        }, function onRejected(reason) {
+            console.log('Error connecting to DB.');
+            return res.send(reason);
+        })
+            .then(function onFulfilled(updated) {
+            updated = updated.result[0];
+            console.log('Updated conversation', updated.name);
+            var chat = {
+                id: updated._id.toString(),
+                name: updated.name,
+                pictureUrl: updated.pictureUrl
+            };
+            return Users.updateOne({ _id: req.user._id }, { $push: { conversations: chat } });
+        }, function onRejected(reason) {
+            console.log('Failed to update conversation', reason);
+            return res.send(reason);
+        })
+            .then(function onFulfilled(updated) {
+            updated = updated.result[0];
+            console.log('Updated user', updated.username);
+            return res.send(req.params.convId);
+        }, function onRejected(reason) {
+            console.log('Failed to update user with new conversation', reason);
+            return res.send(reason);
+        })["catch"](function (err) { return err; });
+    }
+    else {
+        return res.sendStatus(403);
+    }
+});
+//+++++++++++++++++HANDLE GET TO API/CONVERSATIONS/:ID+++++++++++++++++++++++++++++++
 router.get('/:id', function getConversation(req, res, next) {
     console.log('Fetching conversation...', req.params.id);
     if (req.isAuthenticated) {
@@ -61,7 +118,7 @@ router.get('/:id', function getConversation(req, res, next) {
             return Promise.all([convo, messages]);
         }, function onRejected(reason) {
             console.log('Error connecting to DB.');
-            return res.sendStatus(reason);
+            return res.send(reason);
         })
             .then(function onFulfilled(_a) {
             var convo = _a[0], msgs = _a[1];
@@ -88,6 +145,7 @@ router.get('/:id', function getConversation(req, res, next) {
         return res.sendStatus(403);
     }
 });
+//+++++++++++++++++HANDLE PUT TO API/CONVERSATIONS/:ID/MESSAGES/+++++++++++++++++++++++++++++++
 router.put('/:id/messages', function putMessage(req, res, next) {
     console.log('Putting new message', req.body.message, 'to conversation');
     console.dir(req.params.id);
@@ -131,6 +189,7 @@ router.put('/:id/messages', function putMessage(req, res, next) {
         return res.sendStatus(403);
     }
 });
+//+++++++++++++++++HANDLE POST TO API/CONVERSATIONS/MESSAGES/:ID/PENDING-RECEIVERS+++++++++++++++++++++++++++++++
 router.post('/messages/:id/pending-receivers/', function deleteMessage(req, res, next) {
     console.log('Updating message...remove user from pending-receivers', req.params.id);
     console.log(req.body.receiver_id, '===', req.user._id.toString());

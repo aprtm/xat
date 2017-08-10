@@ -1,11 +1,13 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
+import 'rxjs/add/operator/switchMap';
+
 import { SessionService } from '../../services/session.service';
 import { SocketService } from '../../services/socket.service';
 import { UsersService } from '../../services/users.service';
-// import { ConversationsService } from '../../services/conversations.service';
+import { ConversationsService } from '../../services/conversations.service';
 
-// import { Conversation, Message } from '../../interfaces/Conversations';
+import { Conversation, Participant } from '../../interfaces/Conversations';
 import { Contact } from '../../interfaces/Users';
 
 class Notification{
@@ -30,6 +32,7 @@ export class NotifyBarComponent implements OnInit {
 
   constructor(  private socketService:SocketService,
                 private usersService:UsersService,
+                private conversationsService:ConversationsService,
                 private sessionService:SessionService) { }
 
   ngOnInit() {
@@ -68,19 +71,39 @@ export class NotifyBarComponent implements OnInit {
   }
 
   acceptRequest( notificationIndex:number ){
+
     let contact = this.notifications[notificationIndex].userRequest
+
     if( contact.conversation_id ){
+
       console.log( 'Accept chat invitation' );
-      // this.usersService.acceptChatInvitation( contact ).subscribe(
-      //   ( res )=>{
-          // console.log( 'Request arrived at the server');
-          // this.socketService.confirmNewFriend( contact, this.sessionService.getUserAsContact() );
-          // this.notifications.splice(notificationIndex, 1);
-          // this.newFriendAdded.emit( contact );
-          //close notification window if notifications length is 0
-      //   },
-      //   err=>err
-      // );
+      this.usersService.acceptChatInvitation( contact )
+      
+      .switchMap( ( resp )=>{
+          console.log( 'Invitation accepted to join', resp.text() );
+          return this.conversationsService.getConversationAndMessages( resp.text() )
+        })
+      
+        .subscribe(
+          convResp => {
+
+            let participants = convResp.json().conversation.participants;
+            let currentParticipant:Participant;
+            console.log( 'participants', participants );
+
+            for( let p =0; p<participants.length; p++ ){
+              if( participants[p].id === this.sessionService.getUserAsContact().id ){
+                currentParticipant = participants[p];
+              }
+            }
+
+            this.socketService.confirmChatAccepted( currentParticipant , convResp.json().conversation )
+            // this.newFriendAdded.emit( contact );
+          },
+          err => err
+        );
+
+        // !!!!!!!!!!!!!!!!!!close notification window if notifications length is 0
     }else{
       this.usersService.acceptFriendRequest( contact ).subscribe(
         ( res )=>{

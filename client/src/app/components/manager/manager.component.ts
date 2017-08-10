@@ -47,6 +47,13 @@ export class ManagerComponent implements OnInit {
       err=>err
     );
 
+    this.socketService.newChatUserObservable.subscribe(
+      ( {newPart, conversation} )=>{
+        console.log(newPart.name, 'just joined', conversation.name,'!!!');
+      },
+      err=>err
+    )
+
   }
 
   ngOnChanges( changes ){
@@ -74,7 +81,7 @@ export class ManagerComponent implements OnInit {
   onElementSelected( element ){
     console.log('Chat',element.name);
     let convoId = element.conversation_id ? element.conversation_id:element.id;
-      this.conversationsService.getConversation( convoId ).subscribe(
+      this.conversationsService.getConversationAndMessages( convoId ).subscribe(
         ( convo )=>{ 
           this.selectedConversation = convo.json().conversation;
           this.currentMessages = convo.json().messages;
