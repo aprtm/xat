@@ -9,7 +9,7 @@ import { User, Contact } from '../../interfaces/Users';
 import { Message } from '../../interfaces/Conversations';
 
 interface Friend extends Contact{
-  hasNewMessage:boolean
+  hasNewMessage?:boolean
 }
 
 @Component({
@@ -31,33 +31,13 @@ export class FriendsComponent implements OnInit {
                 private socketService:SocketService ) { }
 
   ngOnInit() {
-    this.startFriendList();
+    // this.startFriendList();
     this.unfriendables = [
       this.sessionService.getSession().user.username,
       this.sessionService.getSession().user.email
     ];
 
     this.currentUser = this.sessionService.getUserAsContact();
-  }
-
-  startFriendList(){
-
-      this.socketService.messageObservable.subscribe(
-        ( msg:Message )=>{
-
-          for( let f = 0; f<this.friends.length; f++){
-            if( this.selectedFriend && this.selectedFriend.id == msg.author_id ){
-              this.friends[f].hasNewMessage = false;
-              return;
-            }
-            if( this.friends[f].id == msg.author_id ){
-              this.friends[f].hasNewMessage = true;
-            }
-          }
-        },
-        err => err
-      );
-
   }
 
   onFormSubmit( form:NgForm ){
@@ -89,3 +69,24 @@ export class FriendsComponent implements OnInit {
   }
 
 }
+
+// CHAT LIST GETS THE NEW MESSAGE CLASS NOW
+  // startFriendList(){
+
+  //     this.socketService.messageObservable.subscribe(
+  //       ( msg:Message )=>{
+
+  //         for( let f = 0; f<this.friends.length; f++){
+  //           if( this.selectedFriend && this.selectedFriend.id == msg.author_id ){
+  //             this.friends[f].hasNewMessage = false;
+  //             return;
+  //           }
+  //           if( this.friends[f].id == msg.author_id ){
+  //             this.friends[f].hasNewMessage = true;
+  //           }
+  //         }
+  //       },
+  //       err => err
+  //     );
+
+  // }

@@ -59,7 +59,7 @@ export class UsersService {
     return this.http.post('/api/users/friendRequest', {contactNameOrEmail, fromContact}, {headers:this.header} )
   }
 
-  rejectFriendRequest( contact:Contact ){
+  removeRequest( contact:Contact ){
     console.log('User service - DELETE request from', contact.id)
     return this.http.delete('/api/users/friendRequest/'+contact.id)
   }

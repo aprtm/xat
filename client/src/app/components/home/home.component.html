@@ -3,8 +3,8 @@
 
     <div id="home-elements">
 
-        <chat-notify-bar (newFriendAdded)="setNewFriend($event)"></chat-notify-bar>
-        <chat-manager [newFriend]="newFriend"></chat-manager>
+        <chat-notify-bar (newFriendAdded)="setNewFriend($event)" (newChatAdded)="setNewChat($event)"></chat-notify-bar>
+        <chat-manager [newFriend]="newFriend" [newChat]="newChat"></chat-manager>
         
     </div>
 

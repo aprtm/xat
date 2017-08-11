@@ -6,7 +6,7 @@ import { ConversationsService } from '../../services/conversations.service';
 import { SocketService } from '../../services/socket.service';
 
 import { User, Contact } from '../../interfaces/Users';
-import { Conversation, Participant, Message, Room } from '../../interfaces/Conversations';
+import { Conversation, Message, Chat } from '../../interfaces/Conversations';
 
 
 @Component({
@@ -16,6 +16,7 @@ import { Conversation, Participant, Message, Room } from '../../interfaces/Conve
 })
 export class ManagerComponent implements OnInit {
   @Input() newFriend:Contact;
+  @Input() newChat:Chat;
 
   private lists = [
     {name:'Friends', userKey:'friends'},
@@ -34,7 +35,7 @@ export class ManagerComponent implements OnInit {
                 private socketService:SocketService ) { }
 
   ngOnInit() {
-    this.currentList = this.lists[0];
+    this.currentList = this.lists[1];
     this.updateListItems();
 
     this.socketService.newFriendObservable.subscribe(
@@ -49,7 +50,8 @@ export class ManagerComponent implements OnInit {
 
     this.socketService.newChatUserObservable.subscribe(
       ( {newPart, conversation} )=>{
-        console.log(newPart.name, 'just joined', conversation.name,'!!!');
+        console.log(newPart.name, 'just joined', conversation.name,'!');
+        this.updateListItems();
       },
       err=>err
     )
@@ -59,6 +61,13 @@ export class ManagerComponent implements OnInit {
   ngOnChanges( changes ){
     if( changes['newFriend'] ){
       this.sessionService.updateSession(()=>{
+        console.log('newChat changed. UpdateListItems');
+        this.updateListItems();
+      });
+    }
+    if( changes['newChat'] ){
+      this.sessionService.updateSession(()=>{
+        console.log('newChat changed. UpdateListItems');
         this.updateListItems();
       });
     }

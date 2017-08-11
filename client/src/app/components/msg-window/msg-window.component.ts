@@ -25,7 +25,7 @@ export class MsgWindowComponent implements OnInit, OnChanges {
   
   constructor(  private sessionService:SessionService,
                 private socketService:SocketService,
-                private conversationsService:ConversationsService, ) {}
+                private conversationsService:ConversationsService ) {}
 
   onSubmit(form:NgForm){
 

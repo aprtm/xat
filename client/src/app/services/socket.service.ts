@@ -168,7 +168,7 @@ export class SocketService {
   }
 
   confirmChatAccepted( newPart:Participant, conversation:Conversation ){
-    //COULD ALSO USE THE CONVERSATION OBJECT
+
     if( this.socket ){
       console.log( 'Joined to chat',conversation.name,'Notifying',conversation.participants );
       this.socket.emit('chatAccepted', {newPart, conversation} )

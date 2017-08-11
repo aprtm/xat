@@ -26,6 +26,11 @@ export interface Conversation {
 
 export interface Room{
     id:string
-    name:string,
+    name:string
     pictureUrl:string
+}
+
+export interface Chat{
+    conversation:Conversation
+    messages:Message[]
 }

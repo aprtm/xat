@@ -7,7 +7,7 @@ import { SocketService } from '../../services/socket.service';
 import { UsersService } from '../../services/users.service';
 import { ConversationsService } from '../../services/conversations.service';
 
-import { Conversation, Participant } from '../../interfaces/Conversations';
+import { Conversation, Participant, Message, Chat } from '../../interfaces/Conversations';
 import { Contact } from '../../interfaces/Users';
 
 class Notification{
@@ -26,6 +26,7 @@ class Notification{
 })
 export class NotifyBarComponent implements OnInit {
   @Output() newFriendAdded = new EventEmitter<Contact>();
+  @Output() newChatAdded = new EventEmitter<Chat>();
 
   private notifications:Notification[] = [];
   private viewNotifications:boolean = false;
@@ -86,19 +87,21 @@ export class NotifyBarComponent implements OnInit {
       
         .subscribe(
           convResp => {
-
-            let participants = convResp.json().conversation.participants;
-            let currentParticipant:Participant;
-            console.log( 'participants', participants );
+            let convAndMsg:Chat = convResp.json(),
+                participants = convAndMsg.conversation.participants,
+                currentParticipant:Participant;
 
             for( let p =0; p<participants.length; p++ ){
               if( participants[p].id === this.sessionService.getUserAsContact().id ){
                 currentParticipant = participants[p];
               }
             }
+            console.log('Accepted chat invitation')
 
-            this.socketService.confirmChatAccepted( currentParticipant , convResp.json().conversation )
-            // this.newFriendAdded.emit( contact );
+            this.usersService.removeRequest( contact ).subscribe();
+            this.socketService.confirmChatAccepted( currentParticipant , convAndMsg.conversation )
+            this.notifications.splice(notificationIndex, 1);
+            this.newChatAdded.emit( convAndMsg );
           },
           err => err
         );
@@ -119,8 +122,9 @@ export class NotifyBarComponent implements OnInit {
   }
 
   discardRequest( notificationIndex:number ){
+    
     let contact = this.notifications[notificationIndex].userRequest
-    this.usersService.rejectFriendRequest( contact ).subscribe(
+    this.usersService.removeRequest( contact ).subscribe(
       ()=>{
         console.log('Successfully removed request.');
         this.notifications.splice(notificationIndex, 1);
@@ -128,6 +132,7 @@ export class NotifyBarComponent implements OnInit {
       },
       err => err
     );
+
   }
 
 }

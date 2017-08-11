@@ -1,0 +1,14 @@
+:host{
+    border: dashed 3px lightcoral;
+}
+.chat-card div{
+    display: inline-block;
+}
+
+.has-new-message{
+    background-color: lightsteelblue;
+}
+
+#chat-details-panel{
+    border: solid black 1px;
+}
