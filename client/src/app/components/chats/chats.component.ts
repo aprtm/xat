@@ -21,7 +21,8 @@ interface ChatRoom extends Room{
 })
 export class ChatsComponent implements OnInit {
   @Input() chats:ChatRoom[];
-  @Output() onSelected = new EventEmitter<Room>();
+  @Output() chatSelected = new EventEmitter<Room>();
+  @Output() chatAdded = new EventEmitter<boolean>();
 
   private selectedChat:ChatRoom|null = null;
   private uninvitables:string[] = [];
@@ -67,15 +68,15 @@ export class ChatsComponent implements OnInit {
         console.log('Open chat:', this.chats[i].name);
         this.chats[i].hasNewMessage = false;
         this.selectedChat = this.chats[i];
-        this.onSelected.emit( this.chats[i] );
+        this.chatSelected.emit( this.chats[i] );
     }  
 
   }
 
-  createNewChat( ){
+  createNewChat( name?:string ){
     console.log( 'Creating new chat with', this.friendInvitations );   
 
-    this.conversationService.createConversation( this.sessionService.getUserAsContact() ).subscribe(
+    this.conversationService.createConversation( this.sessionService.getUserAsContact(), name ).subscribe(
       ( convoResp )=>{
         let newConvo:Conversation = convoResp.json();
         newConvo._id = newConvo._id['$oid'];
@@ -88,7 +89,8 @@ export class ChatsComponent implements OnInit {
         };
 
         this.selectedChat = newRoom;
-        this.onSelected.emit( newRoom );
+        this.chatAdded.emit( true );
+        this.chatSelected.emit( newRoom );
 
         this.friendInvitations.forEach( friend =>{
 
@@ -132,6 +134,7 @@ export class ChatsComponent implements OnInit {
     this.friendInvitations.push( friend );
 
     chatsForm.controls.friendToJoin.reset();
+    chatsForm.controls.chatToCreate.reset();
     
   }
 

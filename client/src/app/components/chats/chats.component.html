@@ -1,11 +1,12 @@
  <form #chatsForm="ngForm" novalidate>
-    
+
   <label for="nameOfFriend">Invite to chat:</label>
     <!-- TODO: CHANGE TO A SELECT_OPTION LIST OF FRIENDS -->
-    <input type="text" name="friendToJoin" id="nameOfFriend" ngModel>
-    <!-- <input type="text" name="friendToJoin" id="nameOfFriend" [textEqual]="uninvitables" required ngModel> -->
+    <!-- <input type="text" name="friendToJoin" id="nameOfFriend" ngModel> -->
+    <input type="text" name="friendToJoin" id="nameOfFriend" [textEqual]="uninvitables" ngModel>
 
-  <div *ngIf="chatsForm.hasError('textEqual','friendToJoin')">Already invited or in current chat.</div>
+  <label for="nameOfChat">New chat name:</label>
+  <input type="text" name="chatToCreate" id="nameOfChat" ngModel>
 
   <button [hidden]="chatsForm.value.friendToJoin === ''"
           [disabled]="chatsForm.invalid" (click)="addToInvitations( chatsForm )">
@@ -19,10 +20,12 @@
   </button>
 
   <button *ngIf="friendInvitations.length" name="createChat" [hidden]="chatsForm.invalid" [disabled]="chatsForm.invalid"
-          (click)="createNewChat()" >
+          (click)="createNewChat( chatsForm.value.chatToCreate )" >
     New Chat
   </button>
-        
+
+  <div *ngIf="chatsForm.hasError('textEqual','friendToJoin')">Already invited or in current chat.</div>
+  
   <div id="invitations" *ngIf="friendInvitations.length">
     <span>Invitations</span>
       <ul name="chatInvitations" id="currentInvitations">
@@ -32,7 +35,7 @@
       </ul>
   </div>
 
-</form> 
+</form>
 
 
 <div *ngIf="chats.length" id="chats-list">

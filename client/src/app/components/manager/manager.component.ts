@@ -6,7 +6,7 @@ import { ConversationsService } from '../../services/conversations.service';
 import { SocketService } from '../../services/socket.service';
 
 import { User, Contact } from '../../interfaces/Users';
-import { Conversation, Message, Chat } from '../../interfaces/Conversations';
+import { Conversation, Message, Chat, Room } from '../../interfaces/Conversations';
 
 
 @Component({
@@ -98,6 +98,12 @@ export class ManagerComponent implements OnInit {
         },
         ( err ) => err
       )
+  }
+
+  chatAdded( ){
+    this.sessionService.updateSession(()=>{
+      this.updateListItems();
+    });
   }
 
 

@@ -18,11 +18,11 @@ let router = express.Router();
 
 //+++++++++++++++++HANDLE POST TO API/CONVERSATIONS/+++++++++++++++++++++++++++++++
 router.post('/', function postConversation(req,res,next){
-    const dateNow = Date.now();
-    let convoName = req.body.name + ' and friends';
+    const dateNow = Date.now();    
+    let convoName = req.body.conversationName || req.body.creator.name + ' and friends';
     req.body.join_date = dateNow;
 
-    console.log( 'Creating conversation ' + convoName, req.body );
+    console.log( 'Creating conversation ' + convoName, req.body.creator );
 
     if( req.isAuthenticated() ){
         
@@ -34,7 +34,7 @@ router.post('/', function postConversation(req,res,next){
                     return Conversations.insertOne( {
                             date: dateNow,
                             creator_id: req.user._id.toString(),
-                            participants: [req.body],
+                            participants: [req.body.creator],
                             name: convoName,
                             pictureUrl: 'http://lorempixel.com/45/45/abstract/',
                             messages: []

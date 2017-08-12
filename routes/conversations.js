@@ -14,9 +14,9 @@ var router = express.Router();
 //+++++++++++++++++HANDLE POST TO API/CONVERSATIONS/+++++++++++++++++++++++++++++++
 router.post('/', function postConversation(req, res, next) {
     var dateNow = Date.now();
-    var convoName = req.body.name + ' and friends';
+    var convoName = req.body.conversationName || req.body.creator.name + ' and friends';
     req.body.join_date = dateNow;
-    console.log('Creating conversation ' + convoName, req.body);
+    console.log('Creating conversation ' + convoName, req.body.creator);
     if (req.isAuthenticated()) {
         stitchClient.login()
             .then(function onFulfilled() {
@@ -24,7 +24,7 @@ router.post('/', function postConversation(req, res, next) {
             return Conversations.insertOne({
                 date: dateNow,
                 creator_id: req.user._id.toString(),
-                participants: [req.body],
+                participants: [req.body.creator],
                 name: convoName,
                 pictureUrl: 'http://lorempixel.com/45/45/abstract/',
                 messages: []

@@ -7,6 +7,8 @@ Both
 - Change password/username/email
 + Create and destroy sessions
 - Add a join_date field to user objects to remember when the user registered
+- Chat names must be different each time '[creator.name] and friends' is not enough
+- Remove friends from friends list and participants from conversations
 
 Client
 - Add proxy element for onChange event during validation

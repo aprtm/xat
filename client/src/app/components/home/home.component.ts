@@ -19,10 +19,12 @@ export class HomeComponent implements OnInit {
   }
 
   setNewFriend( friend:Contact ){
+    console.log('New friend detected');
     this.newFriend = friend;
   }
 
   setNewChat( chat:Chat ){
+    console.log('New chat detected');
     this.newChat = chat;
   }
 

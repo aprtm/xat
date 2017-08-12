@@ -11,9 +11,9 @@ export class ConversationsService {
 
   constructor( private http:Http ) { }
   
-  createConversation( creator:Participant ){
-    console.log('Service-New conversation with',creator);
-    return this.http.post( '/api/conversations', creator, {headers:this.header} );
+  createConversation( creator:Participant, conversationName?:string ){
+    console.log('Conv. Service - New chat', conversationName ,' with',creator);
+    return this.http.post( '/api/conversations', {creator, conversationName}, {headers:this.header} );
   }
 
   getConversationAndMessages( cId:string ){

@@ -19,7 +19,7 @@ interface Friend extends Contact{
 })
 export class FriendsComponent implements OnInit {
   @Input() friends:Friend[];
-  @Output() onSelected = new EventEmitter<Contact>();
+  @Output() friendSelected = new EventEmitter<Contact>();
 
   private selectedFriend:Friend|null = null;
   private unfriendables:string[];
@@ -64,7 +64,7 @@ export class FriendsComponent implements OnInit {
         console.log('Open chat with:', this.friends[i].name);
         this.friends[i].hasNewMessage = false;
         this.selectedFriend = this.friends[i];
-        this.onSelected.emit( this.friends[i] );
+        this.friendSelected.emit( this.friends[i] );
     }  
   }
 
