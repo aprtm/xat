@@ -77,8 +77,8 @@ router.post('/:convId/participants', function addParticipant(req, res, next) {
             console.log('DB connected. Add', req.user.username);
             return Conversations.updateOne({ _id: { $oid: req.params.convId } }, { $push: { participants: userParticipant_1 } });
         }, function onRejected(reason) {
-            console.log('Error connecting to DB.');
-            return res.send(reason);
+            console.log('Error connecting to DB.', reason);
+            return res.sendStatus(500);
         })
             .then(function onFulfilled(updated) {
             updated = updated.result[0];
@@ -91,7 +91,7 @@ router.post('/:convId/participants', function addParticipant(req, res, next) {
             return Users.updateOne({ _id: req.user._id }, { $push: { conversations: chat } });
         }, function onRejected(reason) {
             console.log('Failed to update conversation', reason);
-            return res.send(reason);
+            return res.sendStatus(500);
         })
             .then(function onFulfilled(updated) {
             updated = updated.result[0];
@@ -99,7 +99,7 @@ router.post('/:convId/participants', function addParticipant(req, res, next) {
             return res.send(req.params.convId);
         }, function onRejected(reason) {
             console.log('Failed to update user with new conversation', reason);
-            return res.send(reason);
+            return res.sendStatus(500);
         })["catch"](function (err) { return err; });
     }
     else {
@@ -117,8 +117,8 @@ router.get('/:id', function getConversation(req, res, next) {
             var messages = Messages.find({ conversation_id: req.params.id });
             return Promise.all([convo, messages]);
         }, function onRejected(reason) {
-            console.log('Error connecting to DB.');
-            return res.send(reason);
+            console.log('Error connecting to DB.', reason);
+            return res.sendStatus(500);
         })
             .then(function onFulfilled(_a) {
             var convo = _a[0], msgs = _a[1];

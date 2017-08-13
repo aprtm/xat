@@ -114,8 +114,8 @@ router.post('/:convId/participants', function addParticipant(req, res, next){
                 );
             },
             function onRejected( reason ){
-                console.log( 'Error connecting to DB.' );
-                return res.send( reason ); 
+                console.log( 'Error connecting to DB.',reason );
+                return res.sendStatus( 500 ); 
             }
         )
 
@@ -135,7 +135,7 @@ router.post('/:convId/participants', function addParticipant(req, res, next){
             },
             function onRejected( reason ){
                 console.log('Failed to update conversation', reason);
-                return res.send( reason );
+                return res.sendStatus( 500 ); 
             }
         )
 
@@ -147,7 +147,7 @@ router.post('/:convId/participants', function addParticipant(req, res, next){
             },
             function onRejected( reason ){
                 console.log('Failed to update user with new conversation',reason);
-                return res.send( reason );
+                return res.sendStatus( 500 ); 
             }
         )
 
@@ -171,8 +171,8 @@ router.get('/:id', function getConversation(req, res, next){
                         return Promise.all( [convo,messages] );
                     }, 
                     function onRejected( reason ){
-                        console.log( 'Error connecting to DB.' );
-                        return res.send( reason );
+                        console.log( 'Error connecting to DB.', reason );
+                        return res.sendStatus( 500 ); 
                     }
             )
 

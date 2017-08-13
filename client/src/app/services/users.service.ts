@@ -79,4 +79,9 @@ export class UsersService {
     return this.conversationsService.addParticipant(contact.conversation_id, contact);
   }
 
+  leaveConversation( chatId:string ){
+    console.log('user service-> leaving', chatId);
+    return this.http.delete('/api/users/'+chatId);
+  }
+
 }

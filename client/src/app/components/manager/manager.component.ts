@@ -87,9 +87,14 @@ export class ManagerComponent implements OnInit {
     this.listItems = this.sessionService.getSession().user[this.currentList.userKey];
   }
 
-  onElementSelected( element ){
-    console.log('Chat',element.name);
-    let convoId = element.conversation_id ? element.conversation_id:element.id;
+  onElementSelected( element? ){
+    if( !element ){
+      console.log('Unselect chat.');  
+      this.selectedConversation = null;
+      this.currentMessages = [];
+    }else{
+      console.log('Selected chat',element.name);
+      let convoId = element.conversation_id ? element.conversation_id:element.id;
       this.conversationsService.getConversationAndMessages( convoId ).subscribe(
         ( convo )=>{ 
           this.selectedConversation = convo.json().conversation;
@@ -98,9 +103,10 @@ export class ManagerComponent implements OnInit {
         },
         ( err ) => err
       )
+    }
   }
 
-  chatAdded( ){
+  chatListChanged( ){
     this.sessionService.updateSession(()=>{
       this.updateListItems();
     });

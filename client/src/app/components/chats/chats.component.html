@@ -5,9 +5,6 @@
     <!-- <input type="text" name="friendToJoin" id="nameOfFriend" ngModel> -->
     <input type="text" name="friendToJoin" id="nameOfFriend" [textEqual]="uninvitables" ngModel>
 
-  <label for="nameOfChat">New chat name:</label>
-  <input type="text" name="chatToCreate" id="nameOfChat" ngModel>
-
   <button [hidden]="chatsForm.value.friendToJoin === ''"
           [disabled]="chatsForm.invalid" (click)="addToInvitations( chatsForm )">
     Add another
@@ -18,7 +15,10 @@
           (click)="inviteToChat( friendInvitations )" >
     Invite
   </button>
-
+  
+  <label for="nameOfChat">New chat name:</label>
+  <input type="text" name="chatToCreate" id="nameOfChat" ngModel>
+  
   <button *ngIf="friendInvitations.length" name="createChat" [hidden]="chatsForm.invalid" [disabled]="chatsForm.invalid"
           (click)="createNewChat( chatsForm.value.chatToCreate )" >
     New Chat
@@ -41,15 +41,15 @@
 <div *ngIf="chats.length" id="chats-list">
 
 <!-- TODO: could replace this with a <chat> component -->
-  <div (click)="openChat(i)" class="chat-card" *ngFor="let chat of chats; let i = index" [ngClass]="chat.hasNewMessage?'has-new-message':''">
-    <div class="chatProfileCard" >
+  <div class="chat-card" *ngFor="let chat of chats; let i = index" [ngClass]="chat.hasNewMessage?'has-new-message':''">
+    <div class="chatProfileCard" (click)="openChat(i)" >
         <div><img [src]="chat.pictureUrl" alt=""></div>
         <div><span>Chat {{chat.name}}</span></div>
     </div>
    
     <div class="chatCardOptions">
       <ul>
-        <li>Leave</li>
+        <li (click)="leaveChat(i)">Leave</li>
       </ul>
     </div>
 

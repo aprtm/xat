@@ -8,6 +8,7 @@ var stitchClient = new mdbStitch.StitchClient('xat-mxymz');
 var db = stitchClient.service('mongodb', 'mongodb-atlas').db('XAT');
 var Users = db.collection('Users');
 var Conversations = db.collection('Conversations');
+var Messages = db.collection('Messages');
 var router = express.Router();
 //+++++++++++++++++HANDLE GET TO API/USERS+++++++++++++++++++++++++++++++
 router.get('/:id', function routeHandler(req, res, next) {
@@ -227,6 +228,49 @@ router.post('/chatInvitation', function routeHandler(req, res, next) {
             console.log('Error finding and updating friend user.', reason);
             return res.sendStatus(304);
         })["catch"](function (err) { return err; });
+    }
+    else {
+        return res.sendStatus(403);
+    }
+});
+//+++++++++++++++++HANDLE DELETE TO API/USERS/USRID/CONVID+++++++++++++++++++++++++++++++
+router["delete"]('/:convId', function leaveConversation(req, res, next) {
+    console.log('Delete conversation', req.params.convId, 'for', req.user.username);
+    console.log('Delete participant', req.user.username, 'from conversation', req.params.convId);
+    if (req.isAuthenticated()) {
+        stitchClient.login()
+            .then(function onFulfilled() {
+            console.log('DB Connected. Updating', req.user.username, '<<>>', req.params.convId);
+            var usrUpdate = Users.updateOne({ _id: req.user._id }, { $pull: { conversations: { id: req.params.convId } } }), convUpdate = Conversations.updateOne({ _id: { $oid: req.params.convId } }, { $pull: { participants: { id: req.user._id.toString() } } });
+            return Promise.all([usrUpdate, convUpdate]);
+        }, function onRejected(reason) {
+            console.log('Failed to connect to DB', reason);
+            return res.sendStatus(500);
+        })
+            .then(function onFulfilled(_a) {
+            var usrUpdate = _a[0], convUpdate = _a[1];
+            console.log('Updated User', usrUpdate.result);
+            console.log('Updated Conversation', convUpdate.result);
+            if (convUpdate.result[0].participants.length < 1) {
+                console.log('Conversation has no participants. Cleaning up.');
+                //DELETE empty conversation: delete messages and conversation documents
+                var msgsDeleted = Messages.deleteMany({ conversation_id: req.params.convId });
+                var convDeleted = Conversations.deleteOne({ _id: { $oid: req.params.convId } });
+                return Promise.all([msgsDeleted, convDeleted]);
+            }
+            else {
+                return null;
+            }
+        }, function onRejected(reason) {
+            console.log('Failed to update/delete conversations and users arrays', reason);
+            return res.sendStatus(500);
+        })
+            .then(function onFulfilled(deletedConversation) {
+            if (deletedConversation) {
+                console.log('Correctly deleted messages and conversation');
+            }
+            return res.send({ conversationDeleted: deletedConversation ? true : false });
+        }, function onRejected() { })["catch"](function (err) { return err; });
     }
     else {
         return res.sendStatus(403);

@@ -22,7 +22,7 @@ interface ChatRoom extends Room{
 export class ChatsComponent implements OnInit {
   @Input() chats:ChatRoom[];
   @Output() chatSelected = new EventEmitter<Room>();
-  @Output() chatAdded = new EventEmitter<boolean>();
+  @Output() chatListChanged = new EventEmitter<boolean>();
 
   private selectedChat:ChatRoom|null = null;
   private uninvitables:string[] = [];
@@ -73,6 +73,30 @@ export class ChatsComponent implements OnInit {
 
   }
 
+  leaveChat( i ){
+    // delete conversation from user document
+    // delete participant from conversation document,
+    this.usersService.leaveConversation( this.chats[i].id ).subscribe(
+      (resp)=>{ 
+        console.log('Deleted empty conversation?',resp.json().conversationDeleted)
+        // if conversation was not deleted..notify all other uses
+        // this.socketService.leaveConversation();
+        // remove conversation from the current list and update view
+        console.log('Discard chat:', this.chats[i].name);
+        this.chatListChanged.emit(true);
+        this.selectedChat = null;
+        this.chatSelected.emit(null);
+      },
+      err=>err
+    );
+
+    // update leaveing user's chat view
+    
+    // if( this.selectedChat && (this.selectedChat.id === this.chats[i].id) ){
+    // }
+
+  }
+
   createNewChat( name?:string ){
     console.log( 'Creating new chat with', this.friendInvitations );   
 
@@ -89,7 +113,7 @@ export class ChatsComponent implements OnInit {
         };
 
         this.selectedChat = newRoom;
-        this.chatAdded.emit( true );
+        this.chatListChanged.emit( true );
         this.chatSelected.emit( newRoom );
 
         this.friendInvitations.forEach( friend =>{
@@ -115,9 +139,26 @@ export class ChatsComponent implements OnInit {
   }
 
   inviteToChat( invitedFriends ){
-    console.log( 'Inviting',invitedFriends,' to current chat',this.selectedChat );
 
-    this.friendInvitations = [];
+    if( this.selectedChat ){
+
+      this.friendInvitations.forEach( friend =>{
+        
+      this.usersService.sendChatInvitation( this.selectedChat, this.sessionService.getUserAsContact(), friend )
+        
+        .subscribe(
+          ( inviteResp )=>{
+            console.log('Notifying',friend.name);;
+            this.socketService.sendChatInvitation( this.selectedChat, this.sessionService.getUserAsContact(), friend  );
+          },
+          err=>err
+        );
+
+      } );
+      
+      this.friendInvitations = [];
+
+    }
   }
 
   addToInvitations( chatsForm:NgForm ){
