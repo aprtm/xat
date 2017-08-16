@@ -4,6 +4,9 @@ import { Router } from '@angular/router'
 import { UsersService } from '../../services/users.service';
 import { SessionService } from '../../services/session.service';
 import { SocketService } from '../../services/socket.service';
+import { TranslationService } from '../../services/translation.service';
+
+let _ComponentName = 'loginComponent';
 
 @Component({
   selector: 'chat-login',
@@ -12,14 +15,28 @@ import { SocketService } from '../../services/socket.service';
 })
 export class LoginComponent implements OnInit {
   private authError:string|null = null;
+  t10s;
 
   constructor(  private router:Router,
                 private usersService:UsersService,
                 private sessionService:SessionService,
-                private socketService:SocketService ) { }
+                private socketService:SocketService,
+                private translationService:TranslationService ) {
+                  
+                  // console.log('login constructed. ', this.translationService.currentTranslation);
+                  this.t10s = this.translationService.currentTranslation[_ComponentName];
+
+  }
 
   ngOnInit() {
 
+    this.translationService.I18N.subscribe( 
+      ( translation )=>{
+        this.t10s = translation[_ComponentName];
+      },
+      err=>console.error
+    );
+    
   }
 
   onSubmit( form ){

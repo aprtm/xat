@@ -4,6 +4,7 @@ import { sameTextValidate, isValueInDatabase } from '../../validators/custom.val
 import { AsIterablePipe } from '../../pipes/asIterable.pipe';
 
 import { UsersService } from '../../services/users.service';
+import { TranslationService } from '../../services/translation.service';
 
 @Component({
   selector: 'chat-signup',
@@ -13,13 +14,25 @@ import { UsersService } from '../../services/users.service';
 export class SignupComponent implements OnInit {
 
   signUpForm: FormGroup;
+  private t10s = {};
 
-  constructor(private builder:FormBuilder, private usersService:UsersService) {
+  constructor(  private builder:FormBuilder,
+                private usersService:UsersService,
+                private translationService:TranslationService ) {
+
+                  // console.log('signup constructed. ', this.translationService.currentTranslation);
+                  this.t10s = this.translationService.currentTranslation['signupComponent'];
   }
 
   ngOnInit() {
     this.createForm();
-    // console.log(this.signUpForm.controls.passGroup);
+
+    this.translationService.I18N.subscribe(
+      ( translation )=>{
+        this.t10s = translation.signupComponent;
+      },
+      err => console.error
+    )
   }
   
   createForm(){

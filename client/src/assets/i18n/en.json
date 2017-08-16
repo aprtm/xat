@@ -1,0 +1,31 @@
+{
+    "appComponent":{
+        "login":"Log In",
+        "signup":"Sign Up",
+        "logout":"Log Out",
+        "language":"language"
+    },
+    "loginComponent":{
+        "title":"Log In",
+        "username":"Username/Email",
+        "password":"Password",
+        "signin":"Sign in"
+    },
+    "signupComponent":{
+        "title":"Sign Up",
+        "username":"Username",
+        "password":"Password",
+        "password2":"Repeat password",
+        "email":"E-mail",
+        "signup":"Sign Up"
+    },
+    "homeComponent":{
+        "greeting":"Hello"
+    },
+    "managerComponent":{
+        
+    },
+    "notifyBarComponent":{
+        "notifications":"Notifications"
+    }
+}

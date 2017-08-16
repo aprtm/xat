@@ -68,25 +68,13 @@ export class FriendsComponent implements OnInit {
     }  
   }
 
+  removeFriend( friend ){
+    console.log('Removing friend', friend);
+    // remove friend from user document
+    // remove participant from conversation document and check if conversation empty
+    // remove conversation if no participants
+    // notify participants if any
+    // update views
+  }
+
 }
-
-// CHAT LIST GETS THE NEW MESSAGE CLASS NOW
-  // startFriendList(){
-
-  //     this.socketService.messageObservable.subscribe(
-  //       ( msg:Message )=>{
-
-  //         for( let f = 0; f<this.friends.length; f++){
-  //           if( this.selectedFriend && this.selectedFriend.id == msg.author_id ){
-  //             this.friends[f].hasNewMessage = false;
-  //             return;
-  //           }
-  //           if( this.friends[f].id == msg.author_id ){
-  //             this.friends[f].hasNewMessage = true;
-  //           }
-  //         }
-  //       },
-  //       err => err
-  //     );
-
-  // }

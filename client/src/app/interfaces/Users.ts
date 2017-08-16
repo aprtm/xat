@@ -9,6 +9,7 @@ export interface User {
     friends:Contact[]
     conversations:Conversation[]
     requests:Contact[]
+    locale:string
 }
 
 //Interface for a friend/contact

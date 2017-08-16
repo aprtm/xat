@@ -1,27 +1,28 @@
-<div id="signup-box">
-<h1>Sign Up component</h1>
+<div class="jumbotron" id="signup-box">
+  <h1>Sign Up component</h1>
+  <br>
     <form [formGroup]="signUpForm" (ngSubmit)="formSubmit()" novalidate >
 
-        <label>Username
-          <input type="text" formControlName="username" required>
-        </label>
+        <label for="username">{{t10s?.username}}</label>
+        <input class="form-control" type="text" formControlName="username" id="username" required>
+        
         <!--<span class="error-message" *ngIf="signUpForm.controls['username'].dirty">-->
         <span class="error-message" *ngIf="signUpForm.get('username').dirty">
           <div *ngFor="let error of signUpForm.get('username').errors | asIterable">{{ formErrorMessages['username'][error.key] }}</div>
         </span>
 
-        <div formGroupName="passGroup">
+        <div class="" formGroupName="passGroup">
           
-          <label>Password
-            <input type="password" formControlName="password" required>
-          </label>
+          <label for="password">{{t10s?.password}}</label>
+          <input class="form-control" type="password" id="password" formControlName="password" required>
+          
           <span class="error-message" *ngIf="signUpForm.get('passGroup.password').dirty">
             <div *ngFor="let error of signUpForm.get('passGroup.password').errors | asIterable">{{ formErrorMessages['password'][error.key] }}</div>
           </span>
 
-          <label>Repeat password
-            <input type="password" formControlName="password2" required>
-          </label>
+          <label for="password2">{{t10s?.password2}}</label>
+          <input class="form-control" type="password" id="password2" formControlName="password2" required>
+          
 
         </div>
 
@@ -29,13 +30,16 @@
           <div *ngFor="let error of signUpForm.get('passGroup').errors | asIterable">{{ formErrorMessages['passGroup'][error.key] }}</div>
         </span>
 
-        <label>E-mail
-          <input type="email" formControlName="email" required>
-        </label>
+        <label for="email">{{t10s?.email}}</label>
+          <input class="form-control" type="email" id="email" formControlName="email" required>
+        
         <span class="error-message" *ngIf="signUpForm.get('email').dirty">
             <div *ngFor="let error of signUpForm.get('email').errors | asIterable">{{ formErrorMessages['email'][error.key] }}</div>
         </span>
 
-        <button name="sign-up" [disabled]="!signUpForm.valid">Sign Up</button>
+        <hr />
+        <button class="btn btn-primary btn-block" name="sign-up" [disabled]="!signUpForm.valid">{{t10s?.signup}}</button>
+
     </form>
+
 </div>

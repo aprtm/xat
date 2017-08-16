@@ -1,11 +1,33 @@
-<div id="notification-text">
-  <div (click)="toggleNotifications()" >{{ notifications.length ? 'Pending requests' : 'No notifications' }}</div>
+<!-- <div id="notification-text">
+
+  <button class="btn" (click)="toggleNotifications()" >
+      {{ t10s.notifications }}: {{ notifications.length }}
+  </button>
+  
   <ul *ngIf="viewNotifications">
-    <li *ngFor="let notification of notifications; let i = index">
+    <li class="dropdown-item" *ngFor="let notification of notifications; let i = index">
       {{ notification.text }}
-      <div (click)="acceptRequest( i )">✔</div>
-      <div (click)="discardRequest( i )">✕</div>
+      <button (click)="acceptRequest( i )">✔</button>
+      <button (click)="discardRequest( i )">✕</button>
     </li>
   </ul>
 
+</div> -->
+
+<div class="dropdown" id="notification-text">
+    
+  <button type="button" class="btn drowpdown-toggle" data-toggle="dropdown"
+          [ngClass]="notifications.length ? 'btn-info' : 'btn-secondary' "
+          [disabled]="notifications.length ? false : true">
+      {{ t10s.notifications }} <span class="badge badge-secondary"> {{ notifications.length }} </span>
+  </button>
+
+  <div class="dropdown-menu">
+    <div class="dropdown-item" *ngFor="let notification of notifications; let i = index">
+      {{ notification.text }}
+      <button class="btn btn-sm btn-outline-success" (click)="acceptRequest( i )">✔</button>
+      <button class="btn btn-sm btn-outline-danger"(click)="discardRequest( i )">✕</button>
+    </div>
+  </div>
+    
 </div>

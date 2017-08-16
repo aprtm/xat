@@ -61,7 +61,7 @@ export class ManagerComponent implements OnInit {
   ngOnChanges( changes ){
     if( changes['newFriend'] ){
       this.sessionService.updateSession(()=>{
-        console.log('newChat changed. UpdateListItems');
+        console.log('newFriend changed. UpdateListItems');
         this.updateListItems();
       });
     }

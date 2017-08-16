@@ -1,10 +1,21 @@
-<div id="login-box">
-    <h1>Login component</h1>
-    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" >
-        <input type="text" name="username" required ngModel>
-        <input type="password" name="password" required ngModel>
-        <button [disabled]="loginForm.invalid" name="signIn">Sign in</button>
-        <div><a routerLink="/signup" routerLinkActive="active">I want to sign up</a></div>
-        <div *ngIf="authError" >{{authError}}</div>
+<div id="login-box" class="jumbotron">
+
+    <h1>{{t10s?.title}}</h1>
+    <br>
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+
+        <label for="login-username">{{t10s?.username}}</label>
+        <input class="form-control" type="text" id="login-username" name="username" required ngModel>
+
+        <label for="login-password">{{t10s?.password}}</label>
+        <input class="form-control" type="password" id="login-password" name="password" required ngModel>
+
+        <hr />
+        <div class="text-danger small" *ngIf="authError" >{{authError}}</div>
+        <hr *ngIf="authError" >
+        
+        <button class="btn btn-primary btn-block" [disabled]="loginForm.invalid" name="signIn">{{t10s?.signin}}</button>
+
     </form>
+
 </div>

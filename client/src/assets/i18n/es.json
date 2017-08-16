@@ -1,0 +1,31 @@
+{
+    "appComponent":{
+        "login":"Iniciar Sesión",
+        "signup":"Registrarme",
+        "logout":"Cerrar Sesión",
+        "language":"Lenguaje"
+    },
+    "loginComponent":{
+        "title":"Inicio de Sesión",
+        "username":"Usuario/Correo",
+        "password":"Contraseña",
+        "signin":"Inicia Sesión"
+    },
+    "signupComponent":{
+        "title":"Registro",
+        "username":"Nombre de usuario",
+        "password":"Contraseña",
+        "password2":"Repetir contraseña",
+        "email":"Correo electrónico",
+        "signup":"Regístrame"
+    },
+    "homeComponent":{
+        "greeting":"Hola"
+    },
+    "managerComponent":{
+        
+    },
+    "notifyBarComponent":{
+        "notifications":"Notificaciones"
+    }
+}

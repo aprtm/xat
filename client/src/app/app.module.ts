@@ -2,7 +2,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { HttpModule } from '@angular/http'
+
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+
 import { RouterModule, Routes } from '@angular/router';
+
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import { MsgWindowComponent } from './components/msg-window/msg-window.component';
@@ -16,6 +22,7 @@ import { SessionService } from './services/session.service';
 import { SocketService } from './services/socket.service';
 import { ConversationsService } from './services/conversations.service'
 import { NotificationService } from './services/notification.service'
+import { TranslationService } from './services/translation.service'
 
 import { AsIterablePipe } from './pipes/asIterable.pipe';
 import { SessionGuard } from './guards/session.guard';
@@ -36,6 +43,10 @@ const appRoutes:Routes = [
   { path:'**', redirectTo:'/login', pathMatch:'full'}
 ];
 
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,7 +65,15 @@ const appRoutes:Routes = [
     BrowserModule,
     HttpModule,
     FormsModule,
-    ReactiveFormsModule, 
+    ReactiveFormsModule,
+    HttpClientModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
     RouterModule.forRoot(appRoutes, {enableTracing:true})
   ],
   providers: [  UsersService,
@@ -62,7 +81,9 @@ const appRoutes:Routes = [
                 SocketService,
                 ConversationsService,
                 NotificationService,
-                SessionGuard ],
+                SessionGuard,
+                TranslationService
+              ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

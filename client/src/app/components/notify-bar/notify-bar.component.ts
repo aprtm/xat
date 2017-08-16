@@ -6,6 +6,7 @@ import { SessionService } from '../../services/session.service';
 import { SocketService } from '../../services/socket.service';
 import { UsersService } from '../../services/users.service';
 import { ConversationsService } from '../../services/conversations.service';
+import { TranslationService } from '../../services/translation.service';
 
 import { Conversation, Participant, Message, Chat } from '../../interfaces/Conversations';
 import { Contact } from '../../interfaces/Users';
@@ -19,6 +20,8 @@ class Notification{
   }
 }
 
+let _ComponentName = 'notifyBarComponent';
+
 @Component({
   selector: 'chat-notify-bar',
   templateUrl: './notify-bar.component.html',
@@ -30,13 +33,23 @@ export class NotifyBarComponent implements OnInit {
 
   private notifications:Notification[] = [];
   private viewNotifications:boolean = false;
+  t10s;
 
   constructor(  private socketService:SocketService,
                 private usersService:UsersService,
                 private conversationsService:ConversationsService,
-                private sessionService:SessionService) { }
+                private sessionService:SessionService,
+                private translationService:TranslationService ) {
+                  this.t10s = this.translationService.currentTranslation[_ComponentName];
+                }
 
   ngOnInit() {
+    this.translationService.I18N.subscribe( 
+      ( translation )=>{
+        this.t10s = translation[_ComponentName];
+      },
+      err=>console.error
+    );
     // console.log( this.sessionService.getSession().user )
     let usrRequests = this.sessionService.getSession().user.requests;
 

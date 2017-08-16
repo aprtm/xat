@@ -40,7 +40,8 @@ router.post('/', function onPost(req, res, next) {
                         email:req.body.email,
                         friends:[],
                         conversations:[],
-                        requests:[]
+                        requests:[],
+                        lang:'en'
                     } );
 
             }, function reject(reason){

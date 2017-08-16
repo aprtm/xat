@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Contact } from '../../interfaces/Users'
-import { Conversation, Message, Chat} from '../../interfaces/Conversations'
+import { Contact } from '../../interfaces/Users';
+import { Conversation, Message, Chat } from '../../interfaces/Conversations';
+
+import { SessionService } from '../../services/session.service';
+import { TranslationService } from '../../services/translation.service';
+
+let _ComponentName = 'homeComponent';
 
 @Component({
   selector: 'chat-home',
@@ -10,12 +15,24 @@ import { Conversation, Message, Chat} from '../../interfaces/Conversations'
 export class HomeComponent implements OnInit {
   private newFriend:Contact|null = null;
   private newChat:Chat|null = null;
+  t10s;
 
-  constructor(  ) {
+  constructor(  private sessionService:SessionService,
+                private translationService:TranslationService ) {
+
+    this.t10s = this.translationService.currentTranslation[_ComponentName];
 
   }
 
   ngOnInit(){
+
+    this.translationService.I18N.subscribe( 
+      ( translation )=>{
+        this.t10s = translation[_ComponentName];
+      },
+      err=>console.error
+    );
+
   }
 
   setNewFriend( friend:Contact ){

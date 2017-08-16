@@ -1,11 +1,8 @@
 <div id="home-wrapper">
-    <h1>Home component</h1>
 
-    <div id="home-elements">
-
-        <chat-notify-bar (newFriendAdded)="setNewFriend($event)" (newChatAdded)="setNewChat($event)"></chat-notify-bar>
-        <chat-manager [newFriend]="newFriend" [newChat]="newChat"></chat-manager>
-        
+    <div class="bg-secondary">
+            <chat-notify-bar (newFriendAdded)="setNewFriend($event)" (newChatAdded)="setNewChat($event)"></chat-notify-bar>
     </div>
+    <chat-manager [newFriend]="newFriend" [newChat]="newChat"></chat-manager>
 
 </div>
