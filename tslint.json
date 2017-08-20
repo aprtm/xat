@@ -1,0 +1,14 @@
+{
+    "defaultSeverity": "warning",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {},
+    "rules": {
+        "indent": [true, "tabs"],
+        "no-console": [false],
+        "ordered-imports": [false],
+        "one-variable-per-declaration": [false]
+    },
+    "rulesDirectory": []
+}

@@ -5,6 +5,7 @@ import { SessionService } from '../../services/session.service';
 import { UsersService } from '../../services/users.service';
 import { SocketService } from '../../services/socket.service';
 import { ConversationsService } from '../../services/conversations.service';
+import { TranslationService } from '../../services/translation.service';
 
 import { User, Contact } from '../../interfaces/Users';
 import { Conversation, Participant, Room, Chat} from '../../interfaces/Conversations'
@@ -13,6 +14,8 @@ import { Message } from '../../interfaces/Conversations';
 interface ChatRoom extends Room{
   hasNewMessage?:boolean
 }
+
+let _ComponentName = 'chatsComponent';
 
 @Component({
   selector: 'chat-chats',
@@ -29,15 +32,29 @@ export class ChatsComponent implements OnInit {
 
   private friendInvitations:Participant[] = [];
 
+  t10s
+
   constructor(  private usersService:UsersService,
                 private sessionService:SessionService,
                 private socketService:SocketService,
-                private conversationService: ConversationsService ) { }
+                private conversationService:ConversationsService,
+                private translationService:TranslationService ) {
+                  
+                  this.t10s = this.translationService.currentTranslation[_ComponentName];
+
+                }
 
   ngOnInit() {
     this.startChatList();
     this.uninvitables.push( this.sessionService.getSession().user.email )
     this.uninvitables.push( this.sessionService.getSession().user.username )
+    
+    this.translationService.I18N.subscribe(
+      ( translation )=>{
+        this.t10s = translation[_ComponentName];
+      },
+      err=>console.error
+    );
     
   }
 
@@ -175,7 +192,6 @@ export class ChatsComponent implements OnInit {
     this.friendInvitations.push( friend );
 
     chatsForm.controls.friendToJoin.reset();
-    chatsForm.controls.chatToCreate.reset();
     
   }
 

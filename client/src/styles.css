@@ -1,0 +1,6 @@
+app-root{
+    height: 100vh;
+    position: fixed;
+    min-width: 585px;
+    width: 100vw;
+}

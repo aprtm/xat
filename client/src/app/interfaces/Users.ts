@@ -1,4 +1,4 @@
-import { Conversation } from './Conversations';
+import { Conversation, Room } from './Conversations';
 
 // Interface for a user profile
 export interface User {
@@ -7,7 +7,7 @@ export interface User {
     email:string
     pictureUrl?:string
     friends:Contact[]
-    conversations:Conversation[]
+    conversations:Room[]
     requests:Contact[]
     locale:string
 }

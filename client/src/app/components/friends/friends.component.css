@@ -1,14 +1,8 @@
-:host{
-    border: dashed 3px lightcoral;
+#friends-list{
+    overflow: auto;
+    height: 66vh;
 }
-.friend-card div{
-    display: inline-block;
-}
-
-.has-new-message{
-    background-color: lightsteelblue;
-}
-
-#friends-details-panel{
-    border: solid black 1px;
+.friend-info-card, .friend-name{
+    flex-grow: 1;
+    margin: auto 0;
 }

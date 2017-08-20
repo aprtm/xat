@@ -1,14 +1,11 @@
-:host{
-    border: dashed 3px lightcoral;
+#chats-list{
+    overflow: auto;
+    max-height: 14.5rem;
 }
-.chat-card div{
-    display: inline-block;
+.chat-info-card, .chat-name{
+    flex-grow: 1;
+    margin: auto 0;
 }
-
-.has-new-message{
-    background-color: lightsteelblue;
-}
-
-#chat-details-panel{
-    border: solid black 1px;
+.chat-name{
+    text-overflow: ellipsis;
 }

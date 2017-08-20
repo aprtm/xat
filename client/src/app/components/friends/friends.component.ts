@@ -4,6 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms'
 import { SessionService } from '../../services/session.service';
 import { UsersService } from '../../services/users.service';
 import { SocketService } from '../../services/socket.service';
+import { TranslationService } from '../../services/translation.service';
 
 import { User, Contact } from '../../interfaces/Users';
 import { Message } from '../../interfaces/Conversations';
@@ -11,6 +12,8 @@ import { Message } from '../../interfaces/Conversations';
 interface Friend extends Contact{
   hasNewMessage?:boolean
 }
+
+let _ComponentName = 'friendsComponent';
 
 @Component({
   selector: 'chat-friends',
@@ -21,6 +24,8 @@ export class FriendsComponent implements OnInit {
   @Input() friends:Friend[];
   @Output() friendSelected = new EventEmitter<Contact>();
 
+  t10s
+
   private selectedFriend:Friend|null = null;
   private unfriendables:string[];
 
@@ -28,7 +33,10 @@ export class FriendsComponent implements OnInit {
 
   constructor(  private usersService:UsersService,
                 private sessionService:SessionService,
-                private socketService:SocketService ) { }
+                private socketService:SocketService,
+                private translationService:TranslationService ) {
+                  this.t10s = this.translationService.currentTranslation[_ComponentName];
+                }
 
   ngOnInit() {
     // this.startFriendList();
@@ -38,6 +46,14 @@ export class FriendsComponent implements OnInit {
     ];
 
     this.currentUser = this.sessionService.getUserAsContact();
+
+    this.translationService.I18N.subscribe(
+      ( translation )=>{
+        this.t10s = translation[_ComponentName];
+      },
+      err=>console.error
+    );
+
   }
 
   onFormSubmit( form:NgForm ){

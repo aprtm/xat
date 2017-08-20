@@ -3,7 +3,9 @@
         "login":"Iniciar Sesión",
         "signup":"Registrarme",
         "logout":"Cerrar Sesión",
-        "language":"Lenguaje"
+        "language":"Lenguaje",
+        "english":"Inglés",
+        "spanish":"Español"
     },
     "loginComponent":{
         "title":"Inicio de Sesión",
@@ -23,9 +25,42 @@
         "greeting":"Hola"
     },
     "managerComponent":{
-        
+        "chats":"Chats",
+        "friends":"Amigos",
+        "greeting":"Hola, {{human}}.",
+        "begin":"Comencemos"
     },
     "notifyBarComponent":{
         "notifications":"Notificaciones"
+    },
+    "chatsComponent":{
+        "newChatName":"Nombre del nuevo chat",
+        "inviteFriendName":"Amigo para invitar",
+        "addBtn":"Invitar",
+        "uninvitable":"Ya fue invitado",
+        "invitations":"Invitaciones",
+        "newChatBtn":"Crear nuevo chat",
+        "addNewChat":"Crear",
+        "inviteToChat":"Invitar",
+        "inviteChatBtn":"Enviar invitaciones",
+        "newChatTitle":"Nuevo Chat",
+        "inviteChatTitle":"Invitar al Chat",
+        "cancelBtn":"Cancelar",
+        "Remove":"Remover"
+    },
+    "friendsComponent":{
+        "newFriendTitle":"Contactar a un amigo",
+        "requestFriendBtn":"Enviar solicitud",
+        "friendRequestTo":"Contacto",
+        "cancelBtn":"Cancelar",
+        "remove":"Remover",
+        "user":"Usuario",
+        "inviteFriend":"Añadir amigo",
+        "deleteFriendWarning":"Por favor confirma para remover a este amigo de tu lista.",
+        "confirmRemove":"Confirmar remover amigo"
+    },
+    "msgWindowComponent":{
+        "writeMessage":"Escribe un mensaje",
+        "sendMessage":"Enviar"
     }
 }

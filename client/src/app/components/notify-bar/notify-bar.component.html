@@ -1,24 +1,8 @@
-<!-- <div id="notification-text">
-
-  <button class="btn" (click)="toggleNotifications()" >
-      {{ t10s.notifications }}: {{ notifications.length }}
-  </button>
-  
-  <ul *ngIf="viewNotifications">
-    <li class="dropdown-item" *ngFor="let notification of notifications; let i = index">
-      {{ notification.text }}
-      <button (click)="acceptRequest( i )">✔</button>
-      <button (click)="discardRequest( i )">✕</button>
-    </li>
-  </ul>
-
-</div> -->
-
-<div class="dropdown" id="notification-text">
+<div class="dropdow col-12" id="notification-text">
     
-  <button type="button" class="btn drowpdown-toggle" data-toggle="dropdown"
+  <button type="button" class="btn btn-block btn-sm drowpdown-toggle" data-toggle="dropdown"
           [ngClass]="notifications.length ? 'btn-info' : 'btn-secondary' "
-          [disabled]="notifications.length ? false : true">
+          [hidden]="notifications.length ? false : true">
       {{ t10s.notifications }} <span class="badge badge-secondary"> {{ notifications.length }} </span>
   </button>
 

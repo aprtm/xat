@@ -4,10 +4,12 @@ import { SessionService } from '../../services/session.service';
 import { UsersService } from '../../services/users.service';
 import { ConversationsService } from '../../services/conversations.service';
 import { SocketService } from '../../services/socket.service';
+import { TranslationService } from '../../services/translation.service';
 
 import { User, Contact } from '../../interfaces/Users';
 import { Conversation, Message, Chat, Room } from '../../interfaces/Conversations';
 
+let _ComponentName = 'managerComponent';
 
 @Component({
   selector: 'chat-manager',
@@ -15,27 +17,36 @@ import { Conversation, Message, Chat, Room } from '../../interfaces/Conversation
   styleUrls: ['./manager.component.css']
 })
 export class ManagerComponent implements OnInit {
-  @Input() newFriend:Contact;
-  @Input() newChat:Chat;
+  @Input() newFriend:Contact
+  @Input() newChat:Chat
 
-  private lists = [
-    {name:'Friends', userKey:'friends'},
-    {name:'Chats', userKey:'conversations'}
-  ]
+  lists = []
+  user = { human:this.sessionService.getUserAsContact().name }
+  t10s
 
-  private listItems:Contact[]|Conversation[] = [];
-  private currentList = this.lists[0];
+  private listItems:Contact[]|Conversation[] = []
+  private currentList = 0
 
-  private selectedConversation:Conversation|null;
-  private currentMessages:Message[]=[];
+  private selectedConversation:Conversation|null
+  private currentMessages:Message[]=[]
 
   constructor(  private sessionService:SessionService,
                 private usersService:UsersService,
                 private conversationsService:ConversationsService,
-                private socketService:SocketService ) { }
+                private socketService:SocketService,
+                private translationService:TranslationService ) {
+                  this.t10s = this.translationService.currentTranslation[_ComponentName];
+                }
 
   ngOnInit() {
-    this.currentList = this.lists[1];
+
+    this.translationService.I18N.subscribe( 
+      ( translation )=>{
+        this.t10s = translation[_ComponentName];
+      },
+      err=>console.error
+    );
+
     this.updateListItems();
 
     this.socketService.newFriendObservable.subscribe(
@@ -74,17 +85,23 @@ export class ManagerComponent implements OnInit {
   }
 
   switchList( index:number ){
-    if( this.currentList.name !== this.lists[index].name ){
-      this.currentList = this.lists[index];
+    if( this.currentList !== index){
+      this.currentList = index;
       this.updateListItems();
-      console.log( 'Viewing', this.currentList.name );
+      console.log( 'Viewing list', this.currentList );
     }
-    else{ console.log('List already selected'); }
+    // if( this.currentList.name !== this.lists[index].name ){
+    //   this.currentList = this.lists[index];
+    //   this.updateListItems();
+    //   console.log( 'Viewing', this.currentList.name );
+    // }
+    else{ console.log('List already selected') }
     
   }
 
   updateListItems(){
-    this.listItems = this.sessionService.getSession().user[this.currentList.userKey];
+    let lists = ['conversations','friends'];
+    this.listItems = this.sessionService.getSession().user[ lists[this.currentList] ];
   }
 
   onElementSelected( element? ){
@@ -112,5 +129,14 @@ export class ManagerComponent implements OnInit {
     });
   }
 
+  setNewFriend( friend:Contact ){
+    console.log('New friend detected');
+    this.newFriend = friend;
+  }
+
+  setNewChat( chat:Chat ){
+    console.log('New chat detected');
+    this.newChat = chat;
+  }
 
 }

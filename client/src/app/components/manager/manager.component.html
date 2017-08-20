@@ -1,16 +1,46 @@
-<div id="manager-wrapper">
+<div class="container-fluid" id="manager-wrapper">
 
-    <ul id="list-selector">
-        <li *ngFor="let list of lists; let ind=index" (click)="switchList(ind)">{{list.name}}</li>
-    </ul>
+    <!-- <div>{{ currentList == 1 ? t10s.chats : t10s.friends}}</div> -->
+    <chat-notify-bar class="d-flex row" (newFriendAdded)="setNewFriend($event)"
+    (newChatAdded)="setNewChat($event)"></chat-notify-bar>
 
-    <div>{{currentList.name}}</div>
-    
-    <!-- <ng-template></ng-template> -->
-    <chat-friends *ngIf="currentList.name==='Friends'" [friends]="listItems" (friendSelected)="onElementSelected($event)"></chat-friends>
-    <chat-chats *ngIf="currentList.name==='Chats'" [chats]="listItems" (chatSelected)="onElementSelected($event)" (chatListChanged)="chatListChanged()"></chat-chats>
+    <div class="row">
+        <div class="col-4">
 
-</div>
-<div id="chat-window-wrapper">
-    <chat-msg-window *ngIf="selectedConversation" [selectedConversation]="selectedConversation" [msgArr]="currentMessages"></chat-msg-window>
+            <div class="row btn-group d-flex" data-toggle="buttons">
+                
+                <label  class="btn btn-outline-dark col-6" (click)="switchList(1)" >
+                    <input type="radio" name="listOptions" id="btn-friends"> {{ t10s.friends }}
+                </label>
+
+                <label  class="btn btn-outline-dark col-6 active" (click)="switchList(0)" >
+                    <input type="radio" name="listOptions" id="btn-chats" checked>{{ t10s.chats }}
+                </label>
+
+            </div>
+
+            <div class="row d-flex flex-column">
+                <chat-friends   class="p-0" *ngIf="currentList===1" [friends]="listItems"
+                                (friendSelected)="onElementSelected($event)">
+                </chat-friends>
+                
+                <chat-chats     class="p-0" *ngIf="currentList===0" [chats]="listItems"
+                            (chatSelected)="onElementSelected($event)"
+                            (chatListChanged)="chatListChanged()">
+                </chat-chats>
+            </div>
+
+        </div>
+
+        <div class="col-8 p-0">
+                <chat-msg-window *ngIf="selectedConversation" [selectedConversation]="selectedConversation" [msgArr]="currentMessages"></chat-msg-window>
+                
+                <div id="welcome-placeholder" class="jumbotron" *ngIf="!selectedConversation">
+                    <h1 class="display-3"> {{ 'managerComponent.greeting' | translate: user }} </h1>
+                    <p class="lead"> {{ t10s?.begin }} </p>
+                </div>
+        </div>
+
+    </div>
+
 </div>

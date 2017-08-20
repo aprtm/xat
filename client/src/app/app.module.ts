@@ -32,8 +32,8 @@ import { NotifyBarComponent } from './components/notify-bar/notify-bar.component
 import { TextEqualValidatorDirective } from './directives/text-equal-validator.directive';
 
 const appRoutes:Routes = [
-  { path:'', component:HomeComponent, canActivate:[SessionGuard] },
-  { path:'home', component:HomeComponent },
+  { path:'', component:ManagerComponent, canActivate:[SessionGuard] },
+  { path:'manager', component:ManagerComponent },
   { path:'login', component:LoginComponent },
   { path:'signup', component:SignupComponent},
   { path:'chat', 

@@ -1,13 +1,15 @@
-:host{
-    width:64%;
-    border: dotted 2px darkorange;
+#chat-messages{
+    overflow: auto;
 }
-#chat-wrapper{
-    display:flex;
-    flex-flow: column;
-    border: dashed 1px red;
+.msg-date{
+    font-size: .6rem;
 }
-#messages{
-    border: solid magenta 1px;
-    min-height: 200px;
+#msg-box{
+    flex-grow: 1;
+}
+#send-msg-box{
+    flex-grow: 1;
+}
+#chat-window{
+    height:82%;
 }

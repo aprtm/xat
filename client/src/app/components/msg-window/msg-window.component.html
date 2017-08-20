@@ -1,16 +1,72 @@
-<h3>Current Conversation</h3>
-<div>{{selectedConversation.name}}</div>
-<div id="chat-wrapper">  
+<div class="card" id="chat-window">
 
-  <ul id="messages">
-    <li *ngFor="let msg of msgArr">
-      <b>{{msg.author_name}}:</b> {{msg.content}}
-    </li>
-  </ul>
 
-  <form #f="ngForm" (ngSubmit)="onSubmit(f)">
-    <input type="text" name="currentMessage" autocomplete="off" ngModel/>
-    <button type="submit">Send</button>
-  </form>
+  <h4 class="card-header">
+    <div><h4> {{selectedConversation.name}} </h4></div>
+  </h4>
+
+
+
+  <div class="card-body pt-0" id="chat-messages">
+
+    <div class="container">
+
+      <div  class="row msg-row"
+            *ngFor="let msg of msgArr">
+        
+        <!-- message card -->
+        <div  class="card col d-flex flex-row p-0 chat-msg"
+              [ngClass]="msg.author_id === currentUser.id ? 
+              '': 'text-right flex-row-reverse'">
+    
+          <div *ngIf="msg.author_id !== currentUser.id" 
+                class="card-header w-25 text-right">
+            <div><b>{{ msg.author_id == currentUser.id ? '' : msg.author_name }}</b></div>
+          </div>
+        
+          <div class="card-body d-flex flex-column w-75 p-1">
+        
+            <div class="lead msg-text">
+                {{ msg.content }}
+            </div>
+        
+            <div class="msg-date text-secondary">
+                {{ msg.date | date:'medium' }}
+              <span *ngIf="msg.author_id == currentUser.id">
+                {{ msg.receivers === undefined ? '⧖' : (msg.receivers.length ? '⤴' : '✔') }}
+              </span>
+            </div>
+        
+          </div>
+          
+        <!-- close message card -->
+        </div>
+
+      <!-- close grid row -->
+      </div>
+
+
+    <!-- close container -->
+    </div>
+
+  <!-- close body -->
+  </div>
+
+
+  <div class="card-footer">
+
+      <form class="d-flex" #f="ngForm" (ngSubmit)="onSubmit(f)">
+          <input  id="msg-box" class="form-control" type="text" 
+          name="currentMessage" autocomplete="off"
+          placeholder="{{ t10s?.writeMessage }}" ngModel/>
+        <button id="send-msg-btn" class="btn btn-primary form-control" type="submit">
+          Send
+        </button>
+      </form>
+
+  </div>
+
+
 
 </div>
+

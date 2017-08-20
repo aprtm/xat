@@ -6,6 +6,10 @@ import { AsIterablePipe } from '../../pipes/asIterable.pipe';
 import { UsersService } from '../../services/users.service';
 import { TranslationService } from '../../services/translation.service';
 
+import { TranslateService } from '@ngx-translate/core';
+
+let _ComponentName = 'signupComponent';
+
 @Component({
   selector: 'chat-signup',
   templateUrl: './signup.component.html',
@@ -13,15 +17,16 @@ import { TranslationService } from '../../services/translation.service';
 })
 export class SignupComponent implements OnInit {
 
-  signUpForm: FormGroup;
-  private t10s = {};
+  signUpForm: FormGroup
+  t10s = {}
 
   constructor(  private builder:FormBuilder,
                 private usersService:UsersService,
-                private translationService:TranslationService ) {
+                private translationService:TranslationService,
+                private translateService:TranslateService  ) {
 
                   // console.log('signup constructed. ', this.translationService.currentTranslation);
-                  this.t10s = this.translationService.currentTranslation['signupComponent'];
+                  this.t10s = this.translationService.currentTranslation[_ComponentName];
   }
 
   ngOnInit() {
@@ -29,7 +34,7 @@ export class SignupComponent implements OnInit {
 
     this.translationService.I18N.subscribe(
       ( translation )=>{
-        this.t10s = translation.signupComponent;
+        this.t10s = translation[_ComponentName];
       },
       err => console.error
     )

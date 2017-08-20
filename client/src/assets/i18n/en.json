@@ -3,7 +3,9 @@
         "login":"Log In",
         "signup":"Sign Up",
         "logout":"Log Out",
-        "language":"language"
+        "language":"Language",
+        "english":"English",
+        "spanish":"Spanish"
     },
     "loginComponent":{
         "title":"Log In",
@@ -12,6 +14,7 @@
         "signin":"Sign in"
     },
     "signupComponent":{
+        "myTest":"Hello {{is}}",
         "title":"Sign Up",
         "username":"Username",
         "password":"Password",
@@ -23,9 +26,42 @@
         "greeting":"Hello"
     },
     "managerComponent":{
-        
+        "chats":"Chats",
+        "friends":"Friends",
+        "greeting":"Hello, {{human}}.",
+        "begin":"Let us begin."
     },
     "notifyBarComponent":{
         "notifications":"Notifications"
+    },
+    "chatsComponent":{
+        "newChatName":"New chat name",
+        "inviteFriendName":"Friend to invite",
+        "addBtn":"Invite",
+        "uninvitable":"Already invited",
+        "invitations":"Invitations",
+        "newChatBtn":"Create new chat",
+        "addNewChat":"Create",
+        "inviteToChat":"Invite",
+        "inviteChatBtn":"Send invitations",
+        "newChatTitle":"New Chat",
+        "inviteChatTitle":"Invite to Chat",
+        "cancelBtn":"Cancel",
+        "remove":"Remove"
+    },
+    "friendsComponent":{
+        "newFriendTitle":"Contact a friend",
+        "friendRequestTo":"Contact",
+        "requestFriendBtn":"Send request",
+        "cancelBtn":"Cancel",
+        "remove":"Remove",
+        "user":"User",
+        "inviteFriend":"Add friend",
+        "deleteFriendWarning":"Please confirm to remove this friend from your list.",
+        "confirmRemove":"Confirm friend removal"
+    },
+    "msgWindowComponent":{
+        "writeMessage":"Write a message",
+        "sendMessage":"Send"
     }
 }

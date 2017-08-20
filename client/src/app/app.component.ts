@@ -44,4 +44,7 @@ export class AppComponent implements OnInit {
   }
 
 
+  logClick(ev){
+    console.log(ev.target.value)
+  }
 }

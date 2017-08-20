@@ -1,5 +1,7 @@
-<nav class="navbar nav-tabs navbar-dark bg-light" [ngClass]=" sessionService ? '' : 'justify-content-start'">
-        <ul class="nav nav-tabs">
+<!-- <nav    class="navbar nav-tabs navbar-dark bg-light" id="chat-navbar"
+        [ngClass]=" sessionService ? '' : 'justify-content-start'"> -->
+<div    class="bg-light">
+        <ul class="nav nav-tabs nav-fill " id="chat-navbar">
                 <li class="nav-item">
                         <a class="text-dark" routerLink="/" 
                         routerLinkActive="active-link">
@@ -22,18 +24,37 @@
                                 {{ t10s?.signup }}
                         </a>
                 </li>
+
+                <li class="nav-item" *ngIf="sessionService.isActive()" >
+                        <h3 class="display-4">{{ sessionService.getUserAsContact().name }}</h3>
+                </li>
+
+                <li class="nav-item" *ngIf="sessionService.isActive()" >
+                        <button class="btn btn-outline-primary" (click)="logout()">{{t10s?.logout}}</button>
+                </li>
+
+                <li class="nav-item" >
+                        <select class="custom-select" (change)="changeLanguage( $event.target.value )">
+                                <option value="" disabled selected style="display:none;">{{ t10s.language }}</option>
+                                <!-- <option selected>{{ t10s.language }}</option> -->
+                                <option value="en">{{ t10s.english }}</option>
+                                <option value="es">{{ t10s.spanish }}</option>
+                        </select>
+                </li>
+
         </ul>
 
         <!-- <label for="change-language">Language</label>
         <input #lang type="text" name="language" id="change-language">
         <input (click)="changeLanguage( lang.value )" type="button" value="Change"> -->
 
-        <div *ngIf="sessionService.isActive()"> <h3 class="display-4">{{ sessionService.getUserAsContact().name }}</h3> </div>
-        <button class="btn btn-outline-primary" *ngIf="sessionService.isActive()" (click)="logout()">{{t10s?.logout}}</button>
-</nav>
+</div>
 
-<router-outlet></router-outlet>
+<div id="chat-body">
+        <router-outlet></router-outlet>
+</div>
 
-<hr />
-
-<div id="footer">By Angel P.</div>
+<div id="chat-footer">
+        <hr />
+        By Angel P.
+</div>

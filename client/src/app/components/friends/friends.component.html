@@ -1,28 +1,66 @@
-<form #friendForm="ngForm" (ngSubmit)="onFormSubmit(friendForm)" novalidate>
-    <label for="nameOfFriend">Friend request to: </label>
-    <input type="text" name="friendToBe" id="nameOfFriend" [textEqual]="unfriendables" required ngModel>
-    <div *ngIf="friendForm.hasError('textEqual','friendToBe')">Oops, that is you.</div>
-    
-    <!-- cannot check errors array directly -->
-    
-    <button name="request" [hidden]="friendForm.invalid" [disabled]="friendForm.invalid">Request</button>
-</form>
+<div class="modal" id="friend-invite-form">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> {{ t10s?.newFriendTitle }} </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                <form #friendForm="ngForm" (ngSubmit)="onFormSubmit(friendForm)" novalidate>
+                    <label for="nameOfFriend"> {{ t10s?.friendRequestTo }}: </label>
+                    <input type="text" name="friendToBe" id="nameOfFriend" [textEqual]="unfriendables" required ngModel>
+                    <div *ngIf="friendForm.hasError('textEqual','friendToBe')">Oops, that is you.</div>
 
-<div *ngIf="friends.length" id="friends-list">
+                </form>
 
-<!-- TODO: could replace this with a <friend> component -->
-  <div class="friend-card" *ngFor="let friend of friends; let i = index" [ngClass]="friend.hasNewMessage?'has-new-message':''">
-    <div (click)="openChat(i)" class="friendProfileCard" >
-        <div><img [src]="friend.pictureUrl" alt=""></div>
-        <div>User {{friend.name}}</div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" name="request" [disabled]="friendForm.invalid">
+                    {{ t10s?.requestFriendBtn }}
+                </button>
+
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                    {{ t10s?.cancelBtn }}
+                </button>
+            </div>
+        </div>
     </div>
-   
-    <div class="friend-card-options">
-        <ul>
-            <li (click)="removeFriend(friend)">Remove</li>
-        </ul>
-    </div>
+</div>
 
-  </div>
+
+<div class="btn-group d-flex">
+    <button type="button" class="btn btn-sm btn-outline-dark col"
+            data-toggle="modal" data-target="#friend-invite-form">
+        {{ t10s?.inviteFriend }}
+    </button>
+</div>
+
+
+<div class="list-group d-flex" *ngIf="friends.length" id="friends-list">
+
+    <!-- TODO: could replace this with a <friend> component -->
+    <div  class="list-group-item d-flex px-0" *ngFor="let friend of friends; let i = index"
+        [ngClass]="friend.hasNewMessage?'has-new-message':''">
+
+        <div class="my-auto p-1">
+            <div class="btn btn-sm btn-white px-0" (click)="removeFriend(friend)">
+                ✕
+            </div>
+        </div>
+
+        <div class="friend-info-card d-flex" (click)="openChat(i)" >
+            <div class="friend-img">
+                <img class="rounded-right" [src]="friend.pictureUrl" alt="">
+            </div>
+            <div class="friend-name pl-3">
+                <h6>{{ friend.name }}</h6>
+            </div>
+        </div>
+
+    </div>
 
 </div>

@@ -1,56 +1,145 @@
- <form #chatsForm="ngForm" novalidate>
+<div class="modal" id="new-chat-form">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"> {{ t10s?.newChatTitle }} </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <form #newChatForm="ngForm" novalidate>
+            
+          <label for="nameOfChat"> {{ t10s?.newChatName }} </label>
+          <input class="form-control" type="text" name="chatToCreate" id="nameOfChat" required ngModel>
 
-  <label for="nameOfFriend">Invite to chat:</label>
-    <!-- TODO: CHANGE TO A SELECT_OPTION LIST OF FRIENDS -->
-    <!-- <input type="text" name="friendToJoin" id="nameOfFriend" ngModel> -->
-    <input type="text" name="friendToJoin" id="nameOfFriend" [textEqual]="uninvitables" ngModel>
+          <label for="nameOfFriend"> {{ t10s?.inviteFriendName }} </label>
+            <!-- TODO: CHANGE TO A SELECT_OPTION LIST OF FRIENDS -->
+            <!-- <input type="text" name="friendToJoin" id="nameOfFriend" ngModel> -->
+          <input class="form-control" type="text" name="friendToJoin" id="nameOfFriend" [textEqual]="uninvitables" ngModel>
 
-  <button [hidden]="chatsForm.value.friendToJoin === ''"
-          [disabled]="chatsForm.invalid" (click)="addToInvitations( chatsForm )">
-    Add another
-  </button>
+          <button class="btn btn-outline-primary" [disabled]="newChatForm.invalid" 
+                  (click)="addToInvitations( newChatForm )">
+              {{ t10s?.addBtn }}
+            <!-- [hidden]="chatsForm.value.friendToJoin === ''" -->
+          </button>
 
-  <button *ngIf="selectedChat && friendInvitations.length" name="inviteChat"
-          [hidden]="chatsForm.invalid" [disabled]="chatsForm.invalid" 
-          (click)="inviteToChat( friendInvitations )" >
-    Invite
-  </button>
-  
-  <label for="nameOfChat">New chat name:</label>
-  <input type="text" name="chatToCreate" id="nameOfChat" ngModel>
-  
-  <button *ngIf="friendInvitations.length" name="createChat" [hidden]="chatsForm.invalid" [disabled]="chatsForm.invalid"
-          (click)="createNewChat( chatsForm.value.chatToCreate )" >
-    New Chat
-  </button>
+          <div *ngIf="newChatForm.hasError('textEqual','friendToJoin')">{{ t10s?.uninvitable }}</div>
 
-  <div *ngIf="chatsForm.hasError('textEqual','friendToJoin')">Already invited or in current chat.</div>
-  
-  <div id="invitations" *ngIf="friendInvitations.length">
-    <span>Invitations</span>
-      <ul name="chatInvitations" id="currentInvitations">
-        <li class="friend-invitation" *ngFor='let friend of friendInvitations; let i = index'>
-          {{ friend.name }} <span (click)="removeFromInvitations( i )">✕</span>
-        </li>
-      </ul>
-  </div>
+          <div id="invitations" *ngIf="friendInvitations.length">
+            <span>{{ t10s?.invitations }}</span>
+              <ul name="chatInvitations" id="currentInvitations">
+                <li class="friend-invitation" *ngFor='let friend of friendInvitations; let i = index'>
+                  {{ friend.name }} <span (click)="removeFromInvitations( i )">✕</span>
+                </li>
+              </ul>
+          </div>
 
-</form>
+        </form>
 
+      </div>
 
-<div *ngIf="chats.length" id="chats-list">
-
-<!-- TODO: could replace this with a <chat> component -->
-  <div class="chat-card" *ngFor="let chat of chats; let i = index" [ngClass]="chat.hasNewMessage?'has-new-message':''">
-    <div class="chatProfileCard" (click)="openChat(i)" >
-        <div><img [src]="chat.pictureUrl" alt=""></div>
-        <div><span>Chat {{chat.name}}</span></div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" name="createChat" 
+        [disabled]="newChatForm.invalid || !friendInvitations.length"
+        (click)="createNewChat( newChatForm.value.chatToCreate )" >
+          {{ t10s?.newChatBtn }}
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{ t10s?.cancelBtn }}
+        </button>
+      </div>
     </div>
-   
-    <div class="chatCardOptions">
-      <ul>
-        <li (click)="leaveChat(i)">Leave</li>
-      </ul>
+  </div>
+</div>
+
+
+<div class="modal" id="invite-chat-form">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"> {{ t10s?.inviteChatTitle }} </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <form #inviteChatForm="ngForm" novalidate>
+            
+          <label for="nameOfFriend"> {{ t10s?.inviteFriendName }} </label>
+            <!-- TODO: CHANGE TO A SELECT_OPTION LIST OF FRIENDS -->
+            <!-- <input type="text" name="friendToJoin" id="nameOfFriend" ngModel> -->
+            <input type="text" name="friendToJoin" id="nameOfFriend" [textEqual]="uninvitables" ngModel>
+
+          <button [hidden]="inviteChatForm.value.friendToJoin === ''"
+                  [disabled]="inviteChatForm.invalid" (click)="addToInvitations( inviteChatForm )">
+                  {{ t10s?.addBtn }}
+          </button>
+
+          <div *ngIf="inviteChatForm.hasError('textEqual','friendToJoin')">{{ t10s?.uninvitable }}</div>
+
+          <div id="invitations" *ngIf="friendInvitations.length">
+            <span>{{ t10s?.invitations }}</span>
+              <ul name="chatInvitations" id="currentInvitations">
+                <li class="friend-invitation" *ngFor='let friend of friendInvitations; let i = index'>
+                  {{ friend.name }} <span (click)="removeFromInvitations( i )">✕</span>
+                </li>
+              </ul>
+          </div>
+
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" name="inviteChat" 
+                [disabled]="!selectedChat || !friendInvitations.length || inviteChatForm.invalid" 
+                (click)="inviteToChat( friendInvitations )" >
+          {{ t10s?.inviteChatBtn }}
+        </button>
+        <button class="btn btn-secundary" type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{ t10s?.cancelBtn }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="btn-group d-flex" *ngIf="chats.length">
+  <button type="button" class="btn btn-sm btn-outline-dark col"
+          data-toggle="modal" data-target="#new-chat-form">
+    {{ t10s?.addNewChat }}
+  </button>
+  
+  <button type="button" class="btn btn-sm btn-outline-dark col"
+          data-toggle="modal" data-target="#invite-chat-form" [disabled]="!selectedChat">
+    {{ t10s?.inviteToChat }}
+  </button>
+</div>
+
+
+<div class="list-group d-flex"  id="chats-list" *ngIf="chats.length">
+
+
+  <div class="list-group-item d-flex px-0" *ngFor="let chat of chats; let i = index"
+      [ngClass]="chat.hasNewMessage?'has-new-message':''">
+    
+    <div class="my-auto p-1">
+      <div class="btn btn-sm btn-white px-0" (click)="leaveChat(i)">
+          ✕
+      </div>
+    </div>
+
+    <div class="chat-info-card d-flex" (click)="openChat(i)" >
+        <div  class="chat-img">
+          <img class="rounded-right" [src]="chat.pictureUrl" alt="">
+        </div>
+        
+        <div class="chat-name pl-3">
+          <h5 class="">{{chat.name}}</h5>
+        </div>
     </div>
 
   </div>
