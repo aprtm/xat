@@ -84,4 +84,9 @@ export class UsersService {
     return this.http.delete('/api/users/'+chatId);
   }
 
+  getOwnSession(){
+    console.log('Confirming open session...');
+    return this.http.get('/api/users/currentUserSession',);
+  }
+
 }

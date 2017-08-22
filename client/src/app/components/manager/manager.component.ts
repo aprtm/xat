@@ -21,7 +21,7 @@ export class ManagerComponent implements OnInit {
   @Input() newChat:Chat
 
   lists = []
-  user = { human:this.sessionService.getUserAsContact().name }
+  user = { human:'' }
   t10s
 
   private listItems:Contact[]|Conversation[] = []
@@ -35,7 +35,16 @@ export class ManagerComponent implements OnInit {
                 private conversationsService:ConversationsService,
                 private socketService:SocketService,
                 private translationService:TranslationService ) {
+                  
                   this.t10s = this.translationService.currentTranslation[_ComponentName];
+                  this.user.human = this.sessionService.getUserAsContact().name;
+
+                  if( this.sessionService.isActive() && !this.socketService.socketExists() ){
+                    // No logout reconnect. A session is active but no socket exists
+                    console.log('Session but not socket', this.sessionService.getSession().user);
+                    this.socketService.connect( this.sessionService.getSession().user );
+                  }
+
                 }
 
   ngOnInit() {

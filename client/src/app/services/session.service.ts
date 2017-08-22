@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { UsersService } from './users.service'
 
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/switchMap';
+
 import { User, Contact } from "../interfaces/Users";
 
 @Injectable()
@@ -8,48 +11,13 @@ export class SessionService {
   
   //should transform into an observable in order to emit changes in current session
   private session:{user:User|null, active:boolean} = {user:null, active:false};
-  
-  private mockSession:User = {
-    _id:'1a1a1a1a1a1a1a1a',
-    username:'MrMock',
-    email:'mock@mockery.mk',
-    pictureUrl:"http://lorempixel.com/45/45/people/",
-    friends:[
-      {
-        id:"f1f1f1f1f1f1",
-        name:"friend1",
-        pictureUrl:"http://lorempixel.com/45/45/people/"
-      },
-      {
-        id:"f2f2f2f2f2f2f2",
-        name:"FRIEND2",
-        pictureUrl:"http://lorempixel.com/45/45/people/"
-      },
-      {
-        id:"f3f3f3f3f3f3f3",
-        name:"FriEnD ",
-        pictureUrl:"http://lorempixel.com/45/45/people/"
-      }
-    ],
-    conversations:[
-      {
-        id:"c1c1c1c1c1c1",
-        name:"CONVO1",
-        pictureUrl:"http://lorempixel.com/45/45/abstract/"
-      },
-      {
-        id:"c2c2c2c2c2c2",
-        name:"conv2",
-        pictureUrl:"http://lorempixel.com/45/45/abstract/"
-      }
-    ],
-    requests:[],
-    locale:'en'
+
+  constructor( private usersService:UsersService ) {
+    
   }
 
-  constructor( private usersService:UsersService ) {this.session.user = this.mockSession;}
-
   connectUser( user:User ){
+    console.log('Connecting user',user)
     this.session.user = user;
     this.session.user._id = user._id['$oid'];
     this.session.active = true;
@@ -57,12 +25,13 @@ export class SessionService {
   }
 
   updateSession( onComplete?:()=>any ){
-
-    this.usersService.getUser( this.session.user._id ).subscribe(
+    console.log('Updating session...');
+    this.usersService.getOwnSession( ).subscribe(
       ( resp ) => {
-        this.session.user = resp.json();
-        this.session.user._id = resp.json()._id['$oid'];
-        onComplete && onComplete();
+        console.log( 'Got session:', resp.json() )
+        this.session = resp.json();
+        this.session.user._id = resp.json().user._id['$oid'];
+        onComplete && onComplete(); //if onComplete, onComplete()
         return this.session;
       },
       ( err ) => {
@@ -70,6 +39,7 @@ export class SessionService {
         this.endSession()
       }
     );
+
   }
 
   endSession(){

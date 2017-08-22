@@ -20,7 +20,16 @@
         "password":"Password",
         "password2":"Repeat password",
         "email":"E-mail",
-        "signup":"Sign Up"
+        "signup":"Sign Up",
+
+        "usernameRequired":"Must pick a username",
+        "usernameExists":"That username already exists",
+        "usernameFormat":"Use only letters, numbers and/or underscore(_)",
+        "passwordRequired":"Must choose a password",
+        "passwordMinLength":"Must have at least 6 characters",
+        "passwordMatch":"Password does not match",
+        "emailRequired":"Must provide an email",
+        "emailFormat":"Email must be similar to email@site.dom"
     },
     "homeComponent":{
         "greeting":"Hello"
@@ -57,8 +66,9 @@
         "remove":"Remove",
         "user":"User",
         "inviteFriend":"Add friend",
-        "deleteFriendWarning":"Please confirm to remove this friend from your list.",
-        "confirmRemove":"Confirm friend removal"
+        "deleteFriendWarning":"Please confirm to remove this friend from your list",
+        "confirmRemove":"Confirm friend removal",
+        "selfAsFriendError":"Sorry, not yourself"
     },
     "msgWindowComponent":{
         "writeMessage":"Write a message",

@@ -31,7 +31,8 @@ router.post('/', function routeHandler(req, res, next) {
                 email: user.email,
                 friends: user.friends,
                 conversations: user.conversations,
-                requests: user.requests
+                requests: user.requests,
+                lang: user.lang
             });
         });
     })(req, res, next);

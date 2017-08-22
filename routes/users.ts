@@ -28,53 +28,74 @@ let router = express.Router();
 //+++++++++++++++++HANDLE GET TO API/USERS+++++++++++++++++++++++++++++++
 router.get('/:id', function routeHandler(req, res, next){
     console.log( 'Fetching user...',req.params.id );
+
+    if(req.params.id == 'currentUserSession'){
+        let currentUser = req.user ?
+                {
+                    _id: req.user._id,
+                    username: req.user.username,
+                    pictureUrl: req.user.pictureUrl,
+                    email: req.user.email,
+                    friends: req.user.friends,
+                    conversations: req.user.conversations,
+                    requests: req.user.requests,
+                    lang: req.user.lang
+                } 
+                : null;
+
+        return res.send({
+            user: currentUser,
+            active: req.isAuthenticated()
+        })
+    }
+
     if( req.isAuthenticated() ){
-        
+
         stitchClient.login()
+        
+        .then(  function onFulfilled(){
+                console.log( 'Connected to DB.' );
+                return Users.find( { _id:{$oid:req.params.id} } );
+            }, 
+            function onRejected( reason ){
+                console.log( 'Error connecting to DB.' );
+                return res.sendStatus( reason );
+            }
+        )
 
-            .then(  function onFulfilled(){
-                        console.log( 'Connected to DB.' );
-                        return Users.find( { _id:{$oid:req.params.id} } );
-                    }, 
-                    function onRejected( reason ){
-                        console.log( 'Error connecting to DB.' );
-                        return res.sendStatus( reason );
-                    }
-            )
+        .then(  function onFulfilled( users ){
+                if( users.length < 1){
+                    console.log('No users match that id');
+                    return res.sendStatus( 404 );
+                }
+                if( users.length > 1 ){
+                    console.log('Conflict');
+                    return res.sendStatus(409).send('ID conflict');
+                }
+                console.log( 'Found and retrieved user', users[0].username);
+                return res.send( {
+                    _id: users[0]._id,
+                    username: users[0].username,
+                    email: users[0].email,
+                    pictureUrl: users[0].pictureUrl,
+                    friends: users[0].friends,
+                    conversations: users[0].conversations
+                } );
+            },
+            function onRejected( reason ){
+                console.log( 'Error ' );
+                return res.send( reason );
+            }
+        )
 
-            .then(  function onFulfilled( users ){
-                        if( users.length < 1){
-                            console.log('No users match that id');
-                            return res.sendStatus( 404 );
-                        }
-                        if( users.length > 1 ){
-                            console.log('Conflict');
-                            return res.sendStatus(409).send('ID conflict');
-                        }
-                        console.log( 'Found and retrieved user', users[0].username);
-                        return res.send( {
-                            _id: users[0]._id,
-                            username: users[0].username,
-                            email: users[0].email,
-                            pictureUrl: users[0].pictureUrl,
-                            friends: users[0].friends,
-                            conversations: users[0].conversations
-                        } );
-                    },
-                    function onRejected( reason ){
-                        console.log( 'Error ' );
-                        return res.send( reason );
-                    }
-            )
+        .catch( err => err)
 
-            .catch( err => err)
-            
     }
     else{
         return res.sendStatus(403);
     }
 } );
-
+    
 //+++++++++++++++++HANDLE POST TO API/USERS/FRIENDREQUEST+++++++++++++++++++++++++++++++
 router.post('/friendRequest', function routeHandler(req, res, next){
     console.log(req.body.fromContact.name,'friend request to', req.body.contactNameOrEmail );

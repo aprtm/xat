@@ -19,7 +19,15 @@
         "password":"Contraseña",
         "password2":"Repetir contraseña",
         "email":"Correo electrónico",
-        "signup":"Regístrame"
+        "signup":"Regístrame",
+        "usernameRequired":"Elegir un nombre de usuario",
+        "usernameExists":"Nombre de usuario ya existe",
+        "usernameFormat":"Sólo usar letras, números y/o guión bajo(_)",
+        "passwordRequired":"Se debe elegir una contraseña",
+        "passwordMinLength":"Debe tener por lo menos 6 caracteres",
+        "passwordMatch":"La contraseña no coincide",
+        "emailRequired":"Se debe proporcionar un correo electrónico",
+        "emailFormat":"El correo electrónico debe ser similar a correo@sitio.dom"
     },
     "homeComponent":{
         "greeting":"Hola"
@@ -56,8 +64,9 @@
         "remove":"Remover",
         "user":"Usuario",
         "inviteFriend":"Añadir amigo",
-        "deleteFriendWarning":"Por favor confirma para remover a este amigo de tu lista.",
-        "confirmRemove":"Confirmar remover amigo"
+        "deleteFriendWarning":"Por favor confirma para remover a este amigo de tu lista",
+        "confirmRemove":"Confirmar remover amigo",
+        "selfAsFriendError":"Una disculpa, no a ti mismo"
     },
     "msgWindowComponent":{
         "writeMessage":"Escribe un mensaje",

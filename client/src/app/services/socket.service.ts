@@ -178,4 +178,8 @@ export class SocketService {
     }
   }
 
+  socketExists(){
+    return this.socket ? true:false;
+  }
+
 }

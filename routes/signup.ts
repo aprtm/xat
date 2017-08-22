@@ -25,7 +25,6 @@ router.post('/', function onPost(req, res, next) {
             console.log( 'Credentials conflict with existing data.' );
             return res.status( 409 ).send( info.message );
         }
-
         // login anonymously (no arguments) to the client.
         stitchClient.login()
             .then( function fulfill(){
@@ -41,7 +40,7 @@ router.post('/', function onPost(req, res, next) {
                         friends:[],
                         conversations:[],
                         requests:[],
-                        lang:'en'
+                        language:req.body.lang
                     } );
 
             }, function reject(reason){
@@ -50,8 +49,18 @@ router.post('/', function onPost(req, res, next) {
             })
 
             .then(function fulfill( newUser ){
-                console.log( 'Successfully registered new user.', newUser );
-                return res.send( newUser.insertedIds );
+                let insertedUser = {
+                    _id: newUser.insertedIds,
+                    username:user.username,
+                    pictureUrl: 'http://lorempixel.com/45/45/people/',
+                    email:req.body.email,
+                    friends:[],
+                    conversations:[],
+                    requests:[],
+                    lang:'en'
+                }
+                console.log( 'Successfully registered new user.', insertedUser );
+                return res.send( insertedUser );
 
             }, function reject( reason ){
 

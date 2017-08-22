@@ -34,15 +34,25 @@ router.post('/', function onPost(req, res, next) {
                 friends: [],
                 conversations: [],
                 requests: [],
-                lang: 'en'
+                language: req.body.lang
             });
         }, function reject(reason) {
             console.log(reason);
             return next(reason);
         })
             .then(function fulfill(newUser) {
-            console.log('Successfully registered new user.', newUser);
-            return res.send(newUser.insertedIds);
+            var insertedUser = {
+                _id: newUser.insertedIds,
+                username: user.username,
+                pictureUrl: 'http://lorempixel.com/45/45/people/',
+                email: req.body.email,
+                friends: [],
+                conversations: [],
+                requests: [],
+                lang: 'en'
+            };
+            console.log('Successfully registered new user.', insertedUser);
+            return res.send(insertedUser);
         }, function reject(reason) {
             console.log(reason);
             return res.send(reason);

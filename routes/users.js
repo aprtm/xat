@@ -10,9 +10,39 @@ var Users = db.collection('Users');
 var Conversations = db.collection('Conversations');
 var Messages = db.collection('Messages');
 var router = express.Router();
+//+++++++++++++++++HANDLE GET TO API/USERS/+++++++++++++++++++++++++++++++
+// router.get('/', function routeHandler(req, res, next){
+//     console.log( 'Confirm status for...',req.user.username );
+//     if( req.isAuthenticated() ){
+//         console.log('User',req.user.username,'has an active session');
+//         return res.send();
+//     }
+//     else{
+//         console.log('No session is active');
+//         return res.send({user:null, active:false});
+//     }
+// } );
 //+++++++++++++++++HANDLE GET TO API/USERS+++++++++++++++++++++++++++++++
 router.get('/:id', function routeHandler(req, res, next) {
     console.log('Fetching user...', req.params.id);
+    if (req.params.id == 'currentUserSession') {
+        var currentUser = req.user ?
+            {
+                _id: req.user._id,
+                username: req.user.username,
+                pictureUrl: req.user.pictureUrl,
+                email: req.user.email,
+                friends: req.user.friends,
+                conversations: req.user.conversations,
+                requests: req.user.requests,
+                lang: req.user.lang
+            }
+            : null;
+        return res.send({
+            user: currentUser,
+            active: req.isAuthenticated()
+        });
+    }
     if (req.isAuthenticated()) {
         stitchClient.login()
             .then(function onFulfilled() {
