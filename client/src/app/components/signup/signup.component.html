@@ -8,7 +8,7 @@
         
         <!--<span class="error-message" *ngIf="signUpForm.controls['username'].dirty">-->
         <span class="error-message" *ngIf="signUpForm.get('username').dirty">
-          <div *ngFor="let error of signUpForm.get('username').errors | asIterable">{{ formErrorMessages['username'][error.key] }}</div>
+          <div *ngFor="let error of signUpForm.get('username').errors | asIterable">{{ t10s[ formErrorMessages['username'][error.key] ] }}</div>
         </span>
 
         <div class="" formGroupName="passGroup">
@@ -17,7 +17,7 @@
           <input class="form-control" type="password" id="password" formControlName="password" required>
           
           <span class="error-message" *ngIf="signUpForm.get('passGroup.password').dirty">
-            <div *ngFor="let error of signUpForm.get('passGroup.password').errors | asIterable">{{ formErrorMessages['password'][error.key] }}</div>
+            <div *ngFor="let error of signUpForm.get('passGroup.password').errors | asIterable">{{ t10s[ formErrorMessages['password'][error.key] ] }}</div>
           </span>
 
           <label for="password2">{{t10s?.password2}}</label>
@@ -27,14 +27,14 @@
         </div>
 
         <span class="error-message" *ngIf="signUpForm.get('passGroup').dirty">
-          <div *ngFor="let error of signUpForm.get('passGroup').errors | asIterable">{{ formErrorMessages['passGroup'][error.key] }}</div>
+          <div *ngFor="let error of signUpForm.get('passGroup').errors | asIterable">{{ t10s[ formErrorMessages['passGroup'][error.key] ] }}</div>
         </span>
 
         <label for="email">{{t10s?.email}}</label>
           <input class="form-control" type="email" id="email" formControlName="email" required>
         
         <span class="error-message" *ngIf="signUpForm.get('email').dirty">
-            <div *ngFor="let error of signUpForm.get('email').errors | asIterable">{{ formErrorMessages['email'][error.key] }}</div>
+            <div *ngFor="let error of signUpForm.get('email').errors | asIterable">{{ t10s[ formErrorMessages['email'][error.key] ] }}</div>
         </span>
 
         <hr />
